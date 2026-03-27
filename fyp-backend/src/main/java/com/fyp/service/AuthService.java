@@ -81,13 +81,8 @@ public class AuthService {
 
         // Generate and send OTP
         String otp = generateAndSaveOTP(user);
-        try {
-            emailService.sendVerificationOTP(user.getEmail(), otp);
-            log.info("OTP sent to email: {}", user.getEmail());
-        } catch (Exception e) {
-            log.error("Failed to send verification email due to platform SMTP rules.");
-            log.warn(">>> [DEV MODE / RENDER BYPASS] Your verification OTP for {} is: {} <<<", user.getEmail(), otp);
-        }
+        emailService.sendVerificationOTP(user.getEmail(), otp);
+        log.info("OTP sent to email: {}", user.getEmail());
 
         // Return response requiring verification
         return Map.of(
@@ -119,11 +114,7 @@ public class AuthService {
 
         // Send welcome email
         String fullName = getFullName(user);
-        try {
-            emailService.sendWelcomeEmail(user.getEmail(), fullName);
-        } catch (Exception e) {
-            log.warn("Failed to send welcome email to {} due to platform SMTP rules.", user.getEmail());
-        }
+        emailService.sendWelcomeEmail(user.getEmail(), fullName);
 
         // Generate JWT token
         String jwtToken = jwtTokenProvider.generateToken(user.getEmail());
@@ -149,13 +140,8 @@ public class AuthService {
 
         // Generate new OTP
         String otp = generateAndSaveOTP(user);
-        try {
-            emailService.sendVerificationOTP(user.getEmail(), otp);
-            log.info("OTP resent to email: {}", user.getEmail());
-        } catch (Exception e) {
-            log.error("Failed to resend verification email due to platform SMTP rules.");
-            log.warn(">>> [DEV MODE / RENDER BYPASS] Your verification OTP for {} is: {} <<<", user.getEmail(), otp);
-        }
+        emailService.sendVerificationOTP(user.getEmail(), otp);
+        log.info("OTP resent to email: {}", user.getEmail());
 
         return Map.of(
                 "message", "A new OTP has been sent to your email.",
