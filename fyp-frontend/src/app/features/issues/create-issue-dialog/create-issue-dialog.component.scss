@@ -1,0 +1,69 @@
+mat-dialog-content {
+    min-width: 500px;
+    padding: 24px;
+
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .full-width {
+        width: 100%;
+    }
+
+    .form-row {
+        display: flex;
+        gap: 16px;
+
+        .half-width {
+            flex: 1;
+        }
+    }
+
+    mat-option {
+        mat-icon {
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+    }
+
+    .priority-badge {
+        padding: 4px 12px;
+        border-radius: 12px;
+        color: white;
+        font-size: 12px;
+        font-weight: 600;
+        display: inline-block;
+    }
+
+    .preview-badges {
+        display: flex;
+        gap: 8px;
+        margin-top: 8px;
+
+        .badge {
+            padding: 6px 16px;
+            border-radius: 16px;
+            color: white;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+    }
+}
+
+mat-dialog-actions {
+    padding: 16px 24px;
+    border-top: 1px solid #eee;
+
+    button {
+        min-width: 100px;
+
+        mat-spinner {
+            display: inline-block;
+            margin-right: 8px;
+        }
+    }
+}

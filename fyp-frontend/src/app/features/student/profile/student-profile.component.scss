@@ -1,0 +1,175 @@
+.profile-container {
+    padding: 32px;
+    background: #f7f7f5;
+    min-height: 100vh;
+}
+
+.profile-header {
+    margin-bottom: 24px;
+
+    .header-content {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+
+        .avatar {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, rgba(189, 186, 255, 0.2), rgba(157, 153, 255, 0.2));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            mat-icon {
+                font-size: 48px;
+                width: 48px;
+                height: 48px;
+                color: #bdbaff;
+            }
+        }
+
+        h1 {
+            font-size: 36px;
+            font-weight: 800;
+            color: #1b1b1b;
+            margin: 0 0 4px 0;
+
+            .highlight {
+                background: linear-gradient(135deg, #ff5754, #ff9a76);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+        }
+
+        p {
+            font-size: 14px;
+            color: #6b7280;
+            margin: 0;
+        }
+    }
+}
+
+.profile-card {
+    border-radius: 16px !important;
+    box-shadow: 0 2px 12px rgba(27, 27, 27, 0.08) !important;
+    padding: 32px !important;
+}
+
+.section {
+    margin-bottom: 32px;
+
+    &:last-of-type {
+        margin-bottom: 24px;
+    }
+
+    h2 {
+        font-size: 20px;
+        font-weight: 700;
+        color: #1b1b1b;
+        margin: 0 0 20px 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        mat-icon {
+            color: #ff5754;
+            font-size: 24px;
+            width: 24px;
+            height: 24px;
+        }
+    }
+}
+
+.form-row {
+    margin-bottom: 16px;
+}
+
+.full-width {
+    width: 100%;
+}
+
+.skills-input {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+
+    .skill-input-field {
+        flex: 1;
+        margin-bottom: 0;
+    }
+
+    button {
+        height: 56px;
+        padding: 0 24px;
+    }
+}
+
+.skills-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 16px;
+    background: rgba(189, 186, 255, 0.05);
+    border-radius: 12px;
+
+    mat-chip {
+        background: #bdbaff !important;
+        color: white !important;
+        font-weight: 600 !important;
+    }
+}
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(27, 27, 27, 0.06);
+
+    button mat-icon {
+        margin-right: 8px;
+    }
+}
+
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+    gap: 20px;
+
+    p {
+        font-size: 16px;
+        color: #6b7280;
+    }
+}
+
+@media (max-width: 768px) {
+    .profile-container {
+        padding: 16px;
+    }
+
+    .profile-header .header-content {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .skills-input {
+        flex-direction: column;
+
+        button {
+            width: 100%;
+        }
+    }
+
+    .actions {
+        flex-direction: column;
+
+        button {
+            width: 100%;
+        }
+    }
+}

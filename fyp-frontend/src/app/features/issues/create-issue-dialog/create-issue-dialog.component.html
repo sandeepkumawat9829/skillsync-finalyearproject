@@ -1,0 +1,79 @@
+<h2 mat-dialog-title>Create New Issue</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="issueForm">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Issue Title</mat-label>
+      <input matInput formControlName="title" placeholder="Brief summary of the issue">
+      <mat-error *ngIf="issueForm.get('title')?.hasError('required')">
+        Title is required
+      </mat-error>
+      <mat-error *ngIf="issueForm.get('title')?.hasError('minlength')">
+        Title must be at least 10 characters
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Description</mat-label>
+      <textarea matInput formControlName="description" rows="4" 
+                placeholder="Detailed description of the issue"></textarea>
+      <mat-error *ngIf="issueForm.get('description')?.hasError('required')">
+        Description is required
+      </mat-error>
+      <mat-error *ngIf="issueForm.get('description')?.hasError('minlength')">
+        Description must be at least 20 characters
+      </mat-error>
+    </mat-form-field>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>Issue Type</mat-label>
+        <mat-select formControlName="issueType">
+          <mat-option *ngFor="let type of issueTypes" [value]="type.value">
+            <mat-icon [style.color]="type.color">{{type.icon}}</mat-icon>
+            {{type.label}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>Priority</mat-label>
+        <mat-select formControlName="priority">
+          <mat-option *ngFor="let priority of priorities" [value]="priority.value">
+            <span class="priority-badge" [style.background-color]="priority.color">
+              {{priority.label}}
+            </span>
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Assign To (Optional)</mat-label>
+      <mat-select formControlName="assignedTo">
+        <mat-option [value]="null">Unassigned</mat-option>
+        <mat-option *ngFor="let member of teamMembers" [value]="member.userId">
+          {{member.name}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <div class="preview-badges">
+      <span class="badge type-badge" [style.background-color]="getSelectedTypeColor()">
+        {{issueForm.value.issueType}}
+      </span>
+      <span class="badge priority-badge" [style.background-color]="getSelectedPriorityColor()">
+        {{issueForm.value.priority}}
+      </span>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()" [disabled]="loading">Cancel</button>
+  <button mat-raised-button color="primary" (click)="onSubmit()" 
+          [disabled]="!issueForm.valid || loading">
+    <mat-spinner *ngIf="loading" diameter="20"></mat-spinner>
+    <span *ngIf="!loading">Create Issue</span>
+  </button>
+</mat-dialog-actions>

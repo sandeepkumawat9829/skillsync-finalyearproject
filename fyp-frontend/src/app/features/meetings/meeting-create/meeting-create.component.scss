@@ -1,0 +1,76 @@
+.meeting-create-container {
+    padding: 32px;
+    max-width: 800px;
+    margin: 0 auto;
+
+    .header {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 32px;
+
+        h1 {
+            font-size: 28px;
+            font-weight: 600;
+            color: #333;
+            margin: 0;
+        }
+    }
+
+    .form-card {
+        padding: 32px;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+
+            .full-width {
+                width: 100%;
+            }
+
+            .datetime-row {
+                display: grid;
+                grid-template-columns: 2fr 1fr 1fr;
+                gap: 16px;
+
+                @media (max-width: 768px) {
+                    grid-template-columns: 1fr;
+                }
+            }
+
+            mat-form-field {
+                ::ng-deep .mat-mdc-text-field-wrapper {
+                    background: #f5f7fa;
+                }
+
+                mat-icon[matPrefix] {
+                    color: #667eea;
+                    margin-right: 12px;
+                }
+            }
+
+            .actions {
+                display: flex;
+                justify-content: flex-end;
+                gap: 16px;
+                margin-top: 16px;
+                padding-top: 16px;
+                border-top: 1px solid #f0f0f0;
+
+                button[type="submit"] {
+                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                    color: white;
+                    min-width: 160px;
+
+                    mat-spinner {
+                        display: inline-block;
+                        vertical-align: middle;
+                    }
+                }
+            }
+        }
+    }
+}

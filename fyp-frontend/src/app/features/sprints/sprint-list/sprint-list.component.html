@@ -1,0 +1,124 @@
+<div class="sprint-container">
+  <!-- Header -->
+  <div class="header">
+    <div>
+      <h1>
+        <mat-icon>track_changes</mat-icon>
+        Sprint Planning
+      </h1>
+      <p>Organize your work into time-boxed sprints</p>
+    </div>
+    <button mat-fab color="primary" (click)="openCreateDialog()" class="fab-button">
+      <mat-icon>add</mat-icon>
+    </button>
+  </div>
+
+  <!-- Project Selector -->
+  <mat-card class="project-selector-card">
+    <mat-form-field appearance="outline">
+      <mat-label>Select Project</mat-label>
+      <mat-select [(ngModel)]="projectId" (selectionChange)="onProjectChange($event.value)">
+        <mat-option *ngFor="let project of projects" [value]="project.projectId">
+          {{project.title}}
+        </mat-option>
+      </mat-select>
+      <mat-icon matPrefix>folder</mat-icon>
+    </mat-form-field>
+  </mat-card>
+
+  <!-- Tabs -->
+  <mat-tab-group [(selectedIndex)]="selectedTab" (selectedIndexChange)="onTabChange($event)">
+    <mat-tab label="All Sprints"></mat-tab>
+    <mat-tab label="Active"></mat-tab>
+    <mat-tab label="Completed"></mat-tab>
+  </mat-tab-group>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Loading sprints...</p>
+  </div>
+
+  <!-- Sprint List -->
+  <div *ngIf="!loading" class="sprint-list">
+    <mat-card *ngFor="let sprint of filteredSprints" 
+              class="sprint-card"
+              [class]="getStatusClass(sprint.status)"
+              (click)="viewSprintBoard(sprint)">
+      
+      <div class="card-header">
+        <div>
+          <h2>
+            {{sprint.sprintName}}
+            <mat-chip [class]="getStatusClass(sprint.status)" class="status-chip">
+              {{sprint.status}}
+            </mat-chip>
+          </h2>
+          <p class="sprint-goal">{{sprint.sprintGoal}}</p>
+        </div>
+        <button *ngIf="sprint.status === SprintStatus.ACTIVE"
+                mat-raised-button 
+                color="accent"
+                (click)="completeSprint(sprint, $event)">
+          Complete Sprint
+        </button>
+      </div>
+
+      <div class="card-content">
+        <div class="meta-row">
+          <div class="meta-item">
+            <mat-icon>calendar_today</mat-icon>
+            <span>{{formatDate(sprint.startDate)}} - {{formatDate(sprint.endDate)}}</span>
+          </div>
+          <div class="meta-item" *ngIf="sprint.status === SprintStatus.ACTIVE">
+            <mat-icon>schedule</mat-icon>
+            <span>{{getDaysRemaining(sprint)}} days remaining</span>
+          </div>
+        </div>
+
+        <div class="progress-section">
+          <div class="progress-header">
+            <span>Progress: {{getProgressPercentage(sprint)}}%</span>
+            <span>{{sprint.completedPoints}} / {{sprint.totalPoints}} points</span>
+          </div>
+          <mat-progress-bar mode="determinate" [value]="getProgressPercentage(sprint)"></mat-progress-bar>
+        </div>
+
+        <div class="stats-row">
+          <div class="stat">
+            <mat-icon>speed</mat-icon>
+            <div>
+              <span class="stat-label">Velocity</span>
+              <span class="stat-value">{{sprint.velocity || '-'}}</span>
+            </div>
+          </div>
+          <div class="stat">
+            <mat-icon>assignment</mat-icon>
+            <div>
+              <span class="stat-label">Committed</span>
+              <span class="stat-value">{{sprint.totalPoints}} pts</span>
+            </div>
+          </div>
+          <div class="stat">
+            <mat-icon>done_all</mat-icon>
+            <div>
+              <span class="stat-label">Completed</span>
+              <span class="stat-value">{{sprint.completedPoints}} pts</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </mat-card>
+
+    <!-- Empty State -->
+    <div *ngIf="filteredSprints.length === 0" class="empty-state">
+      <mat-icon>track_changes</mat-icon>
+      <h3>No sprints yet</h3>
+      <p>Create your first sprint to start planning!</p>
+      <button mat-raised-button color="primary" (click)="openCreateDialog()">
+        <mat-icon>add</mat-icon>
+        Create Sprint
+      </button>
+    </div>
+  </div>
+</div>

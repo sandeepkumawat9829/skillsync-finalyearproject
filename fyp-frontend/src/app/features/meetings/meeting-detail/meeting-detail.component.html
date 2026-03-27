@@ -1,0 +1,128 @@
+<div class="meeting-detail-container">
+  <div class="header">
+    <button mat-icon-button (click)="goBack()">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <h1>Meeting Details</h1>
+  </div>
+
+  <div *ngIf="loading" class="loading-state">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Loading meeting details...</p>
+  </div>
+
+  <div *ngIf="!loading && meeting" class="content">
+    <mat-card class="meeting-card">
+      <mat-card-header>
+        <div mat-card-avatar class="meeting-avatar">
+          <mat-icon>{{getMeetingTypeIcon(meeting.meetingType)}}</mat-icon>
+        </div>
+        <mat-card-title>{{meeting.title}}</mat-card-title>
+        <mat-card-subtitle>
+          <mat-chip-set>
+            <mat-chip>{{meeting.meetingType}}</mat-chip>
+            <mat-chip [color]="meeting.status === 'SCHEDULED' ? 'primary' : 'accent'" selected>
+              {{meeting.status}}
+            </mat-chip>
+          </mat-chip-set>
+        </mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+        <!-- Description -->
+        <div class="section">
+          <h3><mat-icon>description</mat-icon> Description</h3>
+          <p>{{meeting.description}}</p>
+        </div>
+
+        <!-- Date & Time -->
+        <div class="section">
+          <h3><mat-icon>schedule</mat-icon> Schedule</h3>
+          <div class="info-grid">
+            <div class="info-item">
+              <strong>Date:</strong>
+              <span>{{meeting.scheduledAt | date:'EEEE, MMMM dd, yyyy'}}</span>
+            </div>
+            <div class="info-item">
+              <strong>Time:</strong>
+              <span>{{meeting.scheduledAt | date:'h:mm a'}}</span>
+            </div>
+            <div class="info-item">
+              <strong>Duration:</strong>
+              <span>{{meeting.durationMinutes}} minutes</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Location / Link -->
+        <div class="section" *ngIf="meeting.meetingLink || meeting.location">
+          <h3>
+            <mat-icon>{{meeting.meetingLink ? 'videocam' : 'place'}}</mat-icon>
+            {{meeting.meetingLink ? 'Online Meeting' : 'Location'}}
+          </h3>
+          <div class="location-link">
+            <a *ngIf="meeting.meetingLink" [href]="meeting.meetingLink" target="_blank">
+              {{meeting.meetingLink}}
+            </a>
+            <p *ngIf="meeting.location">{{meeting.location}}</p>
+          </div>
+        </div>
+
+        <!-- Team & Mentor -->
+        <div class="section">
+          <h3><mat-icon>info</mat-icon> Details</h3>
+          <div class="info-grid">
+            <div class="info-item">
+              <strong>Team:</strong>
+              <span>{{meeting.teamName}}</span>
+            </div>
+            <div class="info-item">
+              <strong>Mentor:</strong>
+              <span>{{meeting.mentorName}}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Attendees -->
+        <div class="section" *ngIf="meeting.attendees && meeting.attendees.length > 0">
+          <h3><mat-icon>group</mat-icon> Attendees ({{meeting.attendees.length}})</h3>
+          <mat-list>
+            <mat-list-item *ngFor="let attendee of meeting.attendees">
+              <mat-icon matListItemIcon>
+                {{attendee.role === 'MENTOR' ? 'school' : 'person'}}
+              </mat-icon>
+              <div matListItemTitle>{{attendee.userName}}</div>
+              <div matListItemLine>{{attendee.role}}</div>
+              <mat-chip matListItemMeta [color]="attendee.status === 'ATTENDING' ? 'primary' : 'warn'">
+                {{attendee.status}}
+              </mat-chip>
+            </mat-list-item>
+          </mat-list>
+        </div>
+
+        <!-- Meeting Notes (for completed meetings) -->
+        <div class="section" *ngIf="meeting.notes">
+          <h3><mat-icon>note</mat-icon> Meeting Notes</h3>
+          <div class="notes-content">
+            <p>{{meeting.notes}}</p>
+          </div>
+        </div>
+      </mat-card-content>
+
+      <mat-card-actions>
+        <button mat-raised-button color="primary" *ngIf="isUpcoming() && meeting.meetingLink" (click)="joinMeeting()">
+          <mat-icon>videocam</mat-icon>
+          Join Meeting
+        </button>
+        <button mat-button (click)="goBack()">
+          <mat-icon>arrow_back</mat-icon>
+          Back to List
+        </button>
+        <button mat-button color="warn" *ngIf="isUpcoming() && !isStudent" (click)="cancelMeeting()">
+          <mat-icon>cancel</mat-icon>
+          Cancel Meeting
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+</div>

@@ -1,0 +1,68 @@
+<div class="notifications-container">
+  <!-- Header -->
+  <div class="notifications-header">
+    <div>
+      <h1><span class="highlight">Notifications</span></h1>
+      <p>Stay updated with your activities</p>
+    </div>
+    <button mat-raised-button color="primary" (click)="markAllAsRead()" 
+      *ngIf="hasUnread">
+      <mat-icon>done_all</mat-icon>
+      Mark All Read
+    </button>
+  </div>
+
+  <!-- Filter -->
+  <mat-card class="filter-card">
+    <mat-button-toggle-group [(ngModel)]="selectedFilter" (change)="applyFilter()">
+      <mat-button-toggle value="ALL">All ({{notifications.length}})</mat-button-toggle>
+      <mat-button-toggle value="UNREAD">
+        Unread ({{unreadCount}})
+      </mat-button-toggle>
+      <mat-button-toggle value="READ">Read</mat-button-toggle>
+    </mat-button-toggle-group>
+  </mat-card>
+
+  <!-- Notifications List -->
+  <div class="notifications-list" *ngIf="!loading && filteredNotifications.length > 0">
+    <mat-card *ngFor="let notification of filteredNotifications" 
+      class="notification-card"
+      [class.unread]="!notification.isRead"
+      (click)="handleNotificationClick(notification)">
+      
+      <div class="notification-content">
+        <div class="notification-icon" [ngClass]="getNotificationColor(notification.type)">
+          <mat-icon>{{getNotificationIcon(notification.type)}}</mat-icon>
+        </div>
+        
+        <div class="notification-body">
+          <h3>{{notification.title}}</h3>
+          <p>{{notification.message}}</p>
+          <span class="notification-time">{{getTimeAgo(notification.createdAt)}}</span>
+        </div>
+
+        <div class="notification-actions">
+          <button mat-icon-button (click)="deleteNotification(notification, $event)" 
+            class="delete-btn">
+            <mat-icon>delete</mat-icon>
+          </button>
+          <div class="unread-indicator" *ngIf="!notification.isRead"></div>
+        </div>
+      </div>
+    </mat-card>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="!loading && filteredNotifications.length === 0">
+    <mat-icon>notifications_none</mat-icon>
+    <h2>No notifications</h2>
+    <p *ngIf="selectedFilter === 'ALL'">You're all caught up!</p>
+    <p *ngIf="selectedFilter !== 'ALL'">No {{selectedFilter.toLowerCase()}} notifications</p>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-state" *ngIf="loading">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Loading notifications...</p>
+  </div>
+</div>

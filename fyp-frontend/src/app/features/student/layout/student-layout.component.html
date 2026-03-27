@@ -1,0 +1,93 @@
+<div class="student-layout">
+  <mat-toolbar color="primary" class="layout-toolbar">
+    <button mat-icon-button (click)="toggleSidenav()">
+      <mat-icon>menu</mat-icon>
+    </button>
+    <div class="toolbar-brand">
+      <div class="skillsync-icon-small">SS</div>
+      <span class="toolbar-title">SkillSync</span>
+    </div>
+    <span class="spacer"></span>
+    <button mat-icon-button (click)="navigateTo('notifications')">
+      <mat-icon [matBadge]="unreadCount" [matBadgeHidden]="unreadCount === 0" matBadgeColor="warn">notifications_outlined</mat-icon>
+    </button>
+    <button mat-button [matMenuTriggerFor]="userMenu">
+      <mat-icon>account_circle</mat-icon>
+      <span class="user-name">{{currentUser?.email}}</span>
+    </button>
+    <mat-menu #userMenu="matMenu">
+      <button mat-menu-item (click)="navigateTo('profile')">
+        <mat-icon>person</mat-icon>
+        <span>Profile</span>
+      </button>
+      <button mat-menu-item (click)="logout()">
+        <mat-icon>exit_to_app</mat-icon>
+        <span>Logout</span>
+      </button>
+    </mat-menu>
+  </mat-toolbar>
+
+  <mat-sidenav-container class="layout-sidenav-container">
+    <mat-sidenav #sidenav [mode]="isMobile ? 'over' : 'side'" [opened]="sidenavOpened" (openedChange)="sidenavOpened = $event" class="layout-sidenav">
+      <mat-nav-list>
+        <a mat-list-item (click)="isMobile ? toggleSidenav() : null" routerLink="/student/dashboard" routerLinkActive="active-link"
+          [routerLinkActiveOptions]="{exact: true}">
+          <mat-icon matListItemIcon>dashboard</mat-icon>
+          <span matListItemTitle>Dashboard</span>
+        </a>
+        <a mat-list-item (click)="isMobile ? toggleSidenav() : null" routerLink="/student/projects" routerLinkActive="active-link">
+          <mat-icon matListItemIcon>folder</mat-icon>
+          <span matListItemTitle>Projects</span>
+        </a>
+        <a mat-list-item (click)="isMobile ? toggleSidenav() : null" routerLink="/student/teams" routerLinkActive="active-link">
+          <mat-icon matListItemIcon>group</mat-icon>
+          <span matListItemTitle>My Teams</span>
+        </a>
+        <a mat-list-item (click)="isMobile ? toggleSidenav() : null" routerLink="/student/mentors" routerLinkActive="active-link">
+          <mat-icon matListItemIcon>school</mat-icon>
+          <span matListItemTitle>Find Mentors</span>
+        </a>
+        <a mat-list-item (click)="isMobile ? toggleSidenav() : null" routerLink="/student/showcase" routerLinkActive="active-link">
+          <mat-icon matListItemIcon>visibility</mat-icon>
+          <span matListItemTitle>Project Showcase</span>
+        </a>
+        <a mat-list-item (click)="isMobile ? toggleSidenav() : null" routerLink="/student/buckets" routerLinkActive="active-link">
+          <mat-icon matListItemIcon>inventory_2</mat-icon>
+          <span matListItemTitle>Project Buckets</span>
+        </a>
+        <a mat-list-item (click)="isMobile ? toggleSidenav() : null" routerLink="/student/invitations" routerLinkActive="active-link">
+          <mat-icon matListItemIcon [matBadge]="pendingInvites" [matBadgeHidden]="pendingInvites === 0" matBadgeColor="warn">mail</mat-icon>
+          <span matListItemTitle>Invitations</span>
+        </a>
+        <a mat-list-item (click)="isMobile ? toggleSidenav() : null" routerLink="/student/notifications" routerLinkActive="active-link">
+          <mat-icon matListItemIcon [matBadge]="unreadCount" [matBadgeHidden]="unreadCount === 0" matBadgeColor="warn">notifications</mat-icon>
+          <span matListItemTitle>Notifications</span>
+        </a>
+        <a mat-list-item (click)="isMobile ? toggleSidenav() : null" routerLink="/student/tasks" routerLinkActive="active-link">
+          <mat-icon matListItemIcon>task</mat-icon>
+          <span matListItemTitle>Tasks</span>
+        </a>
+        <a mat-list-item (click)="isMobile ? toggleSidenav() : null" routerLink="/student/sprints" routerLinkActive="active-link">
+          <mat-icon matListItemIcon>track_changes</mat-icon>
+          <span matListItemTitle>Sprints</span>
+        </a>
+        <a mat-list-item (click)="isMobile ? toggleSidenav() : null" routerLink="/student/time" routerLinkActive="active-link">
+          <mat-icon matListItemIcon>schedule</mat-icon>
+          <span matListItemTitle>Time Tracking</span>
+        </a>
+        <a mat-list-item (click)="isMobile ? toggleSidenav() : null" routerLink="/student/chat" routerLinkActive="active-link">
+          <mat-icon matListItemIcon>chat</mat-icon>
+          <span matListItemTitle>Chat</span>
+        </a>
+        <a mat-list-item (click)="isMobile ? toggleSidenav() : null" routerLink="/student/meetings" routerLinkActive="active-link">
+          <mat-icon matListItemIcon>event</mat-icon>
+          <span matListItemTitle>Meetings</span>
+        </a>
+      </mat-nav-list>
+    </mat-sidenav>
+
+    <mat-sidenav-content class="layout-content">
+      <router-outlet></router-outlet>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>

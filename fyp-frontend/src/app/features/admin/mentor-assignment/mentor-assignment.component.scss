@@ -1,0 +1,327 @@
+@use '@angular/material' as mat;
+@import '../../../../styles/variables';
+
+.management-container {
+  padding: 24px 32px;
+  max-width: 1400px;
+  margin: 0 auto;
+
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+
+    h1 {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 600;
+      color: #1e293b;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+
+      mat-icon {
+        color: $primary-color;
+        font-size: 28px;
+        width: 28px;
+        height: 28px;
+      }
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 12px;
+    }
+  }
+
+  .loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 64px;
+    gap: 16px;
+    color: #64748b;
+  }
+}
+
+.data-card {
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  padding: 0;
+
+  .card-header-inner {
+    padding: 20px 24px;
+    border-bottom: 1px solid #f1f5f9;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    h2 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 600;
+      color: #334155;
+    }
+
+    .count-badge {
+      background: #e2e8f0;
+      color: #475569;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 12px;
+    }
+  }
+}
+
+.data-table {
+  width: 100%;
+  
+  th.mat-header-cell {
+    background-color: #f8fafc;
+    color: #475569;
+    font-weight: 600;
+    font-size: 14px;
+    padding: 16px;
+    border-bottom: 1px solid #e2e8f0;
+  }
+
+  td.mat-cell {
+    padding: 16px;
+    border-bottom: 1px solid #f1f5f9;
+    color: #334155;
+  }
+
+  tr.mat-row {
+    transition: background-color 0.2s;
+    &:hover {
+      background-color: #f8fafc;
+    }
+  }
+
+  .member-count {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    
+    mat-icon {
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+      color: #64748b;
+    }
+  }
+
+  .status-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    
+    &.active {
+      background-color: rgba(16, 185, 129, 0.1);
+      color: #10b981;
+    }
+  }
+
+  .assign-btn {
+    border-radius: 8px;
+    padding: 0 16px;
+    
+    mat-icon {
+      margin-right: 4px;
+    }
+  }
+}
+
+.custom-empty {
+  text-align: center;
+  padding: 64px 24px;
+
+  .success-icon {
+    font-size: 64px;
+    width: 64px;
+    height: 64px;
+    color: #10b981;
+    margin-bottom: 16px;
+  }
+
+  h3 {
+    font-size: 20px;
+    font-weight: 600;
+    color: #1e293b;
+    margin: 0 0 8px 0;
+  }
+
+  p {
+    font-size: 16px;
+    color: #64748b;
+    margin: 0;
+  }
+}
+
+// Dialog Styles
+.dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(15, 23, 42, 0.6);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+  animation: fadeIn 0.2s ease-out;
+
+  .assign-dialog {
+    width: 90%;
+    max-width: 500px;
+    background: white;
+    border-radius: 12px;
+    padding: 0;
+    animation: slideUp 0.3s ease-out;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+
+    .dialog-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid #e2e8f0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      h2 {
+        margin: 0;
+        font-size: 20px;
+        font-weight: 600;
+        color: #1e293b;
+      }
+    }
+
+    mat-card-content {
+      padding: 24px;
+
+      .team-info-box {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 16px;
+        margin-bottom: 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+
+        .info-row {
+          display: flex;
+          align-items: flex-start;
+          gap: 12px;
+
+          mat-icon {
+            color: #64748b;
+          }
+
+          .label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 2px;
+          }
+
+          strong {
+            color: #1e293b;
+            font-size: 15px;
+          }
+        }
+      }
+
+      .mentor-selection {
+        label {
+          display: block;
+          font-weight: 600;
+          color: #334155;
+          margin-bottom: 12px;
+        }
+
+        .full-width {
+          width: 100%;
+        }
+
+        .mentor-option {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          width: 100%;
+
+          .capacity-badge {
+            font-size: 12px;
+            padding: 2px 8px;
+            border-radius: 12px;
+            background: #e0f2fe;
+            color: #0369a1;
+
+            &.full {
+              background: #fee2e2;
+              color: #b91c1c;
+            }
+          }
+        }
+
+        .no-mentors-warning {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          color: #b91c1c;
+          background: #fef2f2;
+          padding: 12px;
+          border-radius: 8px;
+          font-size: 14px;
+        }
+      }
+    }
+
+    .dialog-actions {
+      padding: 16px 24px;
+      background: #f8fafc;
+      border-top: 1px solid #e2e8f0;
+      border-radius: 0 0 12px 12px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+
+      button {
+        padding: 0 20px;
+        border-radius: 8px;
+        font-weight: 500;
+        
+        &.mat-raised-button {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+
+        mat-spinner {
+          margin-right: 8px;
+        }
+      }
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}

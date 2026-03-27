@@ -1,0 +1,276 @@
+<div class="create-project-container">
+  <!-- Header -->
+  <div class="create-header">
+    <button mat-icon-button (click)="cancel()" class="back-button">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <div>
+      <h1>Create New <span class="highlight">Project</span></h1>
+      <p>Define your project idea and bring it to life</p>
+    </div>
+  </div>
+
+  <mat-card class="bucket-banner" *ngIf="selectedBucket">
+    <mat-card-content>
+      <div class="bucket-banner-content">
+        <div>
+          <strong>Creating From College Bucket</strong>
+          <p>{{selectedBucket.title}} · {{selectedBucket.department}}</p>
+        </div>
+        <mat-chip>{{selectedBucket.difficultyLevel}}</mat-chip>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Stepper -->
+  <mat-stepper [linear]="isLinear" #stepper class="project-stepper">
+    
+    <!-- Step 1: Basic Information -->
+    <mat-step [stepControl]="basicInfoForm">
+      <form [formGroup]="basicInfoForm">
+        <ng-template matStepLabel>Basic Information</ng-template>
+        
+        <div class="step-content">
+          <h2>Let's start with the basics</h2>
+          <p class="step-description">Give your project a catchy title and brief overview</p>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Project Title</mat-label>
+            <input matInput formControlName="title" placeholder="e.g., AI-Powered Chatbot for Customer Service">
+            <mat-icon matPrefix>title</mat-icon>
+            <mat-hint>Minimum 10 characters</mat-hint>
+            <mat-error *ngIf="basicInfoForm.get('title')?.hasError('required')">Title is required</mat-error>
+            <mat-error *ngIf="basicInfoForm.get('title')?.hasError('minlength')">Minimum 10 characters required</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Abstract</mat-label>
+            <textarea matInput formControlName="abstract" rows="4" 
+              placeholder="Brief summary of your project..."></textarea>
+            <mat-hint>50-300 characters</mat-hint>
+            <mat-error *ngIf="basicInfoForm.get('abstract')?.hasError('required')">Abstract is required</mat-error>
+          </mat-form-field>
+
+          <div class="domain-selection">
+            <label class="section-label">Project Domain</label>
+            <div class="domain-grid">
+              <div *ngFor="let domain of domains" 
+                   class="domain-card" 
+                   [class.selected]="basicInfoForm.get('domain')?.value === domain.value"
+                   (click)="basicInfoForm.patchValue({domain: domain.value})">
+                <mat-icon>{{domain.icon}}</mat-icon>
+                <span>{{domain.label}}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="step-actions">
+            <button mat-raised-button color="primary" matStepperNext [disabled]="basicInfoForm.invalid">
+              Next <mat-icon>arrow_forward</mat-icon>
+            </button>
+          </div>
+        </div>
+      </form>
+    </mat-step>
+
+    <!-- Step 2: Detailed Description -->
+    <mat-step [stepControl]="detailsForm">
+      <form [formGroup]="detailsForm">
+        <ng-template matStepLabel>Project Details</ng-template>
+        
+        <div class="step-content">
+          <h2>Tell us more about your project</h2>
+          <p class="step-description">Provide detailed information to help others understand your vision</p>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Problem Statement</mat-label>
+            <textarea matInput formControlName="problemStatement" rows="5"
+              placeholder="What problem does your project solve?"></textarea>
+            <mat-hint>Minimum 100 characters</mat-hint>
+            <mat-error *ngIf="detailsForm.get('problemStatement')?.hasError('required')">
+              Problem statement is required
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Objectives</mat-label>
+            <textarea matInput formControlName="objectives" rows="4"
+              placeholder="What are the key objectives of this project?"></textarea>
+            <mat-hint>Minimum 50 characters</mat-hint>
+            <mat-error *ngIf="detailsForm.get('objectives')?.hasError('required')">
+              Objectives are required
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Methodology (Optional)</mat-label>
+            <textarea matInput formControlName="methodology" rows="4"
+              placeholder="How will you approach this project?"></textarea>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Expected Outcome (Optional)</mat-label>
+            <textarea matInput formControlName="expectedOutcome" rows="3"
+              placeholder="What do you expect to achieve?"></textarea>
+          </mat-form-field>
+
+          <div class="step-actions">
+            <button mat-button matStepperPrevious>
+              <mat-icon>arrow_back</mat-icon> Back
+            </button>
+            <button mat-raised-button color="primary" matStepperNext [disabled]="detailsForm.invalid">
+              Next <mat-icon>arrow_forward</mat-icon>
+            </button>
+          </div>
+        </div>
+      </form>
+    </mat-step>
+
+    <!-- Step 3: Technologies -->
+    <mat-step>
+      <ng-template matStepLabel>Technologies</ng-template>
+      
+      <div class="step-content">
+        <h2>Select your tech stack</h2>
+        <p class="step-description">Choose the technologies you'll use for this project</p>
+
+        <!-- Selected Technologies -->
+        <div class="selected-techs" *ngIf="selectedTechs.length > 0">
+          <label class="section-label">Selected Technologies ({{selectedTechs.length}})</label>
+          <div class="tech-chips">
+            <mat-chip *ngFor="let tech of selectedTechs" (removed)="removeTech(tech)">
+              {{tech}}
+              <mat-icon matChipRemove>cancel</mat-icon>
+            </mat-chip>
+          </div>
+        </div>
+
+        <!-- Popular Technologies -->
+        <div class="tech-selection">
+          <label class="section-label">Popular Technologies</label>
+          <div class="tech-grid">
+            <div *ngFor="let tech of popularTechs" 
+                 class="tech-item"
+                 [class.selected]="isTechSelected(tech)"
+                 (click)="toggleTech(tech)">
+              <mat-icon>{{isTechSelected(tech) ? 'check_circle' : 'radio_button_unchecked'}}</mat-icon>
+              <span>{{tech}}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Add Custom Technology -->
+        <div class="custom-tech">
+          <label class="section-label">Add Custom Technology</label>
+          <div class="custom-tech-input">
+            <mat-form-field appearance="outline">
+              <mat-label>Technology Name</mat-label>
+              <input matInput [(ngModel)]="customTech" (keyup.enter)="addCustomTech()" 
+                placeholder="e.g., TensorFlow">
+            </mat-form-field>
+            <button mat-raised-button (click)="addCustomTech()" [disabled]="!customTech.trim()">
+              <mat-icon>add</mat-icon>
+              Add
+            </button>
+          </div>
+        </div>
+
+        <div class="step-actions">
+          <button mat-button matStepperPrevious>
+            <mat-icon>arrow_back</mat-icon> Back
+          </button>
+          <button mat-raised-button color="primary" matStepperNext [disabled]="selectedTechs.length === 0">
+            Next <mat-icon>arrow_forward</mat-icon>
+          </button>
+        </div>
+      </div>
+    </mat-step>
+
+    <!-- Step 4: Settings & Review -->
+    <mat-step [stepControl]="settingsForm">
+      <form [formGroup]="settingsForm">
+        <ng-template matStepLabel>Review & Submit</ng-template>
+        
+        <div class="step-content">
+          <h2>Review your project</h2>
+          <p class="step-description">Check everything and set visibility preferences</p>
+
+          <!-- Project Summary -->
+          <div class="project-summary">
+            <h3>Project Summary</h3>
+            
+            <div class="summary-item">
+              <mat-icon>title</mat-icon>
+              <div>
+                <strong>Title:</strong>
+                <p>{{basicInfoForm.value.title}}</p>
+              </div>
+            </div>
+
+            <div class="summary-item">
+              <mat-icon>{{getDomainIcon(basicInfoForm.value.domain)}}</mat-icon>
+              <div>
+                <strong>Domain:</strong>
+                <p>{{basicInfoForm.value.domain?.replace('_', ' ')}}</p>
+              </div>
+            </div>
+
+            <div class="summary-item">
+              <mat-icon>description</mat-icon>
+              <div>
+                <strong>Abstract:</strong>
+                <p>{{basicInfoForm.value.abstract}}</p>
+              </div>
+            </div>
+
+            <div class="summary-item">
+              <mat-icon>code</mat-icon>
+              <div>
+                <strong>Technologies ({{selectedTechs.length}}):</strong>
+                <div class="tech-chips-small">
+                  <mat-chip *ngFor="let tech of selectedTechs">{{tech}}</mat-chip>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Visibility Settings -->
+          <div class="visibility-settings">
+            <label class="section-label">Project Visibility</label>
+            <mat-radio-group formControlName="visibility">
+              <mat-radio-button value="PUBLIC">
+                <div class="visibility-option">
+                  <div>
+                    <strong>Public</strong>
+                    <p>Anyone can view this project</p>
+                  </div>
+                  <mat-icon>public</mat-icon>
+                </div>
+              </mat-radio-button>
+              <mat-radio-button value="PRIVATE">
+                <div class="visibility-option">
+                  <div>
+                    <strong>Private</strong>
+                    <p>Only you and your team can view</p>
+                  </div>
+                  <mat-icon>lock</mat-icon>
+                </div>
+              </mat-radio-button>
+            </mat-radio-group>
+          </div>
+
+          <div class="step-actions">
+            <button mat-button matStepperPrevious>
+              <mat-icon>arrow_back</mat-icon> Back
+            </button>
+            <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="isSubmitting">
+              <mat-icon>{{isSubmitting ? 'hourglass_empty' : 'check'}}</mat-icon>
+              {{isSubmitting ? 'Creating...' : 'Create Project'}}
+            </button>
+          </div>
+        </div>
+      </form>
+    </mat-step>
+
+  </mat-stepper>
+</div>

@@ -1,0 +1,239 @@
+<div class="mentor-profile-container" *ngIf="!loading && mentor">
+  <!-- Header -->
+  <div class="profile-header">
+    <button mat-icon-button (click)="goBack()" class="back-button">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    
+    <div class="header-content">
+      <div class="mentor-main-info">
+        <div class="mentor-avatar-large">
+          <mat-icon>person</mat-icon>
+        </div>
+        <div class="mentor-details">
+          <h1>{{mentor.fullName}}</h1>
+          <p class="designation">{{mentor.designation}}</p>
+          <p class="department">
+            <mat-icon>business</mat-icon>
+            {{mentor.department}}
+          </p>
+          <p class="email">
+            <mat-icon>email</mat-icon>
+            {{mentor.email}}
+          </p>
+        </div>
+        <mat-chip class="availability-chip" [ngClass]="getAvailabilityColor(mentor.isAvailable)">
+          {{mentor.isAvailable ? 'Available' : 'Full Capacity'}}
+        </mat-chip>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <button mat-raised-button color="primary" 
+        (click)="toggleRequestForm()" 
+        [disabled]="!mentor.isAvailable">
+        <mat-icon>send</mat-icon>
+        Send Request
+      </button>
+    </div>
+  </div>
+
+  <!-- Request Form -->
+  <mat-card class="request-card" *ngIf="showRequestForm">
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon>mail</mat-icon>
+        Send Mentor Request
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <form [formGroup]="requestForm" (ngSubmit)="sendRequest()">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Select Project</mat-label>
+          <mat-select formControlName="projectId">
+            <mat-option *ngFor="let project of myProjects" [value]="project.projectId">
+              {{project.title}}
+            </mat-option>
+          </mat-select>
+          <mat-icon matPrefix>folder</mat-icon>
+          <mat-error *ngIf="requestForm.get('projectId')?.hasError('required')">
+            Please select a project
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Message</mat-label>
+          <textarea matInput formControlName="message" rows="4" 
+            placeholder="Explain why you need this mentor's guidance..."></textarea>
+          <mat-hint>Minimum 20 characters</mat-hint>
+          <mat-error *ngIf="requestForm.get('message')?.hasError('required')">
+            Message is required
+          </mat-error>
+          <mat-error *ngIf="requestForm.get('message')?.hasError('minlength')">
+            Message must be at least 20 characters
+          </mat-error>
+        </mat-form-field>
+
+        <div class="form-actions">
+          <button type="button" mat-button (click)="toggleRequestForm()">Cancel</button>
+          <button type="submit" mat-raised-button color="primary" 
+            [disabled]="requestForm.invalid || isSubmitting">
+            <mat-icon>{{isSubmitting ? 'hourglass_empty' : 'send'}}</mat-icon>
+            {{isSubmitting ? 'Sending...' : 'Send Request'}}
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Main Content -->
+  <div class="profile-content">
+    <!-- Left Column -->
+    <div class="profile-main">
+      <!-- About -->
+      <mat-card class="section-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>info</mat-icon>
+            About
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <p>{{mentor.bio}}</p>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Expertise -->
+      <mat-card class="section-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>school</mat-icon>
+            Areas of Expertise
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="expertise-grid">
+            <div class="expertise-item" *ngFor="let skill of mentor.expertise">
+              <mat-icon>check_circle</mat-icon>
+              <span>{{skill}}</span>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Stats -->
+      <mat-card class="section-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>analytics</mat-icon>
+            Statistics
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="stats-grid">
+            <div class="stat-box">
+              <mat-icon>work</mat-icon>
+              <div class="stat-info">
+                <span class="stat-value">{{mentor.experience}}</span>
+                <span class="stat-label">Years Experience</span>
+              </div>
+            </div>
+            <div class="stat-box">
+              <mat-icon>folder</mat-icon>
+              <div class="stat-info">
+                <span class="stat-value">{{mentor.totalProjects}}</span>
+                <span class="stat-label">Total Projects</span>
+              </div>
+            </div>
+            <div class="stat-box" *ngIf="mentor.rating">
+              <mat-icon>star</mat-icon>
+              <div class="stat-info">
+                <span class="stat-value">{{mentor.rating}}/5.0</span>
+                <span class="stat-label">Rating</span>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- Right Sidebar -->
+    <div class="profile-sidebar">
+      <!-- Quick Info -->
+      <mat-card class="info-card">
+        <mat-card-header>
+          <mat-card-title>Quick Info</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="info-item">
+            <mat-icon>business</mat-icon>
+            <div>
+              <span class="info-label">Department</span>
+              <span class="info-value">{{mentor.department}}</span>
+            </div>
+          </div>
+          <div class="info-item">
+            <mat-icon>badge</mat-icon>
+            <div>
+              <span class="info-label">Designation</span>
+              <span class="info-value">{{mentor.designation}}</span>
+            </div>
+          </div>
+          <div class="info-item">
+            <mat-icon>email</mat-icon>
+            <div>
+              <span class="info-label">Email</span>
+              <span class="info-value">{{mentor.email}}</span>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Capacity -->
+      <mat-card class="capacity-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>people</mat-icon>
+            Student Capacity
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="capacity-info">
+            <span class="capacity-count">{{mentor.currentStudents}} / {{mentor.maxStudents}}</span>
+            <span class="capacity-label">Students</span>
+          </div>
+          <mat-progress-bar 
+            mode="determinate" 
+            [value]="getCapacityPercentage()"
+            [color]="mentor.isAvailable ? 'primary' : 'warn'">
+          </mat-progress-bar>
+          <p class="capacity-status" *ngIf="mentor.isAvailable">
+            <mat-icon>check_circle</mat-icon>
+            Accepting new students
+          </p>
+          <p class="capacity-status full" *ngIf="!mentor.isAvailable">
+            <mat-icon>cancel</mat-icon>
+            At full capacity
+          </p>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Action Card -->
+      <mat-card class="action-card" *ngIf="mentor.isAvailable">
+        <mat-card-content>
+          <button mat-raised-button color="primary" class="action-button" 
+            (click)="toggleRequestForm()">
+            <mat-icon>send</mat-icon>
+            Send Mentor Request
+          </button>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</div>
+
+<!-- Loading State -->
+<div class="loading-container" *ngIf="loading">
+  <mat-spinner diameter="50"></mat-spinner>
+  <p>Loading mentor profile...</p>
+</div>

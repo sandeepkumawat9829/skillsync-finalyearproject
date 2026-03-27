@@ -1,0 +1,78 @@
+<div class="task-board-container" *ngIf="!loading">
+  <!-- Header -->
+  <div class="board-header">
+    <button mat-icon-button (click)="goBack()" class="back-button">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <div class="header-content">
+      <h1>Task Board</h1>
+      <p *ngIf="project">{{project.title}}</p>
+    </div>
+    <div class="header-actions">
+      <button mat-button (click)="goToAnalytics()">
+        <mat-icon>analytics</mat-icon>
+        Analytics
+      </button>
+      <button mat-raised-button color="primary" (click)="createTask()">
+        <mat-icon>add</mat-icon>
+        New Task
+      </button>
+    </div>
+  </div>
+
+  <!-- Kanban Board -->
+  <div class="kanban-board">
+    <div *ngFor="let column of columns" class="kanban-column" [ngClass]="getColumnClass(column.id)">
+      <div class="column-header">
+        <h3>{{column.title}}</h3>
+        <span class="task-count">{{column.tasks.length}}</span>
+      </div>
+
+      <div class="column-content" cdkDropList [cdkDropListData]="column.tasks"
+        [cdkDropListConnectedTo]="connectedDropLists" (cdkDropListDropped)="onDrop($event, column)" [id]="column.id">
+
+        <div *ngFor="let task of column.tasks" class="task-card" cdkDrag>
+          <div class="task-card-header">
+            <mat-chip class="priority-chip" [ngClass]="getPriorityColor(task.priority)">
+              {{task.priority}}
+            </mat-chip>
+            <mat-icon *ngIf="isOverdue(task)" class="overdue-icon" matTooltip="Overdue">
+              warning
+            </mat-icon>
+          </div>
+
+          <h4 class="task-title">{{task.title}}</h4>
+          <p class="task-description">{{task.description}}</p>
+
+          <div class="task-tags" *ngIf="task.tags && task.tags.length > 0">
+            <mat-chip *ngFor="let tag of task.tags.slice(0, 2)">{{tag}}</mat-chip>
+            <span *ngIf="task.tags.length > 2" class="more-tags">+{{task.tags.length - 2}}</span>
+          </div>
+
+          <div class="task-footer">
+            <div class="assignee" *ngIf="task.assignedToName">
+              <mat-icon>person</mat-icon>
+              <span>{{task.assignedToName}}</span>
+            </div>
+            <div class="due-date" *ngIf="task.dueDate">
+              <mat-icon>schedule</mat-icon>
+              <span>{{task.dueDate | date:'MMM d'}}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Empty state -->
+        <div *ngIf="column.tasks.length === 0" class="empty-column">
+          <mat-icon>inbox</mat-icon>
+          <span>No tasks</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Loading State -->
+<div class="loading-container" *ngIf="loading">
+  <mat-spinner diameter="50"></mat-spinner>
+  <p>Loading task board...</p>
+</div>

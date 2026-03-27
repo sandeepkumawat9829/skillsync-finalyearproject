@@ -1,0 +1,192 @@
+<div class="profile-container" *ngIf="!loading">
+  <div class="profile-header">
+    <div class="header-content">
+      <div class="avatar">
+        <mat-icon>account_circle</mat-icon>
+      </div>
+      <div>
+        <h1>My <span class="highlight">Profile</span></h1>
+        <p>{{currentUser?.email}}</p>
+      </div>
+    </div>
+    <button mat-raised-button color="primary" (click)="toggleEdit()" *ngIf="mentorProfile && !editing">
+      <mat-icon>edit</mat-icon>
+      Edit Profile
+    </button>
+  </div>
+
+  <!-- VIEW MODE -->
+  <mat-card class="profile-card" *ngIf="mentorProfile && !editing">
+    <div class="section">
+      <h2><mat-icon>person</mat-icon> Basic Information</h2>
+      <div class="info-grid">
+        <div class="info-item">
+          <span class="label">Full Name</span>
+          <span class="value">{{mentorProfile.fullName || 'Not set'}}</span>
+        </div>
+        <div class="info-item">
+          <span class="label">Employee ID</span>
+          <span class="value">{{mentorProfile.employeeId || 'Not set'}}</span>
+        </div>
+        <div class="info-item">
+          <span class="label">Department</span>
+          <span class="value">{{mentorProfile.department || 'Not set'}}</span>
+        </div>
+        <div class="info-item">
+          <span class="label">Designation</span>
+          <span class="value">{{mentorProfile.designation || 'Not set'}}</span>
+        </div>
+        <div class="info-item">
+          <span class="label">Office Location</span>
+          <span class="value">{{mentorProfile.officeLocation || 'Not set'}}</span>
+        </div>
+        <div class="info-item">
+          <span class="label">Phone</span>
+          <span class="value">{{mentorProfile.phone || 'Not set'}}</span>
+        </div>
+        <div class="info-item">
+          <span class="label">Email</span>
+          <span class="value">{{mentorProfile.email || 'Not set'}}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2><mat-icon>school</mat-icon> Mentoring Overview</h2>
+      <div class="info-grid">
+        <div class="info-item">
+          <span class="label">Assigned Teams</span>
+          <span class="value">{{mentorProfile.currentStudents || 0}}</span>
+        </div>
+        <div class="info-item">
+          <span class="label">Max Teams Allowed</span>
+          <span class="value">{{mentorProfile.maxStudents || 0}}</span>
+        </div>
+        <div class="info-item">
+          <span class="label">Availability</span>
+          <span class="value" [style.color]="mentorProfile.isAvailable ? '#10b981' : '#ef4444'">
+            {{mentorProfile.isAvailable ? 'Available' : 'Not Available'}}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section" *ngIf="mentorProfile.expertise?.length > 0">
+      <h2><mat-icon>code</mat-icon> Expertise</h2>
+      <div class="skills-list">
+        <mat-chip *ngFor="let spec of mentorProfile.expertise">{{spec}}</mat-chip>
+      </div>
+    </div>
+
+    <div class="section" *ngIf="mentorProfile.bio">
+      <h2><mat-icon>description</mat-icon> Bio</h2>
+      <p class="bio-text">{{mentorProfile.bio}}</p>
+    </div>
+  </mat-card>
+
+  <!-- EDIT MODE -->
+  <mat-card class="profile-card" *ngIf="mentorProfile && editing">
+    <form [formGroup]="editForm" (ngSubmit)="saveProfile()">
+      <div class="section">
+        <h2><mat-icon>person</mat-icon> Edit Profile</h2>
+
+        <div class="form-grid">
+          <mat-form-field appearance="outline">
+            <mat-label>Department</mat-label>
+            <mat-select formControlName="department">
+              <mat-option value="Computer Science">Computer Science</mat-option>
+              <mat-option value="Information Technology">Information Technology</mat-option>
+              <mat-option value="Electronics">Electronics</mat-option>
+              <mat-option value="Mechanical">Mechanical</mat-option>
+              <mat-option value="Civil">Civil</mat-option>
+              <mat-option value="Electrical">Electrical</mat-option>
+            </mat-select>
+            <mat-icon matPrefix>business</mat-icon>
+            <mat-error *ngIf="editForm.get('department')?.hasError('required')">
+              Department is required
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Designation</mat-label>
+            <mat-select formControlName="designation">
+              <mat-option value="Professor">Professor</mat-option>
+              <mat-option value="Associate Professor">Associate Professor</mat-option>
+              <mat-option value="Assistant Professor">Assistant Professor</mat-option>
+              <mat-option value="Lecturer">Lecturer</mat-option>
+              <mat-option value="Senior Lecturer">Senior Lecturer</mat-option>
+              <mat-option value="HOD">Head of Department</mat-option>
+            </mat-select>
+            <mat-icon matPrefix>work</mat-icon>
+            <mat-error *ngIf="editForm.get('designation')?.hasError('required')">
+              Designation is required
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Phone</mat-label>
+            <input matInput formControlName="phone" placeholder="+91 98765 43210">
+            <mat-icon matPrefix>phone</mat-icon>
+            <mat-error *ngIf="editForm.get('phone')?.hasError('pattern')">
+              Invalid phone number format
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Office Location</mat-label>
+            <input matInput formControlName="officeLocation" placeholder="e.g., Room 204, Block A">
+            <mat-icon matPrefix>location_on</mat-icon>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Max Teams Allowed</mat-label>
+            <input matInput type="number" formControlName="maxProjectsAllowed">
+            <mat-icon matPrefix>groups</mat-icon>
+            <mat-error *ngIf="editForm.get('maxProjectsAllowed')?.hasError('min')">
+              Must be at least 1
+            </mat-error>
+            <mat-error *ngIf="editForm.get('maxProjectsAllowed')?.hasError('max')">
+              Maximum 20 teams
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Bio</mat-label>
+          <textarea matInput formControlName="bio" rows="4"
+            placeholder="Tell students about yourself..." maxlength="500"></textarea>
+          <mat-hint align="end">
+            {{editForm.get('bio')?.value?.length || 0}} / 500
+          </mat-hint>
+        </mat-form-field>
+      </div>
+
+      <div class="actions">
+        <button mat-button type="button" (click)="cancelEdit()">
+          <mat-icon>close</mat-icon>
+          Cancel
+        </button>
+        <button mat-raised-button color="primary" type="submit"
+          [disabled]="editForm.invalid || saving">
+          <mat-icon>{{saving ? 'hourglass_empty' : 'save'}}</mat-icon>
+          {{saving ? 'Saving...' : 'Save Changes'}}
+        </button>
+      </div>
+    </form>
+  </mat-card>
+
+  <!-- No Profile -->
+  <mat-card class="profile-card" *ngIf="!mentorProfile">
+    <div class="empty-state">
+      <mat-icon>person_off</mat-icon>
+      <h3>Profile not found</h3>
+      <p>Your mentor profile has not been set up yet.</p>
+    </div>
+  </mat-card>
+</div>
+
+<!-- Loading State -->
+<div class="loading-container" *ngIf="loading">
+  <mat-spinner diameter="50"></mat-spinner>
+  <p>Loading profile...</p>
+</div>

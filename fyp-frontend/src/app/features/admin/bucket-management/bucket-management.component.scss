@@ -1,0 +1,223 @@
+@use '@angular/material' as mat;
+@import '../../../../styles/variables';
+
+.management-container {
+  padding: 24px 32px;
+  max-width: 1400px;
+  margin: 0 auto;
+
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+
+    h1 {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 600;
+      color: #1e293b;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+
+      mat-icon {
+        color: $primary-color;
+        font-size: 28px;
+        width: 28px;
+        height: 28px;
+      }
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 12px;
+    }
+  }
+
+  .loading {
+    display: flex;
+    justify-content: center;
+    padding: 64px;
+  }
+}
+
+.buckets-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 24px;
+}
+
+.bucket-card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s, box-shadow 0.2s;
+  border-radius: 12px;
+  overflow: hidden;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+  }
+
+  mat-card-header {
+    padding: 16px 20px 8px;
+
+    .bucket-avatar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      
+      mat-icon {
+        color: white;
+      }
+
+      &.diff-easy { background: linear-gradient(135deg, #10b981, #059669); }
+      &.diff-medium { background: linear-gradient(135deg, #f59e0b, #d97706); }
+      &.diff-hard { background: linear-gradient(135deg, #ef4444, #dc2626); }
+    }
+
+    mat-card-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    mat-card-subtitle {
+      color: #64748b;
+    }
+  }
+
+  mat-card-content {
+    padding: 0 20px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+
+    .description {
+      color: #334155;
+      line-height: 1.6;
+      margin-bottom: 20px;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .bucket-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 20px;
+      background: #f8fafc;
+      padding: 12px;
+      border-radius: 8px;
+
+      .meta-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: #475569;
+        font-size: 14px;
+
+        mat-icon {
+          font-size: 18px;
+          width: 18px;
+          height: 18px;
+          color: #94a3b8;
+        }
+      }
+    }
+
+    .technologies {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 20px;
+
+      .tech-badge {
+        background: #e2e8f0;
+        color: #334155;
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 500;
+      }
+    }
+
+    .bucket-status-strip {
+      margin-top: auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 16px;
+      border-top: 1px solid #e2e8f0;
+
+      .difficulty-badge {
+        font-size: 12px;
+        font-weight: 600;
+        padding: 4px 12px;
+        border-radius: 16px;
+
+        &.diff-easy { background: rgba(16, 185, 129, 0.1); color: #059669; }
+        &.diff-medium { background: rgba(245, 158, 11, 0.1); color: #d97706; }
+        &.diff-hard { background: rgba(239, 68, 68, 0.1); color: #dc2626; }
+      }
+
+      .status-badge {
+        font-size: 12px;
+        font-weight: 600;
+        padding: 4px 12px;
+        border-radius: 16px;
+
+        &.active {
+          background-color: rgba(16, 185, 129, 0.1);
+          color: #10b981;
+        }
+        &.inactive {
+          background-color: rgba(239, 68, 68, 0.1);
+          color: #ef4444;
+        }
+      }
+    }
+  }
+
+  mat-card-actions {
+    padding: 16px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f8fafc;
+    border-top: 1px solid #f1f5f9;
+
+    button {
+      font-weight: 500;
+    }
+  }
+}
+
+.custom-empty {
+  text-align: center;
+  padding: 64px 24px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+
+  mat-icon {
+    font-size: 64px;
+    width: 64px;
+    height: 64px;
+    color: #cbd5e1;
+    margin-bottom: 16px;
+  }
+
+  p {
+    font-size: 16px;
+    color: #64748b;
+    margin: 0;
+  }
+}

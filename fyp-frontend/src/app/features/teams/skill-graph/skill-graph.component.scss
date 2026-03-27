@@ -1,0 +1,188 @@
+.skill-graph-container {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+
+    .header {
+        margin-bottom: 16px;
+
+        h3 {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 0;
+            font-size: 18px;
+            color: #333;
+
+            mat-icon {
+                color: #3b82f6;
+            }
+        }
+    }
+
+    .loading-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        padding: 40px;
+        color: #666;
+    }
+
+    .error-state {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 16px;
+        background: #fef2f2;
+        border-radius: 8px;
+        color: #dc2626;
+    }
+
+    .content {
+        .chart-container {
+            max-width: 350px;
+            margin: 0 auto 20px;
+        }
+
+        .stats-row {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 20px;
+            padding: 16px;
+            background: #f8fafc;
+            border-radius: 8px;
+
+            .stat-item {
+                text-align: center;
+
+                .stat-value {
+                    font-size: 28px;
+                    font-weight: 700;
+
+                    &.high {
+                        color: #10b981;
+                    }
+
+                    &.medium {
+                        color: #f59e0b;
+                    }
+
+                    &.low {
+                        color: #ef4444;
+                    }
+                }
+
+                .stat-label {
+                    font-size: 12px;
+                    color: #666;
+                    text-transform: uppercase;
+                    letter-spacing: 0.5px;
+                }
+            }
+        }
+
+        .skills-section {
+            margin-bottom: 20px;
+
+            h4 {
+                margin: 0 0 12px;
+                font-size: 14px;
+                color: #333;
+            }
+
+            .skill-chips {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+
+                .chip {
+                    padding: 6px 12px;
+                    border-radius: 16px;
+                    font-size: 12px;
+                    font-weight: 500;
+
+                    &.top {
+                        background: #dcfce7;
+                        color: #166534;
+                    }
+
+                    &.missing {
+                        background: #fef3c7;
+                        color: #92400e;
+                    }
+                }
+            }
+        }
+
+        .breakdown-section {
+            h4 {
+                margin: 0 0 12px;
+                font-size: 14px;
+                color: #333;
+            }
+
+            .breakdown-list {
+                .breakdown-item {
+                    display: flex;
+                    align-items: center;
+                    gap: 12px;
+                    padding: 10px 0;
+                    border-bottom: 1px solid #f1f5f9;
+
+                    &:last-child {
+                        border-bottom: none;
+                    }
+
+                    .skill-info {
+                        min-width: 120px;
+
+                        .skill-name {
+                            display: block;
+                            font-weight: 500;
+                            color: #333;
+                        }
+
+                        .skill-category {
+                            font-size: 11px;
+                            color: #888;
+                        }
+                    }
+
+                    .skill-bar-container {
+                        flex: 1;
+                        height: 8px;
+                        background: #e5e7eb;
+                        border-radius: 4px;
+                        overflow: hidden;
+
+                        .skill-bar {
+                            height: 100%;
+                            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+                            border-radius: 4px;
+                            transition: width 0.3s ease;
+                        }
+                    }
+
+                    .skill-stats {
+                        min-width: 100px;
+                        text-align: right;
+
+                        .proficiency {
+                            font-weight: 600;
+                            color: #333;
+                        }
+
+                        .members {
+                            display: block;
+                            font-size: 11px;
+                            color: #888;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

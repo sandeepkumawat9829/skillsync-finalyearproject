@@ -1,0 +1,82 @@
+<div class="showcase-detail" *ngIf="!loading && showcase">
+    <div class="back-link">
+        <a routerLink="/showcase">← Back to Gallery</a>
+    </div>
+
+    <div class="detail-header">
+        <div class="header-content">
+            <h1>{{ showcase.projectTitle }}</h1>
+            <div class="meta-info">
+                <span class="year" *ngIf="showcase.academicYear">📅 {{ showcase.academicYear }}</span>
+                <span class="team">👥 {{ showcase.teamName }}</span>
+                <span class="mentor" *ngIf="showcase.mentorName">👨‍🏫 {{ showcase.mentorName }}</span>
+            </div>
+        </div>
+
+        <div class="header-actions">
+            <button class="like-btn" [class.liked]="showcase.hasLiked" (click)="toggleLike()">
+                {{ showcase.hasLiked ? '❤️' : '🤍' }} {{ showcase.likesCount }} Likes
+            </button>
+            <span class="views">👁️ {{ showcase.viewsCount }} Views</span>
+        </div>
+    </div>
+
+    <div class="detail-content">
+        <section class="abstract-section">
+            <h2>📝 Abstract</h2>
+            <p>{{ showcase.projectAbstract }}</p>
+        </section>
+
+        <section class="team-section" *ngIf="showcase.teamMembers?.length">
+            <h2>👥 Team Members</h2>
+            <div class="team-members">
+                <span class="member" *ngFor="let member of showcase.teamMembers">{{ member }}</span>
+            </div>
+        </section>
+
+        <section class="tech-section" *ngIf="showcase.technologies?.length">
+            <h2>💻 Technologies Used</h2>
+            <div class="tech-list">
+                <span class="tech" *ngFor="let tech of showcase.technologies">{{ tech }}</span>
+            </div>
+        </section>
+
+        <section class="tags-section" *ngIf="showcase.tags?.length">
+            <h2>🏷️ Tags</h2>
+            <div class="tags-list">
+                <span class="tag" *ngFor="let tag of showcase.tags">{{ tag }}</span>
+            </div>
+        </section>
+
+        <section class="awards-section" *ngIf="showcase.awards?.length">
+            <h2>🏆 Awards & Recognition</h2>
+            <div class="awards-list">
+                <span class="award" *ngFor="let award of showcase.awards">{{ award }}</span>
+            </div>
+        </section>
+
+        <section class="links-section">
+            <h2>🔗 Project Links</h2>
+            <div class="links">
+                <a *ngIf="showcase.githubUrl" [href]="showcase.githubUrl" target="_blank" class="link-btn github">
+                    📦 GitHub Repository
+                </a>
+                <a *ngIf="showcase.liveDemoUrl" [href]="showcase.liveDemoUrl" target="_blank" class="link-btn demo">
+                    🌐 Live Demo
+                </a>
+                <a *ngIf="showcase.demoVideoUrl" [href]="showcase.demoVideoUrl" target="_blank" class="link-btn video">
+                    🎬 Demo Video
+                </a>
+                <a *ngIf="showcase.presentationUrl" [href]="showcase.presentationUrl" target="_blank"
+                    class="link-btn presentation">
+                    📊 Presentation
+                </a>
+            </div>
+        </section>
+    </div>
+</div>
+
+<div class="loading" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>Loading project details...</p>
+</div>

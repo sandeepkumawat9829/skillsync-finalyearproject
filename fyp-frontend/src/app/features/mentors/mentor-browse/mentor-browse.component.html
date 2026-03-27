@@ -1,0 +1,124 @@
+<div class="mentors-container">
+  <!-- Header -->
+  <div class="mentors-header">
+    <div>
+      <h1>Find <span class="highlight">Mentors</span></h1>
+      <p *ngIf="selectedProjectId; else genericBrowse">Connect with experienced faculty members for project #{{selectedProjectId}}</p>
+      <ng-template #genericBrowse>
+        <p>Connect with experienced faculty members for your projects</p>
+      </ng-template>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <mat-card class="filter-card">
+    <div class="filters">
+      <mat-form-field appearance="outline" class="search-field">
+        <mat-label>Search Mentors</mat-label>
+        <input matInput [(ngModel)]="searchQuery" (ngModelChange)="applyFilters()" 
+          placeholder="Search by name or expertise...">
+        <mat-icon matPrefix>search</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Department</mat-label>
+        <mat-select [(ngModel)]="selectedDepartment" (ngModelChange)="applyFilters()">
+          <mat-option value="ALL">All Departments</mat-option>
+          <mat-option *ngFor="let dept of departments" [value]="dept">{{dept}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Availability</mat-label>
+        <mat-select [(ngModel)]="selectedAvailability" (ngModelChange)="applyFilters()">
+          <mat-option value="ALL">All</mat-option>
+          <mat-option value="AVAILABLE">Available</mat-option>
+          <mat-option value="UNAVAILABLE">Full</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </mat-card>
+
+  <!-- Results Count -->
+  <div class="results-count" *ngIf="!loading">
+    <span>{{filteredMentors.length}} mentor(s) found</span>
+  </div>
+
+  <!-- Mentors Grid -->
+  <div class="mentors-grid" *ngIf="!loading && filteredMentors.length > 0">
+    <mat-card *ngFor="let mentor of filteredMentors" class="mentor-card" 
+                (click)="viewMentorProfile(mentor)">
+      <div class="mentor-header">
+        <div class="mentor-avatar">
+          <mat-icon>person</mat-icon>
+        </div>
+        <div class="mentor-info">
+          <h3>{{mentor.fullName}}</h3>
+          <p class="designation">{{mentor.designation}}</p>
+          <p class="department">{{mentor.department}}</p>
+        </div>
+        <mat-chip class="availability-chip" [ngClass]="getAvailabilityColor(mentor.isAvailable)">
+          {{mentor.isAvailable ? 'Available' : 'Full'}}
+        </mat-chip>
+      </div>
+
+      <mat-card-content>
+        <p class="bio">{{mentor.bio}}</p>
+
+        <!-- Expertise Tags -->
+        <div class="expertise-section">
+          <span class="section-label">Expertise:</span>
+          <div class="expertise-tags">
+            <mat-chip *ngFor="let skill of mentor.expertise.slice(0, 3)">
+              {{skill}}
+            </mat-chip>
+            <mat-chip *ngIf="mentor.expertise.length > 3" class="more-chip">
+              +{{mentor.expertise.length - 3}} more
+            </mat-chip>
+          </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="mentor-stats">
+          <div class="stat">
+            <mat-icon>work</mat-icon>
+            <span>{{mentor.experience}} years</span>
+          </div>
+          <div class="stat">
+            <mat-icon>folder</mat-icon>
+            <span>{{mentor.totalProjects}} projects</span>
+          </div>
+          <div class="stat">
+            <mat-icon>people</mat-icon>
+            <span>{{mentor.currentStudents}}/{{mentor.maxStudents}} students</span>
+          </div>
+          <div class="stat" *ngIf="mentor.rating">
+            <mat-icon>star</mat-icon>
+            <span>{{mentor.rating}}/5.0</span>
+          </div>
+        </div>
+      </mat-card-content>
+
+      <mat-card-actions>
+              <button mat-raised-button color="primary" (click)="viewMentorProfile(mentor); $event.stopPropagation()"
+          [disabled]="!mentor.isAvailable">
+          <mat-icon>visibility</mat-icon>
+          View Profile
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="!loading && filteredMentors.length === 0">
+    <mat-icon>search_off</mat-icon>
+    <h2>No mentors found</h2>
+    <p>Try adjusting your filters or search criteria</p>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-state" *ngIf="loading">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Loading mentors...</p>
+  </div>
+</div>

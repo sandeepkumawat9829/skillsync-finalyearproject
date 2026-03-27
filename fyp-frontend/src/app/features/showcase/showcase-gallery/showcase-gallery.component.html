@@ -1,0 +1,87 @@
+<div class="showcase-gallery">
+    <div class="gallery-header">
+        <h1>🎓 Project Showcase</h1>
+        <p class="subtitle">Explore outstanding Final Year Projects from our students</p>
+    </div>
+
+    <div class="gallery-controls">
+        <div class="search-box">
+            <input type="text" [(ngModel)]="searchQuery" placeholder="Search projects..." (keyup.enter)="search()">
+            <button class="btn-search" (click)="search()">🔍</button>
+        </div>
+
+        <div class="sort-buttons">
+            <button [class.active]="sortBy === 'recent'" (click)="changeSortBy('recent')">
+                📅 Recent
+            </button>
+            <button [class.active]="sortBy === 'likes'" (click)="changeSortBy('likes')">
+                ❤️ Most Liked
+            </button>
+            <button [class.active]="sortBy === 'views'" (click)="changeSortBy('views')">
+                👁️ Most Viewed
+            </button>
+        </div>
+    </div>
+
+    <div class="loading" *ngIf="loading">
+        <div class="spinner"></div>
+        <p>Loading projects...</p>
+    </div>
+
+    <div class="showcase-grid" *ngIf="!loading">
+        <div class="showcase-card" *ngFor="let showcase of showcases">
+            <div class="card-header">
+                <h3>{{ showcase.projectTitle }}</h3>
+                <span class="year-badge" *ngIf="showcase.academicYear">{{ showcase.academicYear }}</span>
+            </div>
+
+            <p class="abstract">{{ showcase.projectAbstract | slice:0:150 }}...</p>
+
+            <div class="team-info">
+                <span class="team-name">👥 {{ showcase.teamName || 'Unknown Team' }}</span>
+                <span class="mentor" *ngIf="showcase.mentorName">👨‍🏫 {{ showcase.mentorName }}</span>
+            </div>
+
+            <div class="tags" *ngIf="showcase.tags?.length">
+                <span class="tag" *ngFor="let tag of showcase.tags | slice:0:3">{{ tag }}</span>
+            </div>
+
+            <div class="technologies" *ngIf="showcase.technologies?.length">
+                <span class="tech" *ngFor="let tech of showcase.technologies | slice:0:4">{{ tech }}</span>
+            </div>
+
+            <div class="awards" *ngIf="showcase.awards?.length">
+                <span class="award" *ngFor="let award of showcase.awards">🏆 {{ award }}</span>
+            </div>
+
+            <div class="card-footer">
+                <div class="stats">
+                    <button class="like-btn" [class.liked]="showcase.hasLiked" (click)="toggleLike(showcase)">
+                        {{ showcase.hasLiked ? '❤️' : '🤍' }} {{ showcase.likesCount }}
+                    </button>
+                    <span class="views">👁️ {{ showcase.viewsCount }}</span>
+                </div>
+
+                <div class="actions">
+                    <a *ngIf="showcase.githubUrl" [href]="showcase.githubUrl" target="_blank" class="btn-link">
+                        GitHub
+                    </a>
+                    <a *ngIf="showcase.liveDemoUrl" [href]="showcase.liveDemoUrl" target="_blank" class="btn-link">
+                        Demo
+                    </a>
+                    <a [routerLink]="['/showcase', showcase.showcaseId]" class="btn-view">
+                        View Details
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="no-results" *ngIf="!loading && showcases.length === 0">
+        <p>No projects found. Be the first to publish your project!</p>
+    </div>
+
+    <div class="load-more" *ngIf="!loading && showcases.length > 0">
+        <button class="btn-load-more" (click)="loadMore()">Load More Projects</button>
+    </div>
+</div>

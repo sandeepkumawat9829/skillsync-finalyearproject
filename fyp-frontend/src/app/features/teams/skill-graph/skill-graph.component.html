@@ -1,0 +1,82 @@
+<div class="skill-graph-container">
+    <div class="header">
+        <h3>
+            <mat-icon>radar</mat-icon>
+            Team Skill Coverage
+        </h3>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="loading" class="loading-container">
+        <mat-spinner diameter="30"></mat-spinner>
+        <span>Analyzing skills...</span>
+    </div>
+
+    <!-- Error State -->
+    <div *ngIf="error" class="error-state">
+        <mat-icon color="warn">error</mat-icon>
+        <span>{{error}}</span>
+    </div>
+
+    <!-- Content -->
+    <div *ngIf="!loading && !error && skillAnalytics" class="content">
+        <!-- Radar Chart -->
+        <div class="chart-container">
+            <canvas #radarCanvas></canvas>
+        </div>
+
+        <!-- Summary Stats -->
+        <div class="stats-row">
+            <div class="stat-item">
+                <div class="stat-value" [ngClass]="getCoverageClass(skillAnalytics.overallCoverage)">
+                    {{skillAnalytics.overallCoverage}}%
+                </div>
+                <div class="stat-label">Overall Coverage</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">{{skillAnalytics.teamMemberCount}}</div>
+                <div class="stat-label">Team Members</div>
+            </div>
+        </div>
+
+        <!-- Top Skills -->
+        <div *ngIf="skillAnalytics.topSkills.length > 0" class="skills-section">
+            <h4>🏆 Top Skills</h4>
+            <div class="skill-chips">
+                <span *ngFor="let skill of skillAnalytics.topSkills" class="chip top">
+                    {{skill}}
+                </span>
+            </div>
+        </div>
+
+        <!-- Missing/Weak Areas -->
+        <div *ngIf="skillAnalytics.missingSkills.length > 0" class="skills-section">
+            <h4>⚠️ Needs Improvement</h4>
+            <div class="skill-chips">
+                <span *ngFor="let skill of skillAnalytics.missingSkills" class="chip missing">
+                    {{skill}}
+                </span>
+            </div>
+        </div>
+
+        <!-- Skill Breakdown Table -->
+        <div *ngIf="skillAnalytics.skillBreakdown.length > 0" class="breakdown-section">
+            <h4>📊 Skill Breakdown</h4>
+            <div class="breakdown-list">
+                <div *ngFor="let skill of skillAnalytics.skillBreakdown" class="breakdown-item">
+                    <div class="skill-info">
+                        <span class="skill-name">{{skill.skillName}}</span>
+                        <span class="skill-category">{{skill.category}}</span>
+                    </div>
+                    <div class="skill-bar-container">
+                        <div class="skill-bar" [style.width.%]="skill.avgProficiency"></div>
+                    </div>
+                    <div class="skill-stats">
+                        <span class="proficiency">{{skill.avgProficiency}}%</span>
+                        <span class="members">{{skill.membersWithSkill}} members</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

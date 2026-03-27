@@ -1,0 +1,148 @@
+<div class="profile-container" *ngIf="!loading">
+  <div class="profile-header">
+    <div class="header-content">
+      <div class="avatar">
+        <mat-icon>account_circle</mat-icon>
+      </div>
+      <div>
+        <h1>My <span class="highlight">Profile</span></h1>
+        <p>student@example.com</p>
+      </div>
+    </div>
+  </div>
+
+  <mat-card class="profile-card">
+    <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+      
+      <!-- Basic Information -->
+      <div class="section">
+        <h2><mat-icon>person</mat-icon> Basic Information</h2>
+        
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Full Name</mat-label>
+            <input matInput formControlName="fullName" placeholder="Enter your full name">
+            <mat-icon matPrefix>badge</mat-icon>
+            <mat-error *ngIf="profileForm.get('fullName')?.hasError('required')">
+              Name is required
+            </mat-error>
+            <mat-error *ngIf="profileForm.get('fullName')?.hasError('minlength')">
+              Minimum 3 characters required
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Branch</mat-label>
+            <mat-select formControlName="branch">
+              <mat-option value="">Select Branch</mat-option>
+              <mat-option value="Computer Science">Computer Science</mat-option>
+              <mat-option value="Information Technology">Information Technology</mat-option>
+              <mat-option value="Electronics">Electronics</mat-option>
+              <mat-option value="Mechanical">Mechanical</mat-option>
+              <mat-option value="Civil">Civil</mat-option>
+            </mat-select>
+            <mat-icon matPrefix>school</mat-icon>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Bio</mat-label>
+            <textarea matInput formControlName="bio" rows="4" 
+              placeholder="Tell us about yourself..." maxlength="500"></textarea>
+            <mat-hint align="end">
+              {{profileForm.get('bio')?.value?.length || 0}} / 500
+            </mat-hint>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <!-- Skills -->
+      <div class="section">
+        <h2><mat-icon>code</mat-icon> Skills</h2>
+        
+        <div class="skills-input">
+          <mat-form-field appearance="outline" class="skill-input-field">
+            <mat-label>Add Skill</mat-label>
+            <input matInput [(ngModel)]="skillInput" [ngModelOptions]="{standalone: true}"
+              (keyup.enter)="addSkill()" placeholder="e.g., Angular, Java">
+            <mat-icon matPrefix>add_circle</mat-icon>
+          </mat-form-field>
+          <button mat-raised-button type="button" color="primary" (click)="addSkill()">
+            Add
+          </button>
+        </div>
+
+        <div class="skills-list" *ngIf="profileForm.get('skills')?.value.length > 0">
+          <mat-chip *ngFor="let skill of profileForm.get('skills')?.value" 
+            (removed)="removeSkill(skill)">
+            {{skill}}
+            <mat-icon matChipRemove>cancel</mat-icon>
+          </mat-chip>
+        </div>
+      </div>
+
+      <!-- Contact Information -->
+      <div class="section">
+        <h2><mat-icon>contact_page</mat-icon> Contact Information</h2>
+        
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Phone Number</mat-label>
+            <input matInput formControlName="phone" placeholder="+91 98765 43210">
+            <mat-icon matPrefix>phone</mat-icon>
+            <mat-error *ngIf="profileForm.get('phone')?.hasError('pattern')">
+              Invalid phone number format
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>LinkedIn URL</mat-label>
+            <input matInput formControlName="linkedinUrl" 
+              placeholder="https://linkedin.com/in/yourprofile">
+            <mat-icon matPrefix>link</mat-icon>
+            <mat-error *ngIf="profileForm.get('linkedinUrl')?.hasError('pattern')">
+              Must be a valid URL starting with http:// or https://
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>GitHub URL</mat-label>
+            <input matInput formControlName="githubUrl" 
+              placeholder="https://github.com/yourusername">
+            <mat-icon matPrefix>link</mat-icon>
+            <mat-error *ngIf="profileForm.get('githubUrl')?.hasError('pattern')">
+              Must be a valid URL starting with http:// or https://
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="actions">
+        <button mat-button type="button" (click)="resetForm()">
+          <mat-icon>refresh</mat-icon>
+          Reset
+        </button>
+        <button mat-raised-button color="primary" type="submit" 
+          [disabled]="profileForm.invalid || saving">
+          <mat-icon>{{saving ? 'hourglass_empty' : 'save'}}</mat-icon>
+          {{saving ? 'Saving...' : 'Save Changes'}}
+        </button>
+      </div>
+
+    </form>
+  </mat-card>
+</div>
+
+<!-- Loading State -->
+<div class="loading-container" *ngIf="loading">
+  <mat-spinner diameter="50"></mat-spinner>
+  <p>Loading profile...</p>
+</div>

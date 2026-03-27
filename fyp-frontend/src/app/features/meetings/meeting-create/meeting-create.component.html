@@ -1,0 +1,137 @@
+<div class="meeting-create-container">
+  <div class="header">
+    <button mat-icon-button (click)="cancel()">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <h1>Schedule New Meeting</h1>
+  </div>
+
+  <mat-card class="form-card">
+    <form [formGroup]="meetingForm" (ngSubmit)="scheduleMeeting()">
+      <!-- Team Selection -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Select Team</mat-label>
+        <mat-select formControlName="teamId">
+          <mat-option *ngFor="let team of teams" [value]="team.teamId">
+            {{team.teamName}}
+          </mat-option>
+        </mat-select>
+        <mat-icon matPrefix>group</mat-icon>
+        <mat-error *ngIf="meetingForm.get('teamId')?.hasError('required')">
+          Team is required
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Mentor Info (for students) -->
+      <div class="mentor-info-tip" *ngIf="selectedTeam?.mentorName">
+        <mat-icon>person</mat-icon>
+        <span>Assigned Mentor: <strong>{{selectedTeam.mentorName}}</strong></span>
+      </div>
+
+      <!-- Meeting Title -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Meeting Title</mat-label>
+        <input matInput formControlName="title" placeholder="e.g., Sprint Review Meeting">
+        <mat-icon matPrefix>title</mat-icon>
+        <mat-error *ngIf="meetingForm.get('title')?.hasError('required')">
+          Title is required
+        </mat-error>
+        <mat-error *ngIf="meetingForm.get('title')?.hasError('minlength')">
+          Title must be at least 5 characters
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Meeting Description -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Description</mat-label>
+        <textarea matInput formControlName="description" rows="3" 
+                  placeholder="What will be discussed in this meeting?"></textarea>
+        <mat-icon matPrefix>description</mat-icon>
+        <mat-error *ngIf="meetingForm.get('description')?.hasError('required')">
+          Description is required
+        </mat-error>
+        <mat-error *ngIf="meetingForm.get('description')?.hasError('minlength')">
+          Description must be at least 10 characters
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Meeting Type -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Meeting Type</mat-label>
+        <mat-select formControlName="meetingType">
+          <mat-option *ngFor="let type of meetingTypes" [value]="type.value">
+            <mat-icon>{{type.icon}}</mat-icon>
+            {{type.label}}
+          </mat-option>
+        </mat-select>
+        <mat-icon matPrefix>category</mat-icon>
+      </mat-form-field>
+
+      <!-- Date and Time Row -->
+      <div class="datetime-row">
+        <mat-form-field appearance="outline" class="date-field">
+          <mat-label>Date</mat-label>
+          <input matInput [matDatepicker]="picker" formControlName="scheduledDate" [min]="minDate">
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+          <mat-error *ngIf="meetingForm.get('scheduledDate')?.hasError('required')">
+            Date is required
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="time-field">
+          <mat-label>Time</mat-label>
+          <input matInput type="time" formControlName="scheduledTime">
+          <mat-icon matPrefix>access_time</mat-icon>
+          <mat-error *ngIf="meetingForm.get('scheduledTime')?.hasError('required')">
+            Time is required
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="duration-field">
+          <mat-label>Duration</mat-label>
+          <mat-select formControlName="durationMinutes">
+            <mat-option *ngFor="let duration of durations" [value]="duration.value">
+              {{duration.label}}
+            </mat-option>
+          </mat-select>
+          <mat-icon matPrefix>schedule</mat-icon>
+        </mat-form-field>
+      </div>
+
+      <!-- Online Meeting Link -->
+      <mat-form-field *ngIf="isOnlineMeeting" appearance="outline" class="full-width">
+        <mat-label>Meeting Link</mat-label>
+        <input matInput formControlName="meetingLink" type="url" 
+               placeholder="https://meet.google.com/...">
+        <mat-icon matPrefix>link</mat-icon>
+        <mat-hint>Google Meet, Zoom, Teams, etc.</mat-hint>
+        <mat-error *ngIf="meetingForm.get('meetingLink')?.hasError('required')">
+          Meeting link is required for online meetings
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Offline Location -->
+      <mat-form-field *ngIf="!isOnlineMeeting" appearance="outline" class="full-width">
+        <mat-label>Location</mat-label>
+        <input matInput formControlName="location" 
+               placeholder="e.g., Room 301, CS Department">
+        <mat-icon matPrefix>place</mat-icon>
+        <mat-error *ngIf="meetingForm.get('location')?.hasError('required')">
+          Location is required for offline meetings
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Action Buttons -->
+      <div class="actions">
+        <button mat-button type="button" (click)="cancel()">
+          Cancel
+        </button>
+        <button mat-raised-button color="primary" type="submit" [disabled]="submitting">
+          <mat-spinner *ngIf="submitting" diameter="20"></mat-spinner>
+          <span *ngIf="!submitting">Schedule Meeting</span>
+        </button>
+      </div>
+    </form>
+  </mat-card>
+</div>

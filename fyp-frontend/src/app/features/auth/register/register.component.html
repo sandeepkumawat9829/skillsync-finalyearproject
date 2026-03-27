@@ -1,0 +1,101 @@
+<div class="auth-container">
+  <div class="auth-card-wrapper register-card">
+    <mat-card class="auth-card">
+      <mat-card-header>
+        <div class="header-content">
+          <div class="logo-container">
+            <div class="skillsync-icon">SS</div>
+            <div class="skillsync-text">SkillSync</div>
+          </div>
+          <h1>Create an Account</h1>
+          <p>Join the community and start your FYP journey</p>
+        </div>
+      </mat-card-header>
+
+      <mat-card-content>
+        <form [formGroup]="accountForm" (ngSubmit)="onSubmit()" autocomplete="off">
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Email Address</mat-label>
+            <input matInput type="email" formControlName="email" placeholder="your.email@example.com"
+              autocomplete="new-email">
+            <mat-icon matPrefix>email</mat-icon>
+            <mat-error *ngIf="accountForm.get('email')?.hasError('required')">
+              Email is required
+            </mat-error>
+            <mat-error *ngIf="accountForm.get('email')?.hasError('email')">
+              Please enter a valid email
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Password</mat-label>
+            <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password"
+              autocomplete="new-password">
+            <mat-icon matPrefix>lock</mat-icon>
+            <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" type="button">
+              <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+            </button>
+            <mat-error *ngIf="accountForm.get('password')?.hasError('required')">
+              Password is required
+            </mat-error>
+            <mat-error *ngIf="accountForm.get('password')?.hasError('minlength')">
+              Password must be at least 8 characters
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Confirm Password</mat-label>
+            <input matInput [type]="hideConfirmPassword ? 'password' : 'text'" formControlName="confirmPassword"
+              autocomplete="new-password">
+            <mat-icon matPrefix>lock</mat-icon>
+            <button mat-icon-button matSuffix (click)="hideConfirmPassword = !hideConfirmPassword" type="button">
+              <mat-icon>{{hideConfirmPassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+            </button>
+            <mat-error *ngIf="accountForm.get('confirmPassword')?.hasError('required')">
+              Please confirm your password
+            </mat-error>
+            <mat-error *ngIf="accountForm.hasError('passwordMismatch')">
+              Passwords do not match
+            </mat-error>
+          </mat-form-field>
+
+          <div class="role-selection">
+            <label>I am a:</label>
+            <mat-radio-group formControlName="role" class="role-radio-group">
+              <mat-radio-button value="STUDENT" class="role-option">
+                <div class="role-content">
+                  <mat-icon>school</mat-icon>
+                  <span>Student</span>
+                </div>
+              </mat-radio-button>
+              <mat-radio-button value="MENTOR" class="role-option">
+                <div class="role-content">
+                  <mat-icon>person</mat-icon>
+                  <span>Mentor</span>
+                </div>
+              </mat-radio-button>
+            </mat-radio-group>
+          </div>
+
+          <div class="info-note">
+            <mat-icon>info</mat-icon>
+            <span>After registration, you'll verify your email and complete your profile.</span>
+          </div>
+
+          <button mat-raised-button color="primary" type="submit" [disabled]="loading || accountForm.invalid"
+            class="submit-button">
+            <span *ngIf="!loading">Create Account & Verify Email</span>
+            <mat-spinner *ngIf="loading" diameter="24"></mat-spinner>
+          </button>
+        </form>
+
+        <div class="auth-footer">
+          <p>Already have an account?
+            <a routerLink="/auth/login" class="link">Sign in here</a>
+          </p>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

@@ -1,0 +1,164 @@
+<div class="analytics-container">
+  <!-- Header -->
+  <div class="header">
+    <button mat-icon-button (click)="goBack()" class="back-button">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <div>
+      <h1>
+        <mat-icon>analytics</mat-icon>
+        Enhanced Analytics
+      </h1>
+      <p *ngIf="project">{{project.title}}</p>
+    </div>
+    <button mat-raised-button color="primary" (click)="goToBoard()">
+      <mat-icon>view_kanban</mat-icon>
+      Go to Board
+    </button>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Loading analytics...</p>
+  </div>
+
+  <!-- Main Content -->
+  <div *ngIf="!loading && overview" class="analytics-content">
+    
+    <!-- Overview Cards -->
+    <div class="metrics-row">
+      <mat-card class="metric-card">
+        <div class="metric-icon velocity">
+          <mat-icon>speed</mat-icon>
+        </div>
+        <div class="metric-content">
+          <h3>Current Velocity</h3>
+          <p class="metric-value">{{overview.currentVelocity}}</p>
+          <span class="metric-label">points/sprint</span>
+        </div>
+      </mat-card>
+
+      <mat-card class="metric-card">
+        <div class="metric-icon progress">
+          <mat-icon>trending_up</mat-icon>
+        </div>
+        <div class="metric-content">
+          <h3>Sprint Progress</h3>
+          <p class="metric-value">{{overview.sprintProgress}}%</p>
+          <mat-progress-bar mode="determinate" [value]="overview.sprintProgress"></mat-progress-bar>
+        </div>
+      </mat-card>
+
+      <mat-card class="metric-card">
+        <div class="metric-icon completion">
+          <mat-icon>check_circle</mat-icon>
+        </div>
+        <div class="metric-content">
+          <h3>Completion Rate</h3>
+          <p class="metric-value">{{overview.completionRate}}%</p>
+          <span class="metric-label">{{overview.totalTasksCompleted}} tasks done</span>
+        </div>
+      </mat-card>
+
+      <mat-card class="metric-card">
+        <div class="metric-icon" [class]="getEfficiencyColor()">
+          <mat-icon>stars</mat-icon>
+        </div>
+        <div class="metric-content">
+          <h3>Team Efficiency</h3>
+          <p class="metric-value">{{overview.teamEfficiency | titlecase}}</p>
+          <span class="metric-label">Avg: {{overview.averageVelocity}} pts</span>
+        </div>
+      </mat-card>
+    </div>
+
+    <!-- Burndown Chart -->
+    <mat-card class="chart-card full-width">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>show_chart</mat-icon>
+          Sprint Burndown Chart
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="chart-wrapper">
+          <canvas #burndownCanvas></canvas>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Velocity & Contribution -->
+    <div class="charts-row">
+      <!-- Velocity Chart -->
+      <mat-card class="chart-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>bar_chart</mat-icon>
+            Velocity Trend
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="chart-wrapper">
+            <canvas #velocityCanvas></canvas>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Contribution Chart -->
+      <mat-card class="chart-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>pie_chart</mat-icon>
+            Team Contribution
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="chart-wrapper">
+            <canvas #contributionCanvas></canvas>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- Sprint Metrics Table -->
+    <mat-card class="table-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>table_chart</mat-icon>
+          Sprint Metrics History
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <table class="metrics-table">
+          <thead>
+            <tr>
+              <th>Sprint</th>
+              <th>Period</th>
+              <th>Tasks</th>
+              <th>Completed</th>
+              <th>Completion Rate</th>
+              <th>Velocity</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let sprint of sprintMetrics" [class.current]="sprint.sprintNumber === 4">
+              <td><strong>{{sprint.sprintName}}</strong></td>
+              <td>{{formatDate(sprint.startDate)}} - {{formatDate(sprint.endDate)}}</td>
+              <td>{{sprint.totalTasks}}</td>
+              <td>{{sprint.completedTasks}}</td>
+              <td>
+                <span class="completion-badge" [class.high]="sprint.completionRate >= 90" 
+                                               [class.medium]="sprint.completionRate >= 70 && sprint.completionRate < 90"
+                                               [class.low]="sprint.completionRate < 70">
+                  {{sprint.completionRate}}%
+                </span>
+              </td>
+              <td><strong>{{sprint.velocity}}</strong></td>
+            </tr>
+          </tbody>
+        </table>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

@@ -1,0 +1,58 @@
+<div class="chat-wrapper">
+  <!-- Room List -->
+  <div class="rooms-panel">
+    <div class="panel-header">
+      <h2><mat-icon>chat</mat-icon> Messages</h2>
+      <span class="unread-badge" *ngIf="getTotalUnread() > 0">{{getTotalUnread()}}</span>
+    </div>
+
+    <!-- Loading state -->
+    <div *ngIf="loading" class="loading-state">
+      <mat-spinner diameter="36"></mat-spinner>
+      <p>Loading chats...</p>
+    </div>
+
+    <!-- Error state -->
+    <div *ngIf="error && !loading" class="error-state">
+      <mat-icon>error_outline</mat-icon>
+      <p>Failed to load chats.</p>
+      <button mat-button color="primary" (click)="loadRooms()">Retry</button>
+    </div>
+
+    <!-- Empty state -->
+    <div *ngIf="!loading && !error && rooms.length === 0" class="empty-rooms-state">
+      <mat-icon>chat_bubble_outline</mat-icon>
+      <p>No chats yet.</p>
+      <p class="hint">Join or create a team to start chatting with teammates.</p>
+    </div>
+
+    <!-- Rooms list -->
+    <div class="rooms-list" *ngIf="!loading && rooms.length > 0">
+      <div *ngFor="let room of rooms"
+           class="room-card"
+           [class.active]="selectedRoom?.roomId === room.roomId"
+           (click)="selectRoom(room)">
+        <mat-icon class="room-icon">{{getRoomIcon(room)}}</mat-icon>
+        <div class="room-info">
+          <div class="room-name">{{room.roomName}}</div>
+          <div class="last-message" *ngIf="room.lastMessage">
+            {{room.lastMessage.messageText | slice:0:40}}{{room.lastMessage.messageText.length > 40 ? '...' : ''}}
+          </div>
+          <div class="last-message" *ngIf="!room.lastMessage">
+            No messages yet
+          </div>
+        </div>
+        <span class="unread-count" *ngIf="room.unreadCount > 0">{{room.unreadCount}}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chat Room -->
+  <div class="chat-panel">
+    <app-chat-room *ngIf="selectedRoom" [room]="selectedRoom"></app-chat-room>
+    <div *ngIf="!selectedRoom && !loading" class="empty-state">
+      <mat-icon>chat_bubble_outline</mat-icon>
+      <p>Select a conversation to start chatting</p>
+    </div>
+  </div>
+</div>

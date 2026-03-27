@@ -1,0 +1,171 @@
+<div class="mentor-teams-shell">
+  <!-- Header -->
+  <div class="mentors-header">
+    <div>
+      <h1>Assigned <span class="highlight">Teams</span></h1>
+      <p>Track your active teams, review project status, and jump directly into each workspace.</p>
+    </div>
+  </div>
+
+  <!-- Stats Grid -->
+  <div class="stats-grid">
+    <mat-card class="stat-card custom-stat-1">
+      <mat-card-content>
+        <div class="stat-icon">
+          <mat-icon>groups</mat-icon>
+        </div>
+        <div class="stat-info">
+          <h2>{{teams.length}}</h2>
+          <p>Total Teams</p>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stat-card custom-stat-2">
+      <mat-card-content>
+        <div class="stat-icon">
+          <mat-icon>group_add</mat-icon>
+        </div>
+        <div class="stat-info">
+          <h2>{{activeCount}}</h2>
+          <p>Active</p>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stat-card custom-stat-3">
+      <mat-card-content>
+        <div class="stat-icon">
+          <mat-icon>trending_up</mat-icon>
+        </div>
+        <div class="stat-info">
+          <h2>{{averageProgress}}%</h2>
+          <p>Avg Progress</p>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stat-card custom-stat-4">
+      <mat-card-content>
+        <div class="stat-icon">
+          <mat-icon>task_alt</mat-icon>
+        </div>
+        <div class="stat-info">
+          <h2>{{completedProjectsCount}}</h2>
+          <p>Completed</p>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <mat-card class="filters-card">
+    <div class="filters-row">
+      <mat-form-field appearance="outline" class="search-field">
+        <mat-label>Search teams or projects</mat-label>
+        <input matInput [(ngModel)]="searchQuery" (ngModelChange)="applyFilters()" placeholder="Team Alpha, Smart Campus...">
+        <mat-icon matPrefix>search</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="status-field">
+        <mat-label>Project Status</mat-label>
+        <mat-select [(ngModel)]="selectedStatus" (selectionChange)="applyFilters()">
+          <mat-option value="ALL">All</mat-option>
+          <mat-option value="TEAM_FORMING">Team Forming</mat-option>
+          <mat-option value="TEAM_COMPLETE">Team Complete</mat-option>
+          <mat-option value="PENDING_MENTOR">Pending Mentor</mat-option>
+          <mat-option value="MENTOR_ASSIGNED">Mentor Assigned</mat-option>
+          <mat-option value="IN_PROGRESS">In Progress</mat-option>
+          <mat-option value="COMPLETED">Completed</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </mat-card>
+
+  <div class="loading-state" *ngIf="loading">
+    <mat-spinner diameter="48"></mat-spinner>
+    <p>Loading assigned teams...</p>
+  </div>
+
+  <div class="teams-grid" *ngIf="!loading && filteredTeams.length > 0">
+    <mat-card *ngFor="let team of filteredTeams; trackBy: trackByTeamId" class="team-card" [ngClass]="getAssignmentTone(team)">
+      <div class="card-topbar"></div>
+
+      <mat-card-content>
+        <div class="card-header">
+          <div>
+            <p class="team-kicker">Team</p>
+            <h3>{{team.teamName}}</h3>
+            <p class="project-title">{{team.projectTitle}}</p>
+          </div>
+          <span class="status-pill" [ngClass]="getStatusClass(team.projectStatus)">
+            {{formatStatus(team.projectStatus)}}
+          </span>
+        </div>
+
+        <div class="signal-strip">
+          <div>
+            <span class="signal-label">Assignment Health</span>
+            <strong>{{ getProgressState(team) }}</strong>
+          </div>
+          <span class="assignment-badge">{{ team.status }}</span>
+        </div>
+
+        <div class="info-grid">
+          <div class="info-chip">
+            <mat-icon>groups_2</mat-icon>
+            <div>
+              <span class="label">Members</span>
+              <strong>{{team.memberCount}}</strong>
+            </div>
+          </div>
+
+          <div class="info-chip">
+            <mat-icon>verified_user</mat-icon>
+            <div>
+              <span class="label">Assignment</span>
+              <strong>{{formatStatus(team.status)}}</strong>
+            </div>
+          </div>
+
+          <div class="info-chip">
+            <mat-icon>event_available</mat-icon>
+            <div>
+              <span class="label">Assigned</span>
+              <strong>{{team.assignedAt | date:'MMM d, y'}}</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="progress-panel">
+          <div class="progress-labels">
+            <span>Progress</span>
+            <span>{{team.progress}}%</span>
+          </div>
+          <mat-progress-bar mode="determinate" [value]="team.progress"></mat-progress-bar>
+          <p class="progress-note">{{ getProgressState(team) }}</p>
+        </div>
+
+        <div class="card-actions">
+          <button mat-stroked-button color="primary" (click)="viewTeam(team)">
+            <mat-icon>groups</mat-icon>
+            Team
+          </button>
+          <button mat-stroked-button (click)="openProject(team)">
+            <mat-icon>description</mat-icon>
+            Project
+          </button>
+          <button mat-flat-button color="primary" (click)="openKanban(team)">
+            <mat-icon>view_kanban</mat-icon>
+            Kanban
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div class="empty-state" *ngIf="!loading && filteredTeams.length === 0">
+    <mat-icon>group_off</mat-icon>
+    <h2>No teams found</h2>
+    <p>{{ teams.length === 0 ? 'Mentor assignments will appear here after a request is accepted.' : 'Try a different search or status filter.' }}</p>
+  </div>
+</div>

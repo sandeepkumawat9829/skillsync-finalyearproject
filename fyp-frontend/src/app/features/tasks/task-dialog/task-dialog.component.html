@@ -1,0 +1,102 @@
+<h2 mat-dialog-title>Create New Task</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="taskForm">
+
+    <!-- Title -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Task Title</mat-label>
+      <input matInput formControlName="title" placeholder="e.g., Implement user authentication">
+      <mat-icon matPrefix>title</mat-icon>
+      <mat-error *ngIf="taskForm.get('title')?.hasError('required')">
+        Title is required
+      </mat-error>
+      <mat-error *ngIf="taskForm.get('title')?.hasError('minlength')">
+        Minimum 3 characters required
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Description -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Description</mat-label>
+      <textarea matInput formControlName="description" rows="4" placeholder="Describe the task in detail..."></textarea>
+      <mat-error *ngIf="taskForm.get('description')?.hasError('required')">
+        Description is required
+      </mat-error>
+      <mat-error *ngIf="taskForm.get('description')?.hasError('minlength')">
+        Minimum 10 characters required
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Priority & Estimated Hours -->
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>Priority</mat-label>
+        <mat-select formControlName="priority">
+          <mat-option *ngFor="let p of priorities" [value]="p.value">
+            <span class="priority-option" [ngClass]="p.color">
+              {{p.label}}
+            </span>
+          </mat-option>
+        </mat-select>
+        <mat-icon matPrefix>flag</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>Estimated Hours</mat-label>
+        <input matInput type="number" formControlName="estimatedHours" placeholder="e.g., 8" min="0.5" step="0.5">
+        <mat-icon matPrefix>schedule</mat-icon>
+        <mat-hint>Optional</mat-hint>
+      </mat-form-field>
+    </div>
+
+    <!-- Assignee & Due Date -->
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>Assign To</mat-label>
+        <mat-select formControlName="assignedTo">
+          <mat-option [value]="null">Unassigned</mat-option>
+          <mat-option *ngFor="let member of teamMembers" [value]="member.userId">
+            {{member.fullName}}
+          </mat-option>
+        </mat-select>
+        <mat-icon matPrefix>person</mat-icon>
+        <mat-hint>Optional</mat-hint>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>Due Date</mat-label>
+        <input matInput [matDatepicker]="picker" formControlName="dueDate">
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+        <mat-icon matPrefix>calendar_today</mat-icon>
+        <mat-hint>Optional</mat-hint>
+      </mat-form-field>
+    </div>
+
+    <!-- Tags -->
+    <div class="tags-section">
+      <label class="section-label">Tags</label>
+      <div class="selected-tags" *ngIf="taskForm.get('tags')?.value.length > 0">
+        <mat-chip *ngFor="let tag of taskForm.get('tags')?.value" (removed)="removeTag(tag)">
+          {{tag}}
+          <mat-icon matChipRemove>cancel</mat-icon>
+        </mat-chip>
+      </div>
+      <div class="popular-tags">
+        <mat-chip *ngFor="let tag of popularTags" (click)="addTag(tag)" class="clickable-chip">
+          {{tag}}
+        </mat-chip>
+      </div>
+    </div>
+
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Cancel</button>
+  <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="taskForm.invalid || isSubmitting">
+    <mat-icon>{{isSubmitting ? 'hourglass_empty' : 'add'}}</mat-icon>
+    {{isSubmitting ? 'Creating...' : 'Create Task'}}
+  </button>
+</mat-dialog-actions>

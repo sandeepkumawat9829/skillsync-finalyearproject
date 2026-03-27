@@ -1,0 +1,53 @@
+<div class="chat-room">
+  <!-- Room Header -->
+  <div class="room-header">
+    <div class="room-title">
+      <mat-icon>{{room.roomType === 'TEAM' ? 'groups' : room.roomType === 'DIRECT' ? 'person' : 'school'}}</mat-icon>
+      <span>{{room.roomName}}</span>
+    </div>
+    <div class="participants">
+      <mat-icon style="font-size:16px; vertical-align: middle">people</mat-icon>
+      {{room.participants?.length || 0}} participants
+    </div>
+  </div>
+
+  <!-- Loading Messages -->
+  <div class="loading-messages" *ngIf="loading">
+    <mat-spinner diameter="36"></mat-spinner>
+    <p>Loading messages...</p>
+  </div>
+
+  <!-- Messages Area -->
+  <div class="messages-container" #messagesContainer *ngIf="!loading">
+    <!-- No messages empty state -->
+    <div class="no-messages" *ngIf="messages.length === 0">
+      <mat-icon>chat_bubble_outline</mat-icon>
+      <p>No messages yet. Say hello! 👋</p>
+    </div>
+
+    <div *ngFor="let message of messages"
+         class="message"
+         [class.own-message]="isOwnMessage(message)">
+      <div class="bubble">
+        <div class="sender" *ngIf="!isOwnMessage(message)">{{message.userName}}</div>
+        <div class="text" [class.code]="message.messageType === 'CODE'">{{message.messageText}}</div>
+        <div class="time">{{formatTime(message.createdAt)}}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Message Input -->
+  <div class="message-input-area">
+    <mat-form-field appearance="outline" class="input-field">
+      <input matInput
+             [formControl]="messageControl"
+             placeholder="Type a message..."
+             (keyup.enter)="sendMessage()">
+    </mat-form-field>
+    <button mat-mini-fab color="primary" class="send-btn"
+            (click)="sendMessage()"
+            [disabled]="!messageControl.value?.trim()">
+      <mat-icon>send</mat-icon>
+    </button>
+  </div>
+</div>

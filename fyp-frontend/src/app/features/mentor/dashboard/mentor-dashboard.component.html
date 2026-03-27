@@ -1,0 +1,185 @@
+<div class="mentor-dashboard dashboard-container">
+  <div class="dashboard-content-wrapper">
+    <!-- Header -->
+    <div class="mentors-header">
+      <h1>Mentor <span class="highlight">Dashboard</span></h1>
+      <p>Welcome back! Here's an overview of your mentorship activities.</p>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="stats-grid">
+          <mat-card class="stat-card pending">
+            <mat-card-content>
+              <div class="stat-icon">
+                <mat-icon>assignment_late</mat-icon>
+              </div>
+              <div class="stat-info">
+                <h2>{{stats.pendingRequests}}</h2>
+                <p>Pending Requests</p>
+              </div>
+            </mat-card-content>
+          </mat-card>
+
+          <mat-card class="stat-card teams">
+            <mat-card-content>
+              <div class="stat-icon">
+                <mat-icon>groups</mat-icon>
+              </div>
+              <div class="stat-info">
+                <h2>{{stats.assignedTeams}}</h2>
+                <p>Assigned Teams</p>
+              </div>
+            </mat-card-content>
+          </mat-card>
+
+          <mat-card class="stat-card meetings">
+            <mat-card-content>
+              <div class="stat-icon">
+                <mat-icon>event</mat-icon>
+              </div>
+              <div class="stat-info">
+                <h2>{{stats.upcomingMeetings}}</h2>
+                <p>Upcoming Meetings</p>
+              </div>
+            </mat-card-content>
+          </mat-card>
+
+          <mat-card class="stat-card projects">
+            <mat-card-content>
+              <div class="stat-icon">
+                <mat-icon>folder</mat-icon>
+              </div>
+              <div class="stat-info">
+                <h2>{{stats.totalProjects}}</h2>
+                <p>Total Projects</p>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+
+        <!-- Pending Requests Section -->
+        <mat-card class="section-card">
+          <mat-card-header>
+            <mat-card-title>
+              <mat-icon>assignment_late</mat-icon>
+              Pending Mentor Requests
+            </mat-card-title>
+            <button mat-raised-button color="primary" class="header-action" (click)="navigateTo('requests')">
+              View All ({{stats.pendingRequests}})
+            </button>
+          </mat-card-header>
+          <mat-card-content>
+            <div *ngIf="loading" class="loading-state">
+              <mat-spinner diameter="50"></mat-spinner>
+              <p>Loading requests...</p>
+            </div>
+
+            <div *ngIf="!loading && recentRequests.length > 0" class="requests-list">
+              <mat-card *ngFor="let request of recentRequests" class="request-card">
+                <mat-card-header>
+                  <mat-icon mat-card-avatar>folder</mat-icon>
+                  <mat-card-title>{{request.projectTitle}}</mat-card-title>
+                  <mat-card-subtitle>
+                    By: {{request.teamLeaderName}} | Team: {{request.teamName}}
+                  </mat-card-subtitle>
+                </mat-card-header>
+                <mat-card-content>
+                  <div class="request-info">
+                    <p class="abstract">{{request.projectAbstract}}</p>
+                    <div class="meta-info">
+                      <mat-chip-set>
+                        <mat-chip>{{request.projectDomain}}</mat-chip>
+                        <mat-chip>
+                          <mat-icon>group</mat-icon>
+                          {{request.teamMembers.length}} Members
+                        </mat-chip>
+                      </mat-chip-set>
+                      <span class="requested-date">
+                        Requested: {{request.requestedAt | date:'MMM dd, yyyy'}}
+                      </span>
+                    </div>
+                    <div class="team-skills">
+                      <strong>Team Members:</strong>
+                      <mat-chip-set>
+                        <mat-chip *ngFor="let member of request.teamMembers?.slice(0, 3)">
+                          {{member.name}} ({{member.role}})
+                        </mat-chip>
+                      </mat-chip-set>
+                    </div>
+                  </div>
+                </mat-card-content>
+                <mat-card-actions>
+                  <button mat-button color="primary" (click)="viewRequest(request.requestId)">
+                    <mat-icon>visibility</mat-icon>
+                    View Details
+                  </button>
+                </mat-card-actions>
+              </mat-card>
+            </div>
+
+            <div *ngIf="!loading && recentRequests.length === 0" class="empty-state">
+              <mat-icon>inbox</mat-icon>
+              <p>No pending requests</p>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Assigned Teams Section -->
+        <mat-card class="section-card">
+          <mat-card-header>
+            <mat-card-title>
+              <mat-icon>groups</mat-icon>
+              My Assigned Teams
+            </mat-card-title>
+            <button mat-raised-button color="primary" class="header-action" (click)="navigateTo('teams')">
+              View All ({{stats.assignedTeams}})
+            </button>
+          </mat-card-header>
+          <mat-card-content>
+            <div *ngIf="assignedTeams.length > 0" class="teams-grid">
+              <mat-card *ngFor="let team of assignedTeams" class="team-card" (click)="viewTeam(team.teamId)">
+                <mat-card-header>
+                  <mat-icon mat-card-avatar>groups</mat-icon>
+                  <mat-card-title>{{team.teamName}}</mat-card-title>
+                  <mat-card-subtitle>{{team.projectTitle}}</mat-card-subtitle>
+                </mat-card-header>
+                <mat-card-content>
+                  <div class="team-info">
+                    <div class="info-row">
+                      <mat-icon>people</mat-icon>
+                      <span>{{team.memberCount}} Members</span>
+                    </div>
+                    <div class="info-row">
+                      <mat-icon>calendar_today</mat-icon>
+                      <span>Assigned: {{team.assignedAt | date:'MMM dd, yyyy'}}</span>
+                    </div>
+                    <div class="progress-section">
+                      <div class="progress-header">
+                        <span>Progress</span>
+                        <span>{{team.progress}}%</span>
+                      </div>
+                      <mat-progress-bar mode="determinate" [value]="team.progress" color="primary"></mat-progress-bar>
+                    </div>
+                  </div>
+                </mat-card-content>
+                <mat-card-actions>
+                  <button mat-button color="primary" (click)="viewTeam(team.teamId); $event.stopPropagation()">
+                    <mat-icon>visibility</mat-icon>
+                    View Team
+                  </button>
+                  <button mat-button (click)="openKanban(team); $event.stopPropagation()">
+                    <mat-icon>task_alt</mat-icon>
+                    View Tasks
+                  </button>
+                </mat-card-actions>
+              </mat-card>
+            </div>
+
+            <div *ngIf="assignedTeams.length === 0" class="empty-state">
+              <mat-icon>group_off</mat-icon>
+              <p>No teams assigned yet</p>
+            </div>
+          </mat-card-content>
+        </mat-card>
+  </div>
+</div>

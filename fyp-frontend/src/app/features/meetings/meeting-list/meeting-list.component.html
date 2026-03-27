@@ -1,0 +1,159 @@
+<div class="meeting-list-container">
+  <div class="header">
+    <h1>
+      <mat-icon>event</mat-icon>
+      Meetings
+    </h1>
+    <button mat-raised-button color="primary" (click)="createMeeting()">
+      <mat-icon>add</mat-icon>
+      Schedule Meeting
+    </button>
+  </div>
+
+  <mat-tab-group [(selectedIndex)]="selectedTab" class="meetings-tabs">
+    <!-- Upcoming Meetings Tab -->
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon>schedule</mat-icon>
+        Upcoming ({{upcomingMeetings.length}})
+      </ng-template>
+
+      <div *ngIf="loading" class="loading-state">
+        <mat-spinner diameter="50"></mat-spinner>
+        <p>Loading meetings...</p>
+      </div>
+
+      <div *ngIf="!loading && upcomingMeetings.length > 0" class="meetings-grid">
+        <mat-card *ngFor="let meeting of upcomingMeetings" class="meeting-card upcoming"
+          (click)="viewMeeting(meeting.id)">
+          <mat-card-header>
+            <div mat-card-avatar class="meeting-avatar" [class]="getMeetingTypeColor(meeting.meetingType)">
+              <mat-icon>{{getMeetingTypeIcon(meeting.meetingType)}}</mat-icon>
+            </div>
+            <mat-card-title>{{meeting.title}}</mat-card-title>
+            <mat-card-subtitle>
+              {{meeting.scheduledAt | date:'MMM dd, yyyy • h:mm a'}} • {{meeting.durationMinutes}} min
+            </mat-card-subtitle>
+          </mat-card-header>
+
+          <mat-card-content>
+            <p class="description">{{meeting.description}}</p>
+
+            <div class="meeting-info">
+              <div class="info-item">
+                <mat-icon>group</mat-icon>
+                <span>{{meeting.teamName}}</span>
+              </div>
+              <div class="info-item">
+                <mat-icon>person</mat-icon>
+                <span>{{meeting.mentorName}}</span>
+              </div>
+              <div class="info-item">
+                <mat-icon>{{meeting.meetingLink ? 'videocam' : 'place'}}</mat-icon>
+                <span>{{meeting.meetingLink ? 'Online' : meeting.location}}</span>
+              </div>
+            </div>
+
+            <div class="attendees" *ngIf="meeting.attendees?.length">
+              <span class="attendees-label">Attendees:</span>
+              <mat-chip-set>
+                <mat-chip *ngFor="let attendee of (meeting.attendees || []).slice(0, 3)">
+                  {{attendee.userName || attendee}}
+                </mat-chip>
+                <mat-chip *ngIf="(meeting.attendees?.length || 0) > 3">
+                  +{{(meeting.attendees?.length || 0) - 3}} more
+                </mat-chip>
+              </mat-chip-set>
+            </div>
+          </mat-card-content>
+
+          <mat-card-actions>
+            <button mat-button *ngIf="meeting.meetingLink" (click)="joinMeeting(meeting, $event)" color="primary">
+              <mat-icon>videocam</mat-icon>
+              Join Meeting
+            </button>
+            <button mat-button (click)="viewMeeting(meeting.id); $event.stopPropagation()">
+              <mat-icon>visibility</mat-icon>
+              View Details
+            </button>
+            <button mat-button (click)="cancelMeeting(meeting, $event)" color="warn" *ngIf="!isStudent">
+              <mat-icon>cancel</mat-icon>
+              Cancel
+            </button>
+          </mat-card-actions>
+        </mat-card>
+      </div>
+
+      <div *ngIf="!loading && upcomingMeetings.length === 0" class="empty-state">
+        <mat-icon>event_available</mat-icon>
+        <h3>No Upcoming Meetings</h3>
+        <p>Schedule a meeting with your team and mentor</p>
+        <button mat-raised-button color="primary" (click)="createMeeting()">
+          <mat-icon>add</mat-icon>
+          Schedule Meeting
+        </button>
+      </div>
+    </mat-tab>
+
+    <!-- Past Meetings Tab -->
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon>history</mat-icon>
+        Past ({{pastMeetings.length}})
+      </ng-template>
+
+      <div *ngIf="!loading && pastMeetings.length > 0" class="meetings-grid">
+        <mat-card *ngFor="let meeting of pastMeetings" class="meeting-card past" (click)="viewMeeting(meeting.id)">
+          <mat-card-header>
+            <div mat-card-avatar class="meeting-avatar" [class]="getMeetingTypeColor(meeting.meetingType)">
+              <mat-icon>{{getMeetingTypeIcon(meeting.meetingType)}}</mat-icon>
+            </div>
+            <mat-card-title>{{meeting.title}}</mat-card-title>
+            <mat-card-subtitle>
+              {{meeting.scheduledAt | date:'MMM dd, yyyy • h:mm a'}} • {{meeting.durationMinutes}} min
+            </mat-card-subtitle>
+          </mat-card-header>
+
+          <mat-card-content>
+            <p class="description">{{meeting.description}}</p>
+
+            <div class="meeting-info">
+              <div class="info-item">
+                <mat-icon>group</mat-icon>
+                <span>{{meeting.teamName}}</span>
+              </div>
+              <div class="info-item">
+                <mat-icon>person</mat-icon>
+                <span>{{meeting.mentorName}}</span>
+              </div>
+            </div>
+
+            <div *ngIf="meeting.notes" class="meeting-notes">
+              <strong>Notes:</strong>
+              <p>{{meeting.notes}}</p>
+            </div>
+
+            <mat-chip-set>
+              <mat-chip [color]="getStatusColor(meeting.status)" selected>
+                {{meeting.status}}
+              </mat-chip>
+            </mat-chip-set>
+          </mat-card-content>
+
+          <mat-card-actions>
+            <button mat-button (click)="viewMeeting(meeting.id); $event.stopPropagation()">
+              <mat-icon>visibility</mat-icon>
+              View Details
+            </button>
+          </mat-card-actions>
+        </mat-card>
+      </div>
+
+      <div *ngIf="!loading && pastMeetings.length === 0" class="empty-state">
+        <mat-icon>event_busy</mat-icon>
+        <h3>No Past Meetings</h3>
+        <p>Your completed meetings will appear here</p>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>

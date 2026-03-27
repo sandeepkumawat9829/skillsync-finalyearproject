@@ -1,0 +1,120 @@
+<div class="invitations-container">
+  <!-- Header -->
+  <div class="invitations-header">
+    <div>
+      <h1>Team <span class="highlight">Invitations</span></h1>
+      <p>Manage your team invitation requests</p>
+    </div>
+  </div>
+
+  <!-- Sent Join Requests -->
+  <mat-card class="filter-card" style="margin-bottom: 16px;">
+    <div style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
+      <div style="display:flex; align-items:center; gap:8px;">
+        <mat-icon>outgoing_mail</mat-icon>
+        <strong>Sent Join Requests</strong>
+      </div>
+      <span *ngIf="loadingSentRequests">Loading...</span>
+    </div>
+    <div *ngIf="!loadingSentRequests && sentJoinRequests.length === 0" style="margin-top: 8px; opacity: 0.8;">
+      No pending join requests sent yet.
+    </div>
+    <div *ngIf="!loadingSentRequests && sentJoinRequests.length > 0" style="margin-top: 8px;">
+      <div *ngFor="let req of sentJoinRequests" style="display:flex; align-items:center; justify-content:space-between; padding:8px 0; border-top: 1px solid rgba(0,0,0,0.06);">
+        <div>
+          <div><strong>{{req.teamName}}</strong></div>
+          <div style="opacity:0.8;">Status: {{req.status}}</div>
+        </div>
+        <button mat-button (click)="viewTeam(req.teamId)">
+          <mat-icon>visibility</mat-icon>
+          View Team
+        </button>
+      </div>
+    </div>
+  </mat-card>
+
+  <!-- Filter -->
+  <mat-card class="filter-card">
+    <mat-button-toggle-group [(ngModel)]="selectedFilter" (change)="applyFilter()">
+      <mat-button-toggle value="ALL">All ({{invitations.length}})</mat-button-toggle>
+      <mat-button-toggle value="PENDING">Pending</mat-button-toggle>
+      <mat-button-toggle value="ACCEPTED">Accepted</mat-button-toggle>
+      <mat-button-toggle value="REJECTED">Rejected</mat-button-toggle>
+    </mat-button-toggle-group>
+  </mat-card>
+
+  <!-- Invitations List -->
+  <div class="invitations-list" *ngIf="!loading && filteredInvitations.length > 0">
+    <mat-card *ngFor="let invitation of filteredInvitations" class="invitation-card">
+      <div class="card-header">
+        <div class="team-info">
+          <div class="team-icon">
+            <mat-icon>groups</mat-icon>
+          </div>
+          <div>
+            <h3>{{invitation.teamName}}</h3>
+            <p class="project-title">{{invitation.projectTitle}}</p>
+          </div>
+        </div>
+        <mat-chip class="status-chip" [ngClass]="getStatusClass(invitation.status)">
+          {{invitation.status}}
+        </mat-chip>
+      </div>
+
+      <mat-card-content>
+        <div class="invitation-details">
+          <div class="detail-item">
+            <mat-icon>person</mat-icon>
+            <span>Invited by <strong>{{invitation.fromUserName}}</strong></span>
+          </div>
+          <div class="detail-item">
+            <mat-icon>schedule</mat-icon>
+            <span>{{invitation.createdAt | date:'MMM d, y'}}</span>
+          </div>
+          <div class="message" *ngIf="invitation.message">
+            <mat-icon>message</mat-icon>
+            <p>{{invitation.message}}</p>
+          </div>
+        </div>
+      </mat-card-content>
+
+      <mat-card-actions *ngIf="invitation.status === 'PENDING'">
+        <button mat-button (click)="viewTeam(invitation.teamId)">
+          <mat-icon>visibility</mat-icon>
+          View Team
+        </button>
+        <div class="action-buttons">
+          <button mat-raised-button color="warn" (click)="rejectInvitation(invitation)">
+            <mat-icon>close</mat-icon>
+            Reject
+          </button>
+          <button mat-raised-button color="primary" (click)="acceptInvitation(invitation)">
+            <mat-icon>check</mat-icon>
+            Accept
+          </button>
+        </div>
+      </mat-card-actions>
+
+      <mat-card-actions *ngIf="invitation.status !== 'PENDING'">
+        <div class="responded-info">
+          <mat-icon>info</mat-icon>
+          <span>Responded on {{invitation.respondedAt | date:'MMM d, y'}}</span>
+        </div>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="!loading && filteredInvitations.length === 0">
+    <mat-icon>inbox</mat-icon>
+    <h2>No invitations found</h2>
+    <p *ngIf="selectedFilter === 'ALL'">You don't have any team invitations yet</p>
+    <p *ngIf="selectedFilter !== 'ALL'">No {{selectedFilter.toLowerCase()}} invitations</p>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-state" *ngIf="loading">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Loading invitations...</p>
+  </div>
+</div>

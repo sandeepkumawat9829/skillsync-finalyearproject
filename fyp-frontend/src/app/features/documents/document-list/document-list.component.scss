@@ -1,0 +1,286 @@
+.document-list-container {
+    padding: 24px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+
+    h2 {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 28px;
+        font-weight: 700;
+        color: #1b1b1b;
+        margin: 0;
+
+        mat-icon {
+            color: #ff5754;
+            font-size: 32px;
+            width: 32px;
+            height: 32px;
+        }
+    }
+
+    .fab-button {
+        width: 56px;
+        height: 56px;
+    }
+}
+
+.generation-card {
+    border-radius: 16px !important;
+    box-shadow: 0 4px 20px rgba(27, 27, 27, 0.08) !important;
+    margin-bottom: 32px;
+    border: 1px solid rgba(30, 64, 175, 0.1);
+    
+    mat-card-header {
+        padding: 24px 24px 16px !important;
+        
+        mat-card-title {
+            font-size: 20px !important;
+            font-weight: 700 !important;
+            color: #1b1b1b !important;
+            margin-bottom: 8px !important;
+        }
+        
+        mat-card-subtitle {
+            font-size: 14px;
+            color: #6b7280;
+            margin: 0 !important;
+        }
+    }
+    
+    mat-card-content {
+        padding: 0 24px 16px !important;
+    }
+}
+
+
+.loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 300px;
+    gap: 20px;
+
+    p {
+        font-size: 16px;
+        color: #6b7280;
+    }
+}
+
+.document-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+.document-section {
+    .section-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 16px;
+        padding-bottom: 12px;
+        border-bottom: 2px solid rgba(255, 87, 84, 0.2);
+
+        mat-icon {
+            color: #ff5754;
+            font-size: 28px;
+            width: 28px;
+            height: 28px;
+        }
+
+        h3 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1b1b1b;
+            margin: 0;
+        }
+    }
+}
+
+.document-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 16px;
+}
+
+.document-card {
+    border-radius: 12px !important;
+    box-shadow: 0 2px 8px rgba(27, 27, 27, 0.06) !important;
+    padding: 20px !important;
+    transition: all 0.3s ease;
+    cursor: pointer;
+
+    &:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(27, 27, 27, 0.12) !important;
+    }
+
+    .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 16px;
+
+        .file-icon {
+            font-size: 48px;
+            width: 48px;
+            height: 48px;
+
+            &.picture_as_pdf {
+                color: #dc2626;
+            }
+
+            &.description {
+                color: #2563eb;
+            }
+
+            &.slideshow {
+                color: #d97706;
+            }
+
+            &.insert_drive_file {
+                color: #6b7280;
+            }
+        }
+
+        .status-chip {
+            font-size: 11px !important;
+            font-weight: 600 !important;
+            height: 24px !important;
+            padding: 0 8px !important;
+
+            &.green {
+                background: #d1fae5 !important;
+                color: #065f46 !important;
+            }
+
+            &.orange {
+                background: #fed7aa !important;
+                color: #92400e !important;
+            }
+
+            &.red {
+                background: #fecaca !important;
+                color: #991b1b !important;
+            }
+        }
+    }
+
+    .card-content {
+        h4 {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1b1b1b;
+            margin: 0 0 8px;
+            word-break: break-word;
+            line-height: 1.4;
+        }
+
+        .description {
+            font-size: 13px;
+            color: #6b7280;
+            margin: 0 0 12px;
+            line-height: 1.5;
+        }
+
+        .metadata {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-top: 12px;
+
+            span {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                font-size: 12px;
+                color: #9ca3af;
+
+                mat-icon {
+                    font-size: 16px;
+                    width: 16px;
+                    height: 16px;
+                    color: #9ca3af;
+                }
+            }
+        }
+    }
+
+    .card-actions {
+        display: flex;
+        gap: 8px;
+        margin-top: 16px;
+        padding-top: 16px;
+        border-top: 1px solid rgba(27, 27, 27, 0.06);
+
+        button {
+            mat-icon {
+                font-size: 20px;
+                width: 20px;
+                height: 20px;
+            }
+
+            &:first-child mat-icon {
+                color: #10b981;
+            }
+        }
+    }
+}
+
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 64px 24px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 2px 12px rgba(27, 27, 27, 0.06);
+
+    mat-icon {
+        font-size: 80px;
+        width: 80px;
+        height: 80px;
+        color: #d1d5db;
+        margin-bottom: 16px;
+    }
+
+    h3 {
+        font-size: 22px;
+        font-weight: 700;
+        color: #1b1b1b;
+        margin: 0 0 8px;
+    }
+
+    p {
+        font-size: 15px;
+        color: #6b7280;
+        margin: 0 0 24px;
+    }
+
+    button {
+        font-weight: 600;
+
+        mat-icon {
+            margin-right: 8px;
+            font-size: 20px;
+            width: 20px;
+            height: 20px;
+            color: white;
+        }
+    }
+}
+
+@media (max-width: 768px) {
+    .document-grid {
+        grid-template-columns: 1fr;
+    }
+}

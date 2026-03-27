@@ -1,0 +1,77 @@
+<div class="upload-container">
+  <div class="upload-card">
+    <h2>
+      <mat-icon>cloud_upload</mat-icon>
+      Upload Document
+    </h2>
+
+    <div class="upload-area"
+         [class.drag-over]="dragOver"
+         [class.has-file]="selectedFile"
+         (drop)="onDrop($event)"
+         (dragover)="onDragOver($event)"
+         (dragleave)="onDragLeave($event)"
+         (click)="fileInput.click()">
+      
+      <div *ngIf="!selectedFile" class="upload-prompt">
+        <mat-icon>cloud_upload</mat-icon>
+        <p class="main-text">Drag & drop your file here</p>
+        <p class="sub-text">or click to browse</p>
+        <p class="hint">Supported: PDF, DOC, DOCX, PPT, PPTX (Max 10 MB)</p>
+      </div>
+
+      <div *ngIf="selectedFile" class="file-preview">
+        <mat-icon [class]="'file-icon ' + getFileIcon(selectedFile.name)">
+          {{getFileIcon(selectedFile.name)}}
+        </mat-icon>
+        <div class="file-info">
+          <p class="file-name">{{selectedFile.name}}</p>
+          <p class="file-size">{{formatFileSize(selectedFile.size)}}</p>
+        </div>
+        <button mat-icon-button (click)="removeFile(); $event.stopPropagation()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+
+      <input #fileInput
+             type="file"
+             accept=".pdf,.doc,.docx,.ppt,.pptx"
+             (change)="onFileSelected($event)"
+             style="display: none;">
+    </div>
+
+    <div class="form-fields">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Document Type</mat-label>
+        <mat-select [(ngModel)]="documentType" required>
+          <mat-option *ngFor="let type of documentTypes" [value]="type.value">
+            {{type.label}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Description (Optional)</mat-label>
+        <textarea matInput
+                  [(ngModel)]="description"
+                  rows="3"
+                  placeholder="e.g., Updated with mentor feedback"></textarea>
+      </mat-form-field>
+    </div>
+
+    <mat-progress-bar *ngIf="uploading"
+                      mode="determinate"
+                      [value]="uploadProgress"
+                      class="upload-progress"></mat-progress-bar>
+
+    <div class="actions">
+      <button mat-raised-button
+              color="primary"
+              (click)="upload()"
+              [disabled]="!selectedFile || uploading">
+        <mat-icon>upload</mat-icon>
+        {{uploading ? 'Uploading...' : 'Upload Document'}}
+      </button>
+    </div>
+  </div>
+</div>

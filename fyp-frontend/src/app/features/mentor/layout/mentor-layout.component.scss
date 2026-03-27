@@ -1,0 +1,122 @@
+.mentor-layout {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    background: #f7f7f5;
+}
+
+.layout-toolbar {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: white !important;
+    color: #1b1b1b !important;
+    box-shadow: 0 2px 8px rgba(27, 27, 27, 0.06);
+    height: 64px;
+
+    .toolbar-brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .skillsync-icon-small {
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, #ff5754, #ff9a76);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 800;
+        font-size: 18px;
+        box-shadow: 0 2px 8px rgba(255, 87, 84, 0.3);
+    }
+
+    .toolbar-title {
+        font-size: 20px;
+        font-weight: 800;
+        color: #1b1b1b;
+        letter-spacing: -0.3px;
+    }
+
+    .spacer {
+        flex: 1;
+    }
+
+    .user-name {
+        margin-left: 8px;
+        font-weight: 600;
+        color: #1b1b1b;
+    }
+
+    button mat-icon {
+        color: #6b7280;
+    }
+
+    button:hover mat-icon {
+        color: #ff5754;
+    }
+}
+
+.layout-sidenav-container {
+    flex: 1;
+    height: calc(100vh - 64px);
+}
+
+.layout-sidenav {
+    width: 260px;
+    background: white;
+    border-right: 1px solid rgba(27, 27, 27, 0.08);
+
+    mat-nav-list {
+        padding: 16px 12px;
+    }
+
+    .active-link {
+        background: linear-gradient(135deg, rgba(255, 87, 84, 0.1), rgba(255, 154, 118, 0.08));
+        color: #ff5754 !important;
+        border-radius: 12px;
+        font-weight: 700;
+
+        mat-icon {
+            color: #ff5754 !important;
+        }
+    }
+
+    mat-list-item {
+        border-radius: 12px;
+        margin-bottom: 4px;
+        height: 48px;
+        transition: all 0.2s ease;
+        font-weight: 600;
+        color: #6b7280;
+
+        mat-icon {
+            color: #9ca3af;
+        }
+
+        &:hover:not(.active-link) {
+            background: rgba(27, 27, 27, 0.03);
+            color: #1b1b1b;
+            
+            mat-icon {
+                color: #1b1b1b;
+            }
+        }
+    }
+}
+
+.layout-content {
+    background: #f7f7f5;
+    padding: 0;
+}
+
+@media (max-width: 768px) {
+    .layout-toolbar {
+        .user-name {
+            display: none;
+        }
+    }
+}

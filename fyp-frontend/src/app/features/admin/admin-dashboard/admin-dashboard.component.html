@@ -1,0 +1,137 @@
+<div class="admin-dashboard">
+  <div class="page-header">
+    <h1><mat-icon>admin_panel_settings</mat-icon> Admin Dashboard</h1>
+  </div>
+
+  <div *ngIf="loading" class="loading">
+    <mat-spinner></mat-spinner>
+  </div>
+
+  <div *ngIf="!loading && analytics" class="dashboard-content">
+    <!-- Stats Cards -->
+    <div class="stats-grid">
+      <mat-card class="stat-card">
+        <mat-card-content>
+          <div class="stat-icon" style="background: #3b82f6;">
+            <mat-icon>people</mat-icon>
+          </div>
+          <div class="stat-info">
+            <div class="stat-value">{{analytics.totalUsers}}</div>
+            <div class="stat-label">Total Users</div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="stat-card">
+        <mat-card-content>
+          <div class="stat-icon" style="background: #10b981;">
+            <mat-icon>school</mat-icon>
+          </div>
+          <div class="stat-info">
+            <div class="stat-value">{{analytics.students}}</div>
+            <div class="stat-label">Students</div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="stat-card">
+        <mat-card-content>
+          <div class="stat-icon" style="background: #f59e0b;">
+            <mat-icon>badge</mat-icon>
+          </div>
+          <div class="stat-info">
+            <div class="stat-value">{{analytics.mentors}}</div>
+            <div class="stat-label">Mentors</div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="stat-card">
+        <mat-card-content>
+          <div class="stat-icon" style="background: #8b5cf6;">
+            <mat-icon>folder</mat-icon>
+          </div>
+          <div class="stat-info">
+            <div class="stat-value">{{analytics.totalProjects}}</div>
+            <div class="stat-label">Projects</div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="stat-card">
+        <mat-card-content>
+          <div class="stat-icon" style="background: #ec4899;">
+            <mat-icon>groups</mat-icon>
+          </div>
+          <div class="stat-info">
+            <div class="stat-value">{{analytics.totalTeams}}</div>
+            <div class="stat-label">Teams</div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="stat-card">
+        <mat-card-content>
+          <div class="stat-icon" style="background: #06b6d4;">
+            <mat-icon>admin_panel_settings</mat-icon>
+          </div>
+          <div class="stat-info">
+            <div class="stat-value">{{analytics.admins}}</div>
+            <div class="stat-label">Admins</div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- Charts -->
+    <div class="charts-grid">
+      <mat-card class="chart-card">
+        <mat-card-header>
+          <mat-card-title>User Registrations (Last 7 Days)</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="chart-container">
+            <canvas id="registrationChart"></canvas>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="chart-card">
+        <mat-card-header>
+          <mat-card-title>Project Creation Trend</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="chart-container">
+            <canvas id="projectChart"></canvas>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- Quick Actions -->
+    <mat-card class="actions-card">
+      <mat-card-header>
+        <mat-card-title>Quick Actions</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="actions-grid">
+          <button mat-raised-button color="primary" routerLink="/admin/users">
+            <mat-icon>people</mat-icon> Manage Users
+          </button>
+          <button mat-raised-button color="accent" routerLink="/admin/projects">
+            <mat-icon>folder</mat-icon> Manage Projects
+          </button>
+          <button mat-raised-button color="warn" routerLink="/admin/teams">
+            <mat-icon>groups</mat-icon> Manage Teams
+          </button>
+          <button mat-raised-button color="accent" routerLink="/admin/buckets">
+            <mat-icon>category</mat-icon> Manage Buckets
+          </button>
+          <button mat-raised-button style="background: #8b5cf6; color: white;" routerLink="/admin/mentor-assignment">
+            <mat-icon>supervisor_account</mat-icon> Assign Mentors
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

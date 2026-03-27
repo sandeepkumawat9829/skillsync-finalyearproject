@@ -1,0 +1,221 @@
+<div class="projects-container">
+  <!-- Header -->
+  <div class="projects-header">
+    <div class="header-content">
+      <h1>Explore <span class="highlight">Projects</span></h1>
+      <p>Browse project ideas, join teams, or start your own</p>
+    </div>
+    <button mat-raised-button color="primary" (click)="createProject()" class="create-button">
+      <mat-icon>add</mat-icon>
+      Create Project
+    </button>
+  </div>
+
+  <!-- Tabs -->
+  <mat-tab-group (selectedIndexChange)="onTabChange($event)" [selectedIndex]="selectedTab">
+    <!-- All Projects Tab -->
+    <mat-tab>
+      <ng-template matTabLabel>
+        <mat-icon class="tab-icon">explore</mat-icon>
+        All Projects
+      </ng-template>
+
+      <div class="tab-content">
+        <!-- Filters -->
+        <div class="filters-section">
+          <mat-form-field appearance="outline" class="search-field">
+            <mat-label>Search projects</mat-label>
+            <input matInput [(ngModel)]="searchQuery" (ngModelChange)="onSearchChange()"
+              placeholder="Search by title or keywords...">
+            <mat-icon matPrefix>search</mat-icon>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Domain</mat-label>
+            <mat-select [(ngModel)]="selectedDomain" (selectionChange)="onDomainChange()">
+              <mat-option *ngFor="let domain of domains" [value]="domain">{{domain.replace('_', ' ')}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Status</mat-label>
+            <mat-select [(ngModel)]="selectedStatus" (selectionChange)="onStatusChange()">
+              <mat-option *ngFor="let status of statuses" [value]="status">{{status}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <!-- Project Cards -->
+        <div class="projects-grid" *ngIf="!loading">
+          <mat-card *ngFor="let project of filteredProjects" class="project-card"
+            (click)="viewProject(project.projectId)">
+            <mat-card-header>
+              <div class="card-header-content">
+                <div class="project-icon">
+                  <mat-icon>{{getDomainIcon(project.domain)}}</mat-icon>
+                </div>
+                <div class="project-header-info">
+                  <mat-card-title>{{project.title}}</mat-card-title>
+                  <mat-card-subtitle>
+                    <span class="author">by {{project.createdByName}}</span>
+                    <span class="date">{{ project.createdAt | date:'MMM d, y'}}</span>
+                  </mat-card-subtitle>
+                </div>
+                <mat-chip class="status-chip" [ngClass]="getStatusColor(project.status)">
+                  {{project.status}}
+                </mat-chip>
+              </div>
+            </mat-card-header>
+
+            <mat-card-content>
+              <p class="project-abstract">{{project.abstractText}}</p>
+
+              <div class="project-technologies">
+                <mat-chip *ngFor="let tech of project.technologies.slice(0, 3)">{{tech}}</mat-chip>
+                <span *ngIf="project.technologies.length > 3" class="more-tech">+{{project.technologies.length - 3}}
+                  more</span>
+              </div>
+            </mat-card-content>
+
+            <mat-card-actions>
+              <button mat-button color="primary" (click)="$event.stopPropagation(); viewProject(project.projectId)">
+                <mat-icon>visibility</mat-icon>
+                View Details
+              </button>
+              <button mat-button *ngIf="project.githubRepoUrl" (click)="openGithub(project.githubRepoUrl, $event)">
+                <mat-icon>code</mat-icon>
+                GitHub
+              </button>
+            </mat-card-actions>
+          </mat-card>
+
+          <!-- Empty State -->
+          <div class="empty-state" *ngIf="filteredProjects.length === 0">
+            <mat-icon>search_off</mat-icon>
+            <p>No projects found matching your criteria</p>
+            <button mat-raised-button color="primary" (click)="createProject()">Create New Project</button>
+          </div>
+        </div>
+
+        <!-- Loading State -->
+        <div class="loading-state" *ngIf="loading">
+          <mat-spinner diameter="50"></mat-spinner>
+          <p>Loading projects...</p>
+        </div>
+      </div>
+    </mat-tab>
+
+    <!-- My Projects Tab -->
+    <mat-tab>
+      <ng-template matTabLabel>
+        <mat-icon class="tab-icon">folder</mat-icon>
+        My Projects
+      </ng-template>
+
+      <div class="tab-content">
+        <div class="projects-grid" *ngIf="!loading">
+          <mat-card *ngFor="let project of filteredProjects" class="project-card">
+            <mat-card-header>
+              <div class="card-header-content">
+                <div class="project-icon">
+                  <mat-icon>{{getDomainIcon(project.domain)}}</mat-icon>
+                </div>
+                <div class="project-header-info">
+                  <mat-card-title>{{project.title}}</mat-card-title>
+                  <mat-card-subtitle>Created {{project.createdAt | date:'MMM d, y'}}</mat-card-subtitle>
+                </div>
+                <mat-chip class="status-chip" [ngClass]="getStatusColor(project.status)">
+                  {{project.status}}
+                </mat-chip>
+              </div>
+            </mat-card-header>
+
+            <mat-card-content>
+              <p class="project-abstract">{{project.abstractText}}</p>
+            </mat-card-content>
+
+            <mat-card-actions>
+              <button mat-button color="primary" (click)="viewProject(project.projectId)">
+                <mat-icon>edit</mat-icon>
+                Edit
+              </button>
+              <button mat-button (click)="viewProject(project.projectId)">
+                <mat-icon>visibility</mat-icon>
+                View
+              </button>
+            </mat-card-actions>
+          </mat-card>
+
+          <div class="empty-state" *ngIf="filteredProjects.length === 0">
+            <mat-icon>folder_open</mat-icon>
+            <p>You haven't created any projects yet</p>
+            <button mat-raised-button color="primary" (click)="createProject()">Create Your First Project</button>
+          </div>
+        </div>
+
+        <div class="loading-state" *ngIf="loading">
+          <mat-spinner diameter="50"></mat-spinner>
+          <p>Loading your projects...</p>
+        </div>
+      </div>
+    </mat-tab>
+
+    <!-- College Buckets Tab -->
+    <mat-tab>
+      <ng-template matTabLabel>
+        <mat-icon class="tab-icon">inventory</mat-icon>
+        College Buckets
+      </ng-template>
+
+      <div class="tab-content">
+        <div class="info-banner">
+          <mat-icon>info</mat-icon>
+          <span>These are pre-approved project ideas posted by the college. Pick one to get started quickly!</span>
+        </div>
+
+        <div class="buckets-grid">
+          <mat-card *ngFor="let bucket of buckets" class="bucket-card">
+            <mat-card-header>
+              <mat-card-title>{{bucket.title}}</mat-card-title>
+              <mat-card-subtitle>{{bucket.department}}</mat-card-subtitle>
+            </mat-card-header>
+
+            <mat-card-content>
+              <p>{{bucket.description}}</p>
+
+              <div class="bucket-info">
+                <div class="info-item">
+                  <mat-icon>school</mat-icon>
+                  <span>{{bucket.department}}</span>
+                </div>
+                <div class="info-item">
+                  <mat-icon>groups</mat-icon>
+                  <span>{{bucket.allocatedTeams}}/{{bucket.maxTeams}} teams allocated</span>
+                </div>
+                <div class="info-item">
+                  <mat-icon>calendar_today</mat-icon>
+                  <span>Deadline: {{bucket.deadline | date:'MMM d'}}</span>
+                </div>
+              </div>
+
+              <div class="bucket-technologies">
+                <mat-chip *ngFor="let tech of bucket.technologies">{{tech}}</mat-chip>
+              </div>
+
+              <mat-chip class="difficulty-chip" [ngClass]="getDifficultyClass(bucket.difficultyLevel)">
+                {{bucket.difficultyLevel}}
+              </mat-chip>
+            </mat-card-content>
+
+            <mat-card-actions>
+              <button mat-raised-button color="primary" [disabled]="!bucket.isAvailable" (click)="selectBucket(bucket)">
+                <mat-icon>add</mat-icon>
+                Select This Bucket
+              </button>
+            </mat-card-actions>
+          </mat-card>
+        </div>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>

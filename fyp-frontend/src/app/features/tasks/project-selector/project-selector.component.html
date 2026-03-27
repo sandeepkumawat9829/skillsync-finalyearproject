@@ -1,0 +1,51 @@
+<div class="selector-container">
+  <!-- Header -->
+  <div class="selector-header">
+    <button mat-icon-button (click)="goBack()" class="back-button">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <div>
+      <h1>Select a <span class="highlight">{{ isMentorView ? 'Workspace' : 'Project' }}</span></h1>
+      <p>{{ isMentorView ? "Choose an assigned team workspace to open its Kanban board" : "Choose which project's tasks you want to manage" }}</p>
+    </div>
+  </div>
+
+  <!-- Projects Grid -->
+  <div class="projects-grid" *ngIf="!loading && projects.length > 0">
+    <mat-card *ngFor="let project of projects" class="project-card" (click)="selectProject(project)">
+      <div class="project-icon">
+        <mat-icon>{{ isMentorView ? 'workspace_premium' : 'folder' }}</mat-icon>
+      </div>
+      <mat-card-header>
+        <mat-card-title>{{project.title}}</mat-card-title>
+        <mat-card-subtitle>{{project.domain || (isMentorView ? 'Mentor Assignment' : 'Project Workspace')}}</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <p>{{project.abstractText}}</p>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-button color="primary">
+          <mat-icon>task</mat-icon>
+          View Tasks
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="!loading && projects.length === 0">
+    <mat-icon>folder_off</mat-icon>
+    <h2>{{ isMentorView ? 'No assigned workspaces yet' : 'No projects yet' }}</h2>
+    <p>{{ emptyStateMessage }}</p>
+    <button mat-raised-button color="primary" [routerLink]="emptyStateRoute">
+      <mat-icon>{{ isMentorView ? 'groups' : 'add' }}</mat-icon>
+      {{ emptyStateAction }}
+    </button>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-state" *ngIf="loading">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>{{ isMentorView ? 'Loading assigned workspaces...' : 'Loading your projects...' }}</p>
+  </div>
+</div>

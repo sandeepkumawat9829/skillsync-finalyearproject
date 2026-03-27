@@ -1,0 +1,234 @@
+<div class="team-view-container" *ngIf="!loading && team">
+  <!-- Header -->
+  <div class="team-header">
+    <button mat-icon-button (click)="goBack()" class="back-button">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <div class="header-content">
+      <div class="title-section">
+        <div class="team-icon">
+          <mat-icon>groups</mat-icon>
+        </div>
+        <div>
+          <h1>{{team.teamName}}</h1>
+          <p class="project-title" (click)="viewProject()">
+            <mat-icon>folder</mat-icon>
+            {{team.projectTitle}}
+          </p>
+        </div>
+      </div>
+      <mat-chip class="status-chip" [ngClass]="getStatusColor(team.status)">
+        {{team.status}}
+      </mat-chip>
+    </div>
+    <div class="header-actions" *ngIf="isTeamLeader()">
+      <button mat-raised-button color="primary" (click)="toggleInviteForm()" *ngIf="!team.isComplete">
+        <mat-icon>person_add</mat-icon>
+        Invite Member
+      </button>
+      <button mat-button [matMenuTriggerFor]="menu">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item (click)="deleteTeam()">
+          <mat-icon>delete</mat-icon>
+          <span>Delete Team</span>
+        </button>
+      </mat-menu>
+    </div>
+  </div>
+
+  <!-- Invite Form -->
+  <mat-card class="invite-card" *ngIf="showInviteForm && isTeamLeader()">
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon>mail</mat-icon>
+        Send Invitation
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <form [formGroup]="inviteForm" (ngSubmit)="sendInvitation()">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Email Address</mat-label>
+          <input matInput formControlName="email" type="email" placeholder="student@example.com">
+          <mat-icon matPrefix>email</mat-icon>
+          <mat-error *ngIf="inviteForm.get('email')?.hasError('required')">
+            Email is required
+          </mat-error>
+          <mat-error *ngIf="inviteForm.get('email')?.hasError('email')">
+            Please enter a valid email
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Invitation Message</mat-label>
+          <textarea matInput formControlName="message" rows="3"></textarea>
+        </mat-form-field>
+
+        <div class="form-actions">
+          <button type="button" mat-button (click)="toggleInviteForm()">Cancel</button>
+          <button type="submit" mat-raised-button color="primary" [disabled]="inviteForm.invalid || isInviting">
+            <mat-icon>{{isInviting ? 'hourglass_empty' : 'send'}}</mat-icon>
+            {{isInviting ? 'Sending...' : 'Send Invitation'}}
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Main Content -->
+  <div class="team-content">
+    <!-- Team Info Sidebar -->
+    <div class="team-sidebar">
+      <mat-card class="info-card">
+        <mat-card-header>
+          <mat-card-title>Team Information</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="info-item">
+            <mat-icon>group</mat-icon>
+            <div>
+              <span class="info-label">Team Size</span>
+              <span class="info-value">{{team.currentMemberCount}} / {{team.maxMembers}} members</span>
+            </div>
+          </div>
+
+          <div class="progress-section">
+            <mat-progress-bar mode="determinate" [value]="getMemberProgress()"
+              [color]="team.isComplete ? 'primary' : 'accent'">
+            </mat-progress-bar>
+            <span class="progress-text">{{getMemberProgress() | number:'1.0-0'}}% Full</span>
+          </div>
+
+          <div class="info-item">
+            <mat-icon>folder</mat-icon>
+            <div>
+              <span class="info-label">Status</span>
+              <span class="info-value">{{team.status}}</span>
+            </div>
+          </div>
+
+          <div class="info-item">
+            <mat-icon>calendar_today</mat-icon>
+            <div>
+              <span class="info-label">Created</span>
+              <span class="info-value">{{team.createdAt | date:'mediumDate'}}</span>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="action-card" *ngIf="isTeamLeader()">
+        <mat-card-header>
+          <mat-card-title>Quick Actions</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <button mat-raised-button class="action-button" (click)="viewProject()">
+            <mat-icon>visibility</mat-icon>
+            View Project
+          </button>
+          <button mat-raised-button class="action-button" (click)="toggleInviteForm()" *ngIf="!team.isComplete">
+            <mat-icon>person_add</mat-icon>
+            Invite Member
+          </button>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Join Requests for Team Leader -->
+      <mat-card class="requests-card" *ngIf="isTeamLeader() && joinRequests.length > 0">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>group_add</mat-icon>
+            Join Requests ({{joinRequests.length}})
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="requests-list">
+            <div *ngFor="let request of joinRequests" class="request-item">
+              <div class="request-info">
+                <div class="requester-avatar">
+                  <mat-icon>person</mat-icon>
+                </div>
+                <div class="requester-details">
+                  <span class="requester-name">{{request.fromUserName || 'User'}}</span>
+                  <span class="request-message">{{request.message}}</span>
+                </div>
+              </div>
+              <div class="request-actions">
+                <button mat-raised-button color="primary" (click)="acceptJoinRequest(request)">
+                  <mat-icon>check</mat-icon>
+                  Accept
+                </button>
+                <button mat-button color="warn" (click)="rejectJoinRequest(request)">
+                  <mat-icon>close</mat-icon>
+                  Reject
+                </button>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Team Skill Graph -->
+      <app-skill-graph *ngIf="team.teamId" [teamId]="team.teamId"></app-skill-graph>
+    </div>
+
+    <!-- Members List -->
+    <div class="members-section">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>people</mat-icon>
+            Team Members ({{team.members.length}})
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="members-list">
+            <div *ngFor="let member of team.members" class="member-item">
+              <div class="member-avatar">
+                <mat-icon>person</mat-icon>
+              </div>
+              <div class="member-info">
+                <div class="member-name">
+                  {{member.fullName}}
+                  <mat-chip class="role-chip" [color]="getRoleColor(member.role)">
+                    {{member.role}}
+                  </mat-chip>
+                </div>
+                <div class="member-email">{{member.email}}</div>
+                <div class="member-meta">
+                  <span>
+                    <mat-icon>calendar_today</mat-icon>
+                    Joined {{member.joinedAt | date:'shortDate'}}
+                  </span>
+                  <span *ngIf="member.contributionScore">
+                    <mat-icon>star</mat-icon>
+                    Score: {{member.contributionScore}}
+                  </span>
+                </div>
+              </div>
+              <button mat-icon-button *ngIf="isTeamLeader() && member.role !== 'LEADER'" (click)="removeMember(member)"
+                class="remove-button">
+                <mat-icon>remove_circle</mat-icon>
+              </button>
+            </div>
+          </div>
+
+          <!-- Empty slots -->
+          <div class="empty-slots" *ngIf="!team.isComplete">
+            <div class="empty-slot" *ngFor="let i of [].constructor(team.maxMembers - team.currentMemberCount)">
+              <mat-icon>person_add</mat-icon>
+              <span>Open Slot</span>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</div>
+
+<!-- Loading State -->
+<div class="loading-container" *ngIf="loading">
+  <mat-spinner diameter="50"></mat-spinner>
+  <p>Loading team details...</p>
+</div>

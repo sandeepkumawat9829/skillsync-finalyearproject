@@ -1,0 +1,98 @@
+<div class="teams-container">
+  <!-- Header -->
+  <div class="teams-header">
+    <div>
+      <h1>My <span class="highlight">Teams</span></h1>
+      <p>Manage your project teams and collaborations</p>
+    </div>
+    <button mat-raised-button color="primary" (click)="createTeam()" *ngIf="isProjectOwner">
+      <mat-icon>add</mat-icon>
+      Create Team
+    </button>
+  </div>
+
+  <!-- Teams Grid -->
+  <div class="teams-grid" *ngIf="!loading && teams.length > 0">
+    <mat-card *ngFor="let team of teams" class="team-card" (click)="viewTeam(team.teamId)">
+      <mat-card-header>
+        <div class="card-header-content">
+          <div class="team-icon">
+            <mat-icon>groups</mat-icon>
+          </div>
+          <div class="team-info">
+            <mat-card-title>{{team.teamName}}</mat-card-title>
+            <mat-card-subtitle>{{team.projectTitle}}</mat-card-subtitle>
+          </div>
+          <mat-chip class="status-chip" [ngClass]="getStatusColor(team.status)">
+            {{team.status}}
+          </mat-chip>
+        </div>
+      </mat-card-header>
+
+      <mat-card-content>
+        <!-- Member Progress -->
+        <div class="members-section">
+          <div class="members-header">
+            <span class="members-label">Team Members</span>
+            <span class="members-count">{{team.currentMemberCount}}/{{team.maxMembers}}</span>
+          </div>
+          <mat-progress-bar mode="determinate" [value]="getMemberProgress(team)"
+            [color]="team.isComplete ? 'primary' : 'accent'">
+          </mat-progress-bar>
+        </div>
+
+        <!-- Member Avatars -->
+        <div class="members-avatars">
+          <div class="avatar" *ngFor="let member of team.members.slice(0, 4)">
+            <mat-icon>person</mat-icon>
+          </div>
+          <div class="avatar more" *ngIf="team.members.length > 4">
+            +{{team.members.length - 4}}
+          </div>
+        </div>
+
+        <!-- Team Leader Badge -->
+        <div class="team-leader" *ngIf="isTeamLeader(team)">
+          <mat-icon>stars</mat-icon>
+          <span>You are the team leader</span>
+        </div>
+      </mat-card-content>
+
+      <mat-card-actions>
+        <button mat-button color="primary" (click)="viewTeam(team.teamId); $event.stopPropagation()">
+          <mat-icon>visibility</mat-icon>
+          View Team
+        </button>
+        <!-- Invite button only for team leaders -->
+        <button mat-button *ngIf="canShowInvite(team)" (click)="inviteMembers(team); $event.stopPropagation()">
+          <mat-icon>person_add</mat-icon>
+          Invite
+        </button>
+        <!-- Request to Join button for non-members viewing project teams -->
+        <button mat-button color="accent" *ngIf="canShowRequestJoin(team)"
+          (click)="requestToJoin(team); $event.stopPropagation()">
+          <mat-icon>group_add</mat-icon>
+          Request to Join
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="!loading && teams.length === 0">
+    <mat-icon>group_off</mat-icon>
+    <h2>No teams yet</h2>
+    <p *ngIf="isProjectOwner">Create a team to start collaborating on your projects</p>
+    <p *ngIf="!isProjectOwner">This project doesn't have a team yet</p>
+    <button mat-raised-button color="primary" (click)="createTeam()" *ngIf="isProjectOwner">
+      <mat-icon>add</mat-icon>
+      Create Your First Team
+    </button>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-state" *ngIf="loading">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Loading your teams...</p>
+  </div>
+</div>

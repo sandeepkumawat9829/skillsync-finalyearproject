@@ -1,0 +1,232 @@
+.invitations-container {
+    padding: 32px;
+    background: #f7f7f5;
+    min-height: 100vh;
+}
+
+.invitations-header {
+    margin-bottom: 24px;
+
+    h1 {
+        font-size: 36px;
+        font-weight: 800;
+        color: #1b1b1b;
+        margin: 0 0 8px 0;
+
+        .highlight {
+            background: linear-gradient(135deg, #ff5754, #ff9a76);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+    }
+
+    p {
+        font-size: 16px;
+        color: #6b7280;
+        margin: 0;
+    }
+}
+
+.filter-card {
+    margin-bottom: 20px;
+    border-radius: 16px !important;
+    box-shadow: 0 2px 12px rgba(27, 27, 27, 0.06) !important;
+    padding: 16px !important;
+}
+
+.invitations-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.invitation-card {
+    border-radius: 16px !important;
+    box-shadow: 0 2px 12px rgba(27, 27, 27, 0.08) !important;
+    border: 2px solid transparent !important;
+    transition: all 0.3s ease;
+
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(255, 87, 84, 0.15) !important;
+        border-color: #ff5754 !important;
+    }
+
+    .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        padding: 20px 20px 16px 20px;
+        border-bottom: 1px solid rgba(27, 27, 27, 0.06);
+    }
+
+    .team-info {
+        display: flex;
+        gap: 16px;
+        flex: 1;
+
+        .team-icon {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, rgba(189, 186, 255, 0.15), rgba(157, 153, 255, 0.15));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+
+            mat-icon {
+                color: #bdbaff;
+                font-size: 32px;
+                width: 32px;
+                height: 32px;
+            }
+        }
+
+        h3 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1b1b1b;
+            margin: 0 0 4px 0;
+        }
+
+        .project-title {
+            font-size: 14px;
+            color: #6b7280;
+            margin: 0;
+        }
+    }
+
+    .status-chip {
+        font-size: 11px !important;
+        font-weight: 700 !important;
+        height: 24px !important;
+
+        &.pending {
+            background: #fef3c7 !important;
+            color: #92400e !important;
+        }
+
+        &.accepted {
+            background: #d1fae5 !important;
+            color: #065f46 !important;
+        }
+
+        &.rejected {
+            background: #fee2e2 !important;
+            color: #991b1b !important;
+        }
+    }
+
+    mat-card-content {
+        padding: 20px !important;
+    }
+
+    .invitation-details {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: #6b7280;
+
+            mat-icon {
+                font-size: 18px;
+                width: 18px;
+                height: 18px;
+                color: #ff5754;
+            }
+
+            strong {
+                color: #1b1b1b;
+            }
+        }
+
+        .message {
+            display: flex;
+            gap: 8px;
+            padding: 12px;
+            background: rgba(189, 186, 255, 0.08);
+            border-radius: 8px;
+            margin-top: 8px;
+
+            mat-icon {
+                font-size: 18px;
+                width: 18px;
+                height: 18px;
+                color: #bdbaff;
+                flex-shrink: 0;
+            }
+
+            p {
+                font-size: 14px;
+                color: #374151;
+                margin: 0;
+                line-height: 1.6;
+            }
+        }
+    }
+
+    mat-card-actions {
+        padding: 12px 20px !important;
+        border-top: 1px solid rgba(27, 27, 27, 0.06);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        button mat-icon {
+            margin-right: 8px;
+        }
+
+        .responded-info {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: #6b7280;
+
+            mat-icon {
+                font-size: 16px;
+                width: 16px;
+                height: 16px;
+            }
+        }
+    }
+}
+
+.empty-state,
+.loading-state {
+    text-align: center;
+    padding: 80px 20px;
+
+    mat-icon {
+        font-size: 64px;
+        width: 64px;
+        height: 64px;
+        color: #d1d5db;
+        margin-bottom: 16px;
+    }
+
+    h2 {
+        font-size: 24px;
+        font-weight: 700;
+        color: #1b1b1b;
+        margin-bottom: 8px;
+    }
+
+    p {
+        font-size: 16px;
+        color: #6b7280;
+        margin: 0;
+    }
+}

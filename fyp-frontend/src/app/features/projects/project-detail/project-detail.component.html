@@ -1,0 +1,298 @@
+<div class="project-detail-container" *ngIf="!loading && project">
+  <!-- Header -->
+  <div class="detail-header">
+    <button mat-icon-button (click)="goBack()" class="back-button">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <div class="header-content">
+      <div class="title-section">
+        <h1>{{project.title}}</h1>
+        <mat-chip class="status-chip" [ngClass]="getStatusColor(project.status)">
+          {{project.status}}
+        </mat-chip>
+      </div>
+      <div class="meta-info">
+        <div class="meta-item">
+          <mat-icon>person</mat-icon>
+          <span>Created by {{project.createdByName}}</span>
+        </div>
+        <div class="meta-item">
+          <mat-icon>calendar_today</mat-icon>
+          <span>{{formatDate(project.createdAt)}}</span>
+        </div>
+        <div class="meta-item">
+          <mat-icon>{{getDomainIcon(project.domain)}}</mat-icon>
+          <span>{{project.domain.replace('_', ' ')}}</span>
+        </div>
+        <div class="meta-item" *ngIf="project.visibility">
+          <mat-icon>{{project.visibility === 'PUBLIC' ? 'public' : 'lock'}}</mat-icon>
+          <span>{{project.visibility}}</span>
+        </div>
+      </div>
+    </div>
+    <div class="header-actions" *ngIf="isOwner">
+      <button mat-raised-button color="primary" (click)="createTeam()">
+        <mat-icon>group_add</mat-icon>
+        {{manageTeamLabel}}
+      </button>
+      <button mat-button [matMenuTriggerFor]="menu">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item (click)="editProject()">
+          <mat-icon>edit</mat-icon>
+          <span>Edit Project</span>
+        </button>
+        <button mat-menu-item (click)="deleteProject()">
+          <mat-icon>delete</mat-icon>
+          <span>Delete Project</span>
+        </button>
+      </mat-menu>
+    </div>
+  </div>
+
+  <!-- Restriction Notice -->
+  <mat-card class="restriction-notice" *ngIf="isRestricted">
+    <mat-icon>lock</mat-icon>
+    <div>
+      <h3>Protected Content</h3>
+      <p>This project's detailed information is protected. Only the project owner, team members, and assigned mentors
+        can view full details.</p>
+    </div>
+  </mat-card>
+
+  <!-- Main Content -->
+  <div class="detail-content">
+    <div class="content-main">
+      <!-- Abstract -->
+      <mat-card class="section-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>description</mat-icon>
+            Abstract
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <p>{{project.abstractText}}</p>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Problem Statement -->
+      <mat-card class="section-card" *ngIf="project.problemStatement">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>lightbulb</mat-icon>
+            Problem Statement
+            <mat-icon *ngIf="isRestricted" class="lock-icon">lock</mat-icon>
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <p *ngIf="!isRestricted">{{project.problemStatement}}</p>
+          <div *ngIf="isRestricted" class="protected-message">
+            <mat-icon>lock_outline</mat-icon>
+            <p>This information is protected and only visible to authorized users.</p>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Objectives -->
+      <mat-card class="section-card" *ngIf="project.objectives">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>target</mat-icon>
+            Objectives
+            <mat-icon *ngIf="isRestricted" class="lock-icon">lock</mat-icon>
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <p *ngIf="!isRestricted">{{project.objectives}}</p>
+          <div *ngIf="isRestricted" class="protected-message">
+            <mat-icon>lock_outline</mat-icon>
+            <p>This information is protected and only visible to authorized users.</p>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Methodology -->
+      <mat-card class="section-card" *ngIf="project.methodology">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>science</mat-icon>
+            Methodology
+            <mat-icon *ngIf="isRestricted" class="lock-icon">lock</mat-icon>
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <p *ngIf="!isRestricted">{{project.methodology}}</p>
+          <div *ngIf="isRestricted" class="protected-message">
+            <mat-icon>lock_outline</mat-icon>
+            <p>This information is protected and only visible to authorized users.</p>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Expected Outcome -->
+      <mat-card class="section-card" *ngIf="project.expectedOutcome">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>emoji_events</mat-icon>
+            Expected Outcome
+            <mat-icon *ngIf="isRestricted" class="lock-icon">lock</mat-icon>
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <p *ngIf="!isRestricted">{{project.expectedOutcome}}</p>
+          <div *ngIf="isRestricted" class="protected-message">
+            <mat-icon>lock_outline</mat-icon>
+            <p>This information is protected and only visible to authorized users.</p>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Technologies -->
+      <mat-card class="section-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>code</mat-icon>
+            Technologies & Tools
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="tech-chips">
+            <mat-chip *ngFor="let tech of project.technologies">{{tech}}</mat-chip>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- GitHub Repository -->
+      <mat-card class="section-card" *ngIf="project.githubRepoUrl">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>code</mat-icon>
+            Source Code
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <a [href]="project.githubRepoUrl" target="_blank" class="github-link">
+            <mat-icon>open_in_new</mat-icon>
+            View on GitHub
+          </a>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="content-sidebar">
+      <!-- Quick Actions -->
+      <mat-card class="action-card">
+        <mat-card-header>
+          <mat-card-title>Quick Actions</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <button mat-raised-button color="primary" (click)="createTeam()" class="action-button" *ngIf="isOwner">
+            <mat-icon>group_add</mat-icon>
+            {{manageTeamLabel}}
+          </button>
+          <button mat-raised-button (click)="findMentor()" class="action-button" *ngIf="isOwner" [disabled]="!canRequestMentor">
+            <mat-icon>school</mat-icon>
+            {{project?.hasMentor ? 'Mentor Assigned' : 'Find Mentor'}}
+          </button>
+          <button mat-raised-button (click)="viewTeam()" class="action-button">
+            <mat-icon>groups</mat-icon>
+            {{team?.teamId ? 'View Team' : 'View Teams'}}
+          </button>
+          <button
+            mat-raised-button
+            color="accent"
+            class="action-button"
+            *ngIf="canRequestJoin"
+            [disabled]="requestingJoin"
+            (click)="requestToJoinTeam()">
+            <mat-icon>person_add</mat-icon>
+            {{ requestingJoin ? 'Sending...' : 'Request to Join Team' }}
+          </button>
+          <button
+            mat-raised-button
+            color="accent"
+            class="action-button"
+            *ngIf="!canRequestJoin && joinRequestAlreadySent"
+            disabled>
+            <mat-icon>check</mat-icon>
+            Request Sent
+          </button>
+          <ng-container *ngIf="showTeamWorkspaceActions">
+            <button mat-raised-button [routerLink]="['/student/projects', projectId, 'documents']" class="action-button">
+              <mat-icon>folder</mat-icon>
+              View Documents
+            </button>
+            <button mat-raised-button [routerLink]="['/student/tasks/board']" [queryParams]="{projectId: projectId}" class="action-button">
+              <mat-icon>view_kanban</mat-icon>
+              Kanban Board
+            </button>
+            <button mat-raised-button [routerLink]="['/student/projects', projectId, 'issues']" class="action-button">
+              <mat-icon>bug_report</mat-icon>
+              View Issues
+            </button>
+          </ng-container>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Project Stats -->
+      <mat-card class="stats-card">
+        <mat-card-header>
+          <mat-card-title>Project Info</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="stat-item">
+            <mat-icon>folder</mat-icon>
+            <div>
+              <span class="stat-label">Status</span>
+              <span class="stat-value">{{project.status}}</span>
+            </div>
+          </div>
+          <div class="stat-item">
+            <mat-icon>{{getDomainIcon(project.domain)}}</mat-icon>
+            <div>
+              <span class="stat-label">Domain</span>
+              <span class="stat-value">{{project.domain.replace('_', ' ')}}</span>
+            </div>
+          </div>
+          <div class="stat-item">
+            <mat-icon>code</mat-icon>
+            <div>
+              <span class="stat-label">Technologies</span>
+              <span class="stat-value">{{project.technologies.length}} tools</span>
+            </div>
+          </div>
+          <div class="stat-item" *ngIf="project.teamName">
+            <mat-icon>groups</mat-icon>
+            <div>
+              <span class="stat-label">Team</span>
+              <span class="stat-value">{{project.teamName}} ({{project.teamMemberCount || 0}} members)</span>
+            </div>
+          </div>
+          <div class="stat-item" *ngIf="project.mentorName">
+            <mat-icon>school</mat-icon>
+            <div>
+              <span class="stat-label">Mentor</span>
+              <span class="stat-value">{{project.mentorName}}</span>
+            </div>
+          </div>
+          <div class="stat-item">
+            <mat-icon>{{project.visibility === 'PUBLIC' ? 'public' : 'lock'}}</mat-icon>
+            <div>
+              <span class="stat-label">Visibility</span>
+              <span class="stat-value">{{project.visibility}}</span>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</div>
+
+<!-- Loading State -->
+<div class="loading-container" *ngIf="loading">
+  <mat-spinner diameter="50"></mat-spinner>
+  <p>Loading project details...</p>
+</div>

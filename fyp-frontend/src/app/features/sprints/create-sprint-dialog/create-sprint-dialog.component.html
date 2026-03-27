@@ -1,0 +1,66 @@
+<h2 mat-dialog-title>
+  <mat-icon>add_circle</mat-icon>
+  Create New Sprint
+</h2>
+
+<mat-dialog-content>
+  <div class="form-content">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Sprint Name</mat-label>
+      <input matInput [(ngModel)]="sprintName" required>
+      <mat-hint>e.g., Sprint 5</mat-hint>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Sprint Goal</mat-label>
+      <textarea matInput 
+                [(ngModel)]="sprintGoal"
+                rows="3"
+                required
+                minlength="10"
+                placeholder="Describe the main objective of this sprint..."></textarea>
+      <mat-hint>Minimum 10 characters ({{sprintGoal.length}}/10)</mat-hint>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Start Date</mat-label>
+      <input matInput 
+             [matDatepicker]="picker"
+             [(ngModel)]="startDate"
+             [min]="minDate"
+             required>
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Duration</mat-label>
+      <mat-select [(ngModel)]="durationWeeks">
+        <mat-option *ngFor="let duration of durations" [value]="duration.value">
+          {{duration.label}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <div class="date-display" *ngIf="startDate">
+      <mat-icon>event</mat-icon>
+      <div>
+        <strong>Sprint Period</strong>
+        <p>{{formatDate(startDate)}} - {{formatDate(endDate)}}</p>
+      </div>
+    </div>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="cancel()" [disabled]="saving">
+    Cancel
+  </button>
+  <button mat-raised-button 
+          color="primary"
+          (click)="createSprint()"
+          [disabled]="!isValid || saving">
+    <mat-spinner *ngIf="saving" diameter="20"></mat-spinner>
+    <span *ngIf="!saving">Create Sprint</span>
+  </button>
+</mat-dialog-actions>

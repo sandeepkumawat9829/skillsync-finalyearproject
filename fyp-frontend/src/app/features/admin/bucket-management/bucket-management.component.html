@@ -1,0 +1,67 @@
+<div class="management-container">
+  <div class="page-header">
+    <h1><mat-icon>category</mat-icon> Bucket Management</h1>
+    <div class="header-actions">
+      <!-- Future: Add new bucket button could go here -->
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="loading">
+    <mat-spinner></mat-spinner>
+  </div>
+
+  <div class="buckets-grid" *ngIf="!loading">
+    <mat-card *ngFor="let bucket of buckets" class="bucket-card">
+      <mat-card-header>
+        <div mat-card-avatar class="bucket-avatar" [class]="getDifficultyColor(bucket.difficulty)">
+          <mat-icon>folder_special</mat-icon>
+        </div>
+        <mat-card-title>{{bucket.title}}</mat-card-title>
+        <mat-card-subtitle>{{bucket.department}}</mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+        <p class="description">{{bucket.description}}</p>
+
+        <div class="bucket-meta">
+          <div class="meta-item">
+            <mat-icon>event</mat-icon>
+            <span>Deadline: {{bucket.deadline | date:'MMM dd, yyyy'}}</span>
+          </div>
+          <div class="meta-item">
+            <mat-icon>group</mat-icon>
+            <span>{{bucket.allocatedTeams}}/{{bucket.maxTeams}} Teams</span>
+          </div>
+        </div>
+
+        <div class="technologies">
+          <span *ngFor="let tech of bucket.technologies" class="tech-badge">{{tech}}</span>
+        </div>
+
+        <div class="bucket-status-strip">
+          <span class="difficulty-badge" [class]="getDifficultyColor(bucket.difficulty)">
+            {{bucket.difficulty}}
+          </span>
+          <span class="status-badge" [class.active]="bucket.isAvailable" [class.inactive]="!bucket.isAvailable">
+            {{bucket.isAvailable ? 'Available' : 'Full / Unavailable'}}
+          </span>
+        </div>
+      </mat-card-content>
+
+      <mat-card-actions>
+        <button mat-stroked-button color="primary" (click)="toggleAvailability(bucket)">
+          <mat-icon>{{bucket.isAvailable ? 'block' : 'check_circle'}}</mat-icon>
+          {{bucket.isAvailable ? 'Mark Full' : 'Make Available'}}
+        </button>
+        <button mat-icon-button color="warn" (click)="deleteBucket(bucket.bucketId)" matTooltip="Delete Bucket">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+
+  <div *ngIf="!loading && buckets.length === 0" class="empty-state custom-empty">
+    <mat-icon>folder_off</mat-icon>
+    <p>No project buckets found</p>
+  </div>
+</div>

@@ -1,0 +1,146 @@
+<div class="management-container">
+  <div class="page-header">
+    <h1><mat-icon>supervisor_account</mat-icon> HOD Mentor Assignment</h1>
+    <div class="header-actions">
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading">
+    <mat-spinner diameter="40"></mat-spinner>
+    <p>Loading teams...</p>
+  </div>
+
+  <mat-card *ngIf="!loading" class="data-card">
+    <div class="card-header-inner">
+      <h2>Teams Awaiting Mentors</h2>
+      <span class="count-badge" *ngIf="teamsWithoutMentor.length > 0">{{teamsWithoutMentor.length}} found</span>
+    </div>
+
+    <!-- No Teams Message -->
+    <div *ngIf="teamsWithoutMentor.length === 0" class="empty-state custom-empty">
+      <mat-icon class="success-icon">check_circle</mat-icon>
+      <h3>All teams have mentors!</h3>
+      <p>There are no teams waiting for mentor assignment.</p>
+    </div>
+
+    <!-- Teams Table -->
+    <table mat-table [dataSource]="teamsWithoutMentor" class="data-table" *ngIf="teamsWithoutMentor.length > 0">
+      <!-- Team Name Column -->
+      <ng-container matColumnDef="teamName">
+        <th mat-header-cell *matHeaderCellDef>Team Name</th>
+        <td mat-cell *matCellDef="let team">
+          <strong>{{team.teamName || 'Unnamed Team'}}</strong>
+        </td>
+      </ng-container>
+
+      <!-- Project Title Column -->
+      <ng-container matColumnDef="projectTitle">
+        <th mat-header-cell *matHeaderCellDef>Project</th>
+        <td mat-cell *matCellDef="let team">{{team.projectTitle}}</td>
+      </ng-container>
+
+      <!-- Team Leader Column -->
+      <ng-container matColumnDef="teamLeader">
+        <th mat-header-cell *matHeaderCellDef>Team Leader</th>
+        <td mat-cell *matCellDef="let team">{{team.teamLeaderName}}</td>
+      </ng-container>
+
+      <!-- Members Column -->
+      <ng-container matColumnDef="members">
+        <th mat-header-cell *matHeaderCellDef>Members</th>
+        <td mat-cell *matCellDef="let team">
+          <div class="member-count">
+            <mat-icon>group</mat-icon>
+            {{team.currentMemberCount}}/{{team.maxMembers}}
+          </div>
+        </td>
+      </ng-container>
+
+      <!-- Status Column -->
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef>Status</th>
+        <td mat-cell *matCellDef="let team">
+          <span class="status-badge" [class.active]="team.status === 'COMPLETE' || team.status === 'MENTOR_REQUESTED'">
+            {{team.status}}
+          </span>
+        </td>
+      </ng-container>
+
+      <!-- Actions Column -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let team">
+          <button mat-raised-button color="primary" (click)="openAssignDialog(team)" class="assign-btn">
+            <mat-icon>person_add</mat-icon>
+            Assign Mentor
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </mat-card>
+
+  <!-- Assign Mentor Dialog Overlay -->
+  <div *ngIf="selectedTeamId" class="dialog-overlay" (click)="closeDialog()">
+    <mat-card class="assign-dialog" (click)="$event.stopPropagation()">
+      <div class="dialog-header">
+        <h2>Force Assign Mentor</h2>
+        <button mat-icon-button (click)="closeDialog()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+      
+      <mat-card-content>
+        <div class="team-info-box">
+          <div class="info-row">
+            <mat-icon>groups</mat-icon>
+            <div>
+              <span class="label">Team</span>
+              <strong>{{getSelectedTeam()?.teamName}}</strong>
+            </div>
+          </div>
+          <div class="info-row">
+            <mat-icon>folder</mat-icon>
+            <div>
+              <span class="label">Project</span>
+              <strong>{{getSelectedTeam()?.projectTitle}}</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="mentor-selection">
+          <label>Select a Mentor</label>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-select [(value)]="selectedMentorId" placeholder="Choose Mentor">
+              <mat-option *ngFor="let mentor of availableMentors" [value]="mentor.userId">
+                <div class="mentor-option">
+                  <span>{{mentor.fullName}} ({{mentor.department}})</span>
+                  <span class="capacity-badge" [class.full]="mentor.currentStudents >= mentor.maxStudents">
+                    {{mentor.currentStudents}}/{{mentor.maxStudents}} load
+                  </span>
+                </div>
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <div *ngIf="availableMentors.length === 0" class="no-mentors-warning">
+            <mat-icon>warning</mat-icon>
+            <span>No mentors currently available to take on more projects.</span>
+          </div>
+        </div>
+      </mat-card-content>
+      
+      <div class="dialog-actions">
+        <button mat-button (click)="closeDialog()">Cancel</button>
+        <button mat-raised-button color="primary" [disabled]="!selectedMentorId || assigning" (click)="assignMentor()">
+          <mat-icon *ngIf="!assigning">check_circle</mat-icon>
+          <mat-spinner *ngIf="assigning" diameter="20"></mat-spinner>
+          <span>{{assigning ? 'Assigning...' : 'Confirm Assignment'}}</span>
+        </button>
+      </div>
+    </mat-card>
+  </div>
+</div>
