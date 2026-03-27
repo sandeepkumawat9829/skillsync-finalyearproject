@@ -48,7 +48,7 @@ describe('ShowcaseService', () => {
                 expect(showcases.length).toBe(1);
             });
 
-            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/showcase?page=0&size=12&sortBy=recent');
+            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/showcase?page=0&size=12&sortBy=recent');
             expect(req.request.method).toBe('GET');
             req.flush([mockShowcase]);
         });
@@ -56,7 +56,7 @@ describe('ShowcaseService', () => {
         it('should fetch gallery with custom parameters', () => {
             service.getGallery(1, 20, 'popular').subscribe();
 
-            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/showcase?page=1&size=20&sortBy=popular');
+            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/showcase?page=1&size=20&sortBy=popular');
             expect(req.request.method).toBe('GET');
             req.flush([mockShowcase]);
         });
@@ -68,7 +68,7 @@ describe('ShowcaseService', () => {
                 expect(showcase).toEqual(mockShowcase);
             });
 
-            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/showcase/1');
+            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/showcase/1');
             expect(req.request.method).toBe('GET');
             req.flush(mockShowcase);
         });
@@ -86,7 +86,7 @@ describe('ShowcaseService', () => {
                 expect(result).toEqual(mockShowcase);
             });
 
-            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/showcase/projects/1/publish');
+            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/showcase/projects/1/publish');
             expect(req.request.method).toBe('POST');
             expect(req.request.body).toEqual(request);
             req.flush(mockShowcase);
@@ -99,7 +99,7 @@ describe('ShowcaseService', () => {
                 expect(result.liked).toBeTrue();
             });
 
-            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/showcase/1/like');
+            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/showcase/1/like');
             expect(req.request.method).toBe('POST');
             req.flush({ liked: true });
         });
@@ -109,7 +109,7 @@ describe('ShowcaseService', () => {
                 expect(result.liked).toBeFalse();
             });
 
-            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/showcase/1/like');
+            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/showcase/1/like');
             req.flush({ liked: false });
         });
     });
@@ -120,7 +120,7 @@ describe('ShowcaseService', () => {
                 expect(showcases.length).toBe(1);
             });
 
-            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/showcase/search?q=AI&page=0&size=12');
+            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/showcase/search?q=AI&page=0&size=12');
             expect(req.request.method).toBe('GET');
             req.flush([mockShowcase]);
         });
@@ -128,7 +128,7 @@ describe('ShowcaseService', () => {
         it('should search showcases with custom pagination', () => {
             service.search('ML', 2, 24).subscribe();
 
-            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/showcase/search?q=ML&page=2&size=24');
+            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/showcase/search?q=ML&page=2&size=24');
             expect(req.request.method).toBe('GET');
             req.flush([mockShowcase]);
         });

@@ -17,7 +17,7 @@ export interface FormGenerateRequest {
     providedIn: 'root'
 })
 export class DocumentService {
-    private apiUrl = 'https://skillsync-finalyearproject.onrender.com/api/documents';
+    private apiUrl = 'https://outermost-leisha-noncoherently.ngrok-free.de/api/documents';
 
     constructor(private http: HttpClient) { }
 

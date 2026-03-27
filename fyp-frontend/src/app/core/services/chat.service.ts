@@ -9,8 +9,8 @@ import * as SockJS from 'sockjs-client';
     providedIn: 'root'
 })
 export class ChatService implements OnDestroy {
-    private apiUrl = 'https://skillsync-finalyearproject.onrender.com/api/chat';
-    private wsUrl = 'https://skillsync-finalyearproject.onrender.com/ws';
+    private apiUrl = 'https://outermost-leisha-noncoherently.ngrok-free.de/api/chat';
+    private wsUrl = 'https://outermost-leisha-noncoherently.ngrok-free.de/ws';
 
     private stompClient: Client | null = null;
     private subscriptions: Map<number, StompSubscription> = new Map();

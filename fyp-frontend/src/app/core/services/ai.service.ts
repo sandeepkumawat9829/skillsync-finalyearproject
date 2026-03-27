@@ -32,7 +32,7 @@ export interface SimilarProject {
     providedIn: 'root'
 })
 export class AIService {
-    private apiUrl = 'https://skillsync-finalyearproject.onrender.com/api/ai';
+    private apiUrl = 'https://outermost-leisha-noncoherently.ngrok-free.de/api/ai';
 
     constructor(private http: HttpClient) { }
 

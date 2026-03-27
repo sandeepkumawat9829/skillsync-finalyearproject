@@ -7,7 +7,7 @@ import { Issue, IssueComment, CreateIssueRequest, UpdateIssueRequest } from '../
     providedIn: 'root'
 })
 export class IssueService {
-    private apiUrl = 'https://skillsync-finalyearproject.onrender.com/api/issues';
+    private apiUrl = 'https://outermost-leisha-noncoherently.ngrok-free.de/api/issues';
 
     constructor(private http: HttpClient) { }
 

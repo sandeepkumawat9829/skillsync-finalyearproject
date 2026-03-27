@@ -45,7 +45,7 @@ describe('DocumentService', () => {
                 expect(documents.length).toBe(1);
             });
 
-            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/documents/project/1');
+            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/documents/project/1');
             expect(req.request.method).toBe('GET');
             req.flush([mockDocument]);
         });
@@ -57,7 +57,7 @@ describe('DocumentService', () => {
                 expect(document).toEqual(mockDocument);
             });
 
-            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/documents/1');
+            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/documents/1');
             expect(req.request.method).toBe('GET');
             req.flush(mockDocument);
         });
@@ -76,7 +76,7 @@ describe('DocumentService', () => {
                 expect(result).toEqual(mockDocument);
             });
 
-            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/documents/project/1/upload');
+            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/documents/project/1/upload');
             expect(req.request.method).toBe('POST');
             expect(req.request.body instanceof FormData).toBeTrue();
             req.flush(mockDocument);
@@ -89,7 +89,7 @@ describe('DocumentService', () => {
                 expect(result).toEqual(mockDocument);
             });
 
-            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/documents/1/approve');
+            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/documents/1/approve');
             expect(req.request.method).toBe('POST');
             req.flush(mockDocument);
         });
@@ -101,7 +101,7 @@ describe('DocumentService', () => {
                 expect(result).toEqual(mockDocument);
             });
 
-            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/documents/1/reject');
+            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/documents/1/reject');
             expect(req.request.method).toBe('POST');
             expect(req.request.body).toEqual({ reason: 'Missing sections' });
             req.flush(mockDocument);
@@ -112,7 +112,7 @@ describe('DocumentService', () => {
         it('should send DELETE request', () => {
             service.deleteDocument(1).subscribe();
 
-            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/documents/1');
+            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/documents/1');
             expect(req.request.method).toBe('DELETE');
             req.flush(null);
         });

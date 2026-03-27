@@ -7,7 +7,7 @@ import { Sprint, SprintStatus, SprintRetrospective, CreateSprintRequest } from '
     providedIn: 'root'
 })
 export class SprintService {
-    private apiUrl = 'https://skillsync-finalyearproject.onrender.com/api/sprints';
+    private apiUrl = 'https://outermost-leisha-noncoherently.ngrok-free.de/api/sprints';
 
     constructor(private http: HttpClient) { }
 

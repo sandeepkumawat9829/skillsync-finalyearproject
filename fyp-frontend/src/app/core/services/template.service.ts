@@ -19,7 +19,7 @@ export interface ProjectTemplate {
     providedIn: 'root'
 })
 export class TemplateService {
-    private apiUrl = 'https://skillsync-finalyearproject.onrender.com/api/templates';
+    private apiUrl = 'https://outermost-leisha-noncoherently.ngrok-free.de/api/templates';
 
     constructor(private http: HttpClient) { }
 

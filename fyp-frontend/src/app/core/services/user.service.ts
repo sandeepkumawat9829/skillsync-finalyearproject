@@ -17,7 +17,7 @@ export interface DashboardData {
     providedIn: 'root'
 })
 export class UserService {
-    private apiUrl = 'https://skillsync-finalyearproject.onrender.com/api/users';
+    private apiUrl = 'https://outermost-leisha-noncoherently.ngrok-free.de/api/users';
 
     constructor(private http: HttpClient) { }
 

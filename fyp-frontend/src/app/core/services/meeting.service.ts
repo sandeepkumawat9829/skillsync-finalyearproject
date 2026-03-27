@@ -7,7 +7,7 @@ import { Meeting, CreateMeetingRequest } from '../models/meeting.model';
     providedIn: 'root'
 })
 export class MeetingService {
-    private apiUrl = 'https://skillsync-finalyearproject.onrender.com/api/meetings';
+    private apiUrl = 'https://outermost-leisha-noncoherently.ngrok-free.de/api/meetings';
 
     constructor(private http: HttpClient) { }
 

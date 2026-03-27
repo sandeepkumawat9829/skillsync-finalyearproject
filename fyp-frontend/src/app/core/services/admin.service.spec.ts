@@ -89,7 +89,7 @@ describe('AdminService', () => {
                 expect(analytics.totalStudents).toBe(100);
             });
 
-            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/admin/dashboard');
+            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/admin/dashboard');
             expect(req.request.method).toBe('GET');
             req.flush(mockAnalytics);
         });
@@ -103,7 +103,7 @@ describe('AdminService', () => {
                 expect(result).toEqual(users);
             });
 
-            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/admin/users');
+            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/admin/users');
             expect(req.request.method).toBe('GET');
             req.flush(users);
         });
@@ -115,7 +115,7 @@ describe('AdminService', () => {
                 expect(result).toEqual(users);
             });
 
-            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/admin/users?role=STUDENT');
+            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/admin/users?role=STUDENT');
             expect(req.request.method).toBe('GET');
             req.flush(users);
         });
@@ -127,7 +127,7 @@ describe('AdminService', () => {
                 expect(result).toEqual(mentors);
             });
 
-            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/admin/users?role=MENTOR');
+            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/admin/users?role=MENTOR');
             req.flush(mentors);
         });
     });
@@ -140,7 +140,7 @@ describe('AdminService', () => {
                 expect(result.isActive).toBeFalse();
             });
 
-            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/admin/users/1/toggle-status');
+            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/admin/users/1/toggle-status');
             expect(req.request.method).toBe('PUT');
             expect(req.request.body).toEqual({});
             req.flush(toggledUser);
@@ -151,7 +151,7 @@ describe('AdminService', () => {
         it('should send PUT request to enable user', () => {
             service.enableUser(1).subscribe();
 
-            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/admin/users/1/enable');
+            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/admin/users/1/enable');
             expect(req.request.method).toBe('PUT');
             req.flush(null);
         });
@@ -161,7 +161,7 @@ describe('AdminService', () => {
         it('should send PUT request to disable user', () => {
             service.disableUser(1).subscribe();
 
-            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/admin/users/1/disable');
+            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/admin/users/1/disable');
             expect(req.request.method).toBe('PUT');
             req.flush(null);
         });
@@ -176,7 +176,7 @@ describe('AdminService', () => {
                 expect(result[0].title).toBe('AI/ML Projects');
             });
 
-            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/admin/buckets');
+            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/admin/buckets');
             expect(req.request.method).toBe('GET');
             req.flush(buckets);
         });
@@ -198,7 +198,7 @@ describe('AdminService', () => {
                 expect(result).toEqual(mockBucket);
             });
 
-            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/admin/buckets');
+            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/admin/buckets');
             expect(req.request.method).toBe('POST');
             expect(req.request.body).toEqual(newBucket);
             req.flush(mockBucket);
@@ -213,7 +213,7 @@ describe('AdminService', () => {
                 expect(result).toEqual(mockBucket);
             });
 
-            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/admin/buckets/1');
+            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/admin/buckets/1');
             expect(req.request.method).toBe('PUT');
             expect(req.request.body).toEqual(updates);
             req.flush(mockBucket);
@@ -224,7 +224,7 @@ describe('AdminService', () => {
         it('should send DELETE request', () => {
             service.deleteBucket(1).subscribe();
 
-            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/admin/buckets/1');
+            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/admin/buckets/1');
             expect(req.request.method).toBe('DELETE');
             req.flush(null);
         });
@@ -239,7 +239,7 @@ describe('AdminService', () => {
                 expect(result[0].teamName).toBe('Team Alpha');
             });
 
-            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/admin/teams/without-mentor');
+            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/admin/teams/without-mentor');
             expect(req.request.method).toBe('GET');
             req.flush(teams);
         });
@@ -259,7 +259,7 @@ describe('AdminService', () => {
                 expect(result.mentorId).toBe(5);
             });
 
-            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/admin/teams/1/assign-mentor');
+            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/admin/teams/1/assign-mentor');
             expect(req.request.method).toBe('POST');
             expect(req.request.body).toEqual({ mentorId: 5 });
             req.flush(response);

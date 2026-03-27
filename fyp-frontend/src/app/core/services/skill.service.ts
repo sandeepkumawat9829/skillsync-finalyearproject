@@ -36,7 +36,7 @@ export interface SkillAnalytics {
     providedIn: 'root'
 })
 export class SkillCatalogService {
-    private apiUrl = 'https://skillsync-finalyearproject.onrender.com/api/skills';
+    private apiUrl = 'https://outermost-leisha-noncoherently.ngrok-free.de/api/skills';
 
     constructor(private http: HttpClient) { }
 

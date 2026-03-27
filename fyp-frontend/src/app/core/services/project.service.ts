@@ -7,7 +7,7 @@ import { Project, CollegeProjectBucket, CreateProjectRequest } from '../models/p
     providedIn: 'root'
 })
 export class ProjectService {
-    private apiUrl = 'https://skillsync-finalyearproject.onrender.com/api/projects';
+    private apiUrl = 'https://outermost-leisha-noncoherently.ngrok-free.de/api/projects';
 
     constructor(private http: HttpClient) { }
 

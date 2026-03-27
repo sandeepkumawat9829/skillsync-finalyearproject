@@ -28,7 +28,7 @@ export interface ForceAssignResponse {
     providedIn: 'root'
 })
 export class AdminService {
-    private apiUrl = 'https://skillsync-finalyearproject.onrender.com/api/admin';
+    private apiUrl = 'https://outermost-leisha-noncoherently.ngrok-free.de/api/admin';
 
     constructor(private http: HttpClient) { }
 

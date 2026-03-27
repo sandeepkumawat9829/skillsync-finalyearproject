@@ -27,7 +27,7 @@ export interface ResendOTPResponse {
     providedIn: 'root'
 })
 export class AuthService {
-    private apiUrl = 'https://skillsync-finalyearproject.onrender.com/api/auth';
+    private apiUrl = 'https://outermost-leisha-noncoherently.ngrok-free.de/api/auth';
     private currentUserSubject: BehaviorSubject<User | null>;
     public currentUser: Observable<User | null>;
 

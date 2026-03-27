@@ -39,7 +39,7 @@ export interface PublishRequest {
     providedIn: 'root'
 })
 export class ShowcaseService {
-    private apiUrl = 'https://skillsync-finalyearproject.onrender.com/api/showcase';
+    private apiUrl = 'https://outermost-leisha-noncoherently.ngrok-free.de/api/showcase';
 
     constructor(private http: HttpClient) { }
 

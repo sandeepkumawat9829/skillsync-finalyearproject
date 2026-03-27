@@ -8,7 +8,7 @@ import { TeamInvitation, JoinRequest } from '../models/invitation.model';
     providedIn: 'root'
 })
 export class TeamService {
-    private apiUrl = 'https://skillsync-finalyearproject.onrender.com/api/teams';
+    private apiUrl = 'https://outermost-leisha-noncoherently.ngrok-free.de/api/teams';
 
     constructor(private http: HttpClient) { }
 

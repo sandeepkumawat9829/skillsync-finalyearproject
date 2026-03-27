@@ -24,7 +24,7 @@ export interface OtpStatusResponse {
     providedIn: 'root'
 })
 export class OtpService {
-    private apiUrl = 'https://skillsync-finalyearproject.onrender.com/api/otp';
+    private apiUrl = 'https://outermost-leisha-noncoherently.ngrok-free.de/api/otp';
 
     // Supported actions
     static readonly ACTIONS = {

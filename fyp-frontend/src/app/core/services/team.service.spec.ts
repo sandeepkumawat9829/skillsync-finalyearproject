@@ -67,7 +67,7 @@ describe('TeamService', () => {
                 expect(team.projectId).toBe(1);
             });
 
-            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/teams/project/1');
+            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/teams/project/1');
             expect(req.request.method).toBe('GET');
             req.flush(mockTeam);
         });
@@ -79,7 +79,7 @@ describe('TeamService', () => {
                 expect(team).toEqual(mockTeam);
             });
 
-            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/teams/my');
+            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/teams/my');
             expect(req.request.method).toBe('GET');
             req.flush(mockTeam);
         });
@@ -91,7 +91,7 @@ describe('TeamService', () => {
                 expect(team.teamId).toBe(1);
             });
 
-            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/teams/1');
+            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/teams/1');
             expect(req.request.method).toBe('GET');
             req.flush(mockTeam);
         });
@@ -106,7 +106,7 @@ describe('TeamService', () => {
                 expect(teams[0].isComplete).toBeFalse();
             });
 
-            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/teams/incomplete');
+            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/teams/incomplete');
             expect(req.request.method).toBe('GET');
             req.flush(incompleteTeams);
         });
@@ -122,7 +122,7 @@ describe('TeamService', () => {
 
             service.sendInvitation(1, request).subscribe();
 
-            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/teams/1/invite');
+            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/teams/1/invite');
             expect(req.request.method).toBe('POST');
             expect(req.request.body).toEqual(request);
             req.flush(null);
@@ -138,7 +138,7 @@ describe('TeamService', () => {
                 expect(result[0].status).toBe('PENDING');
             });
 
-            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/teams/invitations');
+            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/teams/invitations');
             expect(req.request.method).toBe('GET');
             req.flush(invitations);
         });
@@ -150,7 +150,7 @@ describe('TeamService', () => {
                 expect(team).toEqual(mockTeam);
             });
 
-            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/teams/invitations/1/accept');
+            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/teams/invitations/1/accept');
             expect(req.request.method).toBe('POST');
             expect(req.request.body).toEqual({});
             req.flush(mockTeam);
@@ -161,7 +161,7 @@ describe('TeamService', () => {
         it('should send POST request to reject invitation', () => {
             service.rejectInvitation(1).subscribe();
 
-            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/teams/invitations/1/reject');
+            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/teams/invitations/1/reject');
             expect(req.request.method).toBe('POST');
             req.flush(null);
         });
@@ -179,7 +179,7 @@ describe('TeamService', () => {
                 expect(team).toEqual(mockTeam);
             });
 
-            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/teams');
+            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/teams');
             expect(req.request.method).toBe('POST');
             expect(req.request.body).toEqual(teamData);
             req.flush(mockTeam);
@@ -190,7 +190,7 @@ describe('TeamService', () => {
         it('should send DELETE request to remove member from team', () => {
             service.removeMember(1, 2).subscribe();
 
-            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/teams/1/members/2');
+            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/teams/1/members/2');
             expect(req.request.method).toBe('DELETE');
             req.flush(null);
         });
@@ -200,7 +200,7 @@ describe('TeamService', () => {
         it('should send DELETE request to delete team', () => {
             service.deleteTeam(1).subscribe();
 
-            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/teams/1');
+            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/teams/1');
             expect(req.request.method).toBe('DELETE');
             req.flush(null);
         });
@@ -213,7 +213,7 @@ describe('TeamService', () => {
                 expect(teams[0]).toEqual(mockTeam);
             });
 
-            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/teams/my');
+            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/teams/my');
             req.flush(mockTeam);
         });
     });
@@ -222,7 +222,7 @@ describe('TeamService', () => {
         it('should accept invitation when accept is true', () => {
             service.respondToInvitation(1, true).subscribe();
 
-            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/teams/invitations/1/accept');
+            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/teams/invitations/1/accept');
             expect(req.request.method).toBe('POST');
             req.flush(mockTeam);
         });
@@ -230,7 +230,7 @@ describe('TeamService', () => {
         it('should reject invitation when accept is false', () => {
             service.respondToInvitation(1, false).subscribe();
 
-            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/teams/invitations/1/reject');
+            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/teams/invitations/1/reject');
             expect(req.request.method).toBe('POST');
             req.flush(null);
         });

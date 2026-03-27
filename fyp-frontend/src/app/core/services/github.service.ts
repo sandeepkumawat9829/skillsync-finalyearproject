@@ -46,7 +46,7 @@ export interface SyncResult {
     providedIn: 'root'
 })
 export class GitHubService {
-    private apiUrl = 'https://skillsync-finalyearproject.onrender.com/api/github';
+    private apiUrl = 'https://outermost-leisha-noncoherently.ngrok-free.de/api/github';
 
     constructor(private http: HttpClient) { }
 

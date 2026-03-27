@@ -20,7 +20,7 @@ export interface ProjectAnalytics {
     providedIn: 'root'
 })
 export class AnalyticsService {
-    private apiUrl = 'https://skillsync-finalyearproject.onrender.com/api/analytics';
+    private apiUrl = 'https://outermost-leisha-noncoherently.ngrok-free.de/api/analytics';
 
     constructor(private http: HttpClient) { }
 

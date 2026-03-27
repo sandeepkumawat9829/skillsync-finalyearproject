@@ -42,7 +42,7 @@ describe('TemplateService', () => {
                 expect(templates.length).toBe(1);
             });
 
-            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/templates');
+            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/templates');
             expect(req.request.method).toBe('GET');
             req.flush([mockTemplate]);
         });
@@ -52,7 +52,7 @@ describe('TemplateService', () => {
         it('should fetch templates by domain', () => {
             service.getTemplatesByDomain('Web Development').subscribe();
 
-            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/templates/domain/Web Development');
+            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/templates/domain/Web Development');
             expect(req.request.method).toBe('GET');
             req.flush([mockTemplate]);
         });
@@ -64,7 +64,7 @@ describe('TemplateService', () => {
                 expect(template).toEqual(mockTemplate);
             });
 
-            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/templates/1');
+            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/templates/1');
             expect(req.request.method).toBe('GET');
             req.flush(mockTemplate);
         });
@@ -76,7 +76,7 @@ describe('TemplateService', () => {
                 expect(result).toEqual(mockTemplate);
             });
 
-            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/templates');
+            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/templates');
             expect(req.request.method).toBe('POST');
             expect(req.request.body).toEqual(mockTemplate);
             req.flush(mockTemplate);
@@ -89,7 +89,7 @@ describe('TemplateService', () => {
                 expect(result).toEqual(mockTemplate);
             });
 
-            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/templates/1');
+            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/templates/1');
             expect(req.request.method).toBe('PUT');
             req.flush(mockTemplate);
         });
@@ -99,7 +99,7 @@ describe('TemplateService', () => {
         it('should send DELETE request', () => {
             service.deleteTemplate(1).subscribe();
 
-            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/templates/1');
+            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/templates/1');
             expect(req.request.method).toBe('DELETE');
             req.flush(null);
         });

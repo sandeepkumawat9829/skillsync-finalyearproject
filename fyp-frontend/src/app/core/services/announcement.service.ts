@@ -19,7 +19,7 @@ export interface Announcement {
     providedIn: 'root'
 })
 export class AnnouncementService {
-    private apiUrl = 'https://skillsync-finalyearproject.onrender.com/api/announcements';
+    private apiUrl = 'https://outermost-leisha-noncoherently.ngrok-free.de/api/announcements';
 
     constructor(private http: HttpClient) { }
 
