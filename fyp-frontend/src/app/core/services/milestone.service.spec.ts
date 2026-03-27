@@ -42,7 +42,7 @@ describe('MilestoneService', () => {
                 expect(milestones.length).toBe(1);
             });
 
-            const req = httpMock.expectOne('http://localhost:8080/api/milestones/project/1');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/milestones/project/1');
             expect(req.request.method).toBe('GET');
             req.flush([mockMilestone]);
         });
@@ -54,7 +54,7 @@ describe('MilestoneService', () => {
                 expect(milestone).toEqual(mockMilestone);
             });
 
-            const req = httpMock.expectOne('http://localhost:8080/api/milestones/1');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/milestones/1');
             expect(req.request.method).toBe('GET');
             req.flush(mockMilestone);
         });
@@ -66,7 +66,7 @@ describe('MilestoneService', () => {
                 expect(result).toEqual(mockMilestone);
             });
 
-            const req = httpMock.expectOne('http://localhost:8080/api/milestones');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/milestones');
             expect(req.request.method).toBe('POST');
             req.flush(mockMilestone);
         });
@@ -78,7 +78,7 @@ describe('MilestoneService', () => {
                 expect(result).toEqual(mockMilestone);
             });
 
-            const req = httpMock.expectOne('http://localhost:8080/api/milestones/1');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/milestones/1');
             expect(req.request.method).toBe('PUT');
             req.flush(mockMilestone);
         });
@@ -90,7 +90,7 @@ describe('MilestoneService', () => {
                 expect(result).toEqual(mockMilestone);
             });
 
-            const req = httpMock.expectOne('http://localhost:8080/api/milestones/1/status');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/milestones/1/status');
             expect(req.request.method).toBe('POST');
             expect(req.request.body).toEqual({ status: 'COMPLETED' });
             req.flush(mockMilestone);
@@ -103,7 +103,7 @@ describe('MilestoneService', () => {
                 expect(result).toEqual(mockMilestone);
             });
 
-            const req = httpMock.expectOne('http://localhost:8080/api/milestones/1/complete');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/milestones/1/complete');
             expect(req.request.method).toBe('POST');
             req.flush(mockMilestone);
         });
@@ -115,7 +115,7 @@ describe('MilestoneService', () => {
                 expect(result).toEqual(mockMilestone);
             });
 
-            const req = httpMock.expectOne('http://localhost:8080/api/milestones/1/review');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/milestones/1/review');
             expect(req.request.method).toBe('POST');
             expect(req.request.body).toEqual({ feedback: 'Great progress!' });
             req.flush(mockMilestone);
@@ -126,7 +126,7 @@ describe('MilestoneService', () => {
         it('should fetch overdue milestones', () => {
             service.getOverdueMilestones(1).subscribe();
 
-            const req = httpMock.expectOne('http://localhost:8080/api/milestones/project/1/overdue');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/milestones/project/1/overdue');
             expect(req.request.method).toBe('GET');
             req.flush([mockMilestone]);
         });
@@ -136,7 +136,7 @@ describe('MilestoneService', () => {
         it('should fetch pending review milestones', () => {
             service.getPendingReviews(1).subscribe();
 
-            const req = httpMock.expectOne('http://localhost:8080/api/milestones/project/1/pending-reviews');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/milestones/project/1/pending-reviews');
             expect(req.request.method).toBe('GET');
             req.flush([mockMilestone]);
         });
@@ -148,7 +148,7 @@ describe('MilestoneService', () => {
                 expect(result.progress).toBe(75);
             });
 
-            const req = httpMock.expectOne('http://localhost:8080/api/milestones/project/1/progress');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/milestones/project/1/progress');
             expect(req.request.method).toBe('GET');
             req.flush({ progress: 75 });
         });
@@ -158,7 +158,7 @@ describe('MilestoneService', () => {
         it('should send DELETE request', () => {
             service.deleteMilestone(1).subscribe();
 
-            const req = httpMock.expectOne('http://localhost:8080/api/milestones/1');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/milestones/1');
             expect(req.request.method).toBe('DELETE');
             req.flush(null);
         });

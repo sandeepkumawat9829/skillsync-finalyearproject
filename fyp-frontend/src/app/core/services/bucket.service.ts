@@ -23,7 +23,7 @@ export interface ProjectBucket {
     providedIn: 'root'
 })
 export class BucketService {
-    private apiUrl = 'http://localhost:8080/api/buckets';
+    private apiUrl = 'https://skillsync-finalyearproject.onrender.com/api/buckets';
 
     constructor(private http: HttpClient) { }
 

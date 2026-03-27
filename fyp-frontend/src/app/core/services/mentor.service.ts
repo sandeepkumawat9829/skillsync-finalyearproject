@@ -7,7 +7,7 @@ import { AssignedTeam, Mentor, MentorRequest } from '../models/mentor.model';
     providedIn: 'root'
 })
 export class MentorService {
-    private apiUrl = 'http://localhost:8080/api/mentors';
+    private apiUrl = 'https://skillsync-finalyearproject.onrender.com/api/mentors';
 
     constructor(private http: HttpClient) { }
 
@@ -50,7 +50,7 @@ export class MentorService {
 
     // Get mentor profile by user ID
     getMentorProfile(userId: number): Observable<any> {
-        return this.http.get<any>(`http://localhost:8080/api/profile/mentor/${userId}`);
+        return this.http.get<any>(`https://skillsync-finalyearproject.onrender.com/api/profile/mentor/${userId}`);
     }
 
     // Get mentor stats

@@ -17,7 +17,7 @@ export interface FormGenerateRequest {
     providedIn: 'root'
 })
 export class DocumentService {
-    private apiUrl = 'http://localhost:8080/api/documents';
+    private apiUrl = 'https://skillsync-finalyearproject.onrender.com/api/documents';
 
     constructor(private http: HttpClient) { }
 

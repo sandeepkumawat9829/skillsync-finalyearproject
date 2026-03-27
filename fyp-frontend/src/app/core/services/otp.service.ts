@@ -24,7 +24,7 @@ export interface OtpStatusResponse {
     providedIn: 'root'
 })
 export class OtpService {
-    private apiUrl = 'http://localhost:8080/api/otp';
+    private apiUrl = 'https://skillsync-finalyearproject.onrender.com/api/otp';
 
     // Supported actions
     static readonly ACTIONS = {

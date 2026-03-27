@@ -39,7 +39,7 @@ export interface PublishRequest {
     providedIn: 'root'
 })
 export class ShowcaseService {
-    private apiUrl = 'http://localhost:8080/api/showcase';
+    private apiUrl = 'https://skillsync-finalyearproject.onrender.com/api/showcase';
 
     constructor(private http: HttpClient) { }
 

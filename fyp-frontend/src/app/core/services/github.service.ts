@@ -46,7 +46,7 @@ export interface SyncResult {
     providedIn: 'root'
 })
 export class GitHubService {
-    private apiUrl = 'http://localhost:8080/api/github';
+    private apiUrl = 'https://skillsync-finalyearproject.onrender.com/api/github';
 
     constructor(private http: HttpClient) { }
 

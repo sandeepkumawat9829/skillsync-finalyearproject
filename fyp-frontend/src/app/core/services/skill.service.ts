@@ -36,7 +36,7 @@ export interface SkillAnalytics {
     providedIn: 'root'
 })
 export class SkillCatalogService {
-    private apiUrl = 'http://localhost:8080/api/skills';
+    private apiUrl = 'https://skillsync-finalyearproject.onrender.com/api/skills';
 
     constructor(private http: HttpClient) { }
 

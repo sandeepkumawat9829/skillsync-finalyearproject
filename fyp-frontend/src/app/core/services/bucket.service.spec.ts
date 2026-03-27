@@ -46,7 +46,7 @@ describe('BucketService', () => {
                 expect(buckets[0].isAvailable).toBeTrue();
             });
 
-            const req = httpMock.expectOne('http://localhost:8080/api/buckets');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/buckets');
             expect(req.request.method).toBe('GET');
             req.flush([mockBucket]);
         });
@@ -56,7 +56,7 @@ describe('BucketService', () => {
         it('should fetch all buckets', () => {
             service.getAllBuckets().subscribe();
 
-            const req = httpMock.expectOne('http://localhost:8080/api/buckets/all');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/buckets/all');
             expect(req.request.method).toBe('GET');
             req.flush([mockBucket]);
         });
@@ -66,7 +66,7 @@ describe('BucketService', () => {
         it('should fetch buckets by department', () => {
             service.getBucketsByDepartment('Computer Science').subscribe();
 
-            const req = httpMock.expectOne('http://localhost:8080/api/buckets/department/Computer Science');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/buckets/department/Computer Science');
             expect(req.request.method).toBe('GET');
             req.flush([mockBucket]);
         });
@@ -76,7 +76,7 @@ describe('BucketService', () => {
         it('should fetch buckets by difficulty', () => {
             service.getBucketsByDifficulty('HARD').subscribe();
 
-            const req = httpMock.expectOne('http://localhost:8080/api/buckets/difficulty/HARD');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/buckets/difficulty/HARD');
             expect(req.request.method).toBe('GET');
             req.flush([mockBucket]);
         });
@@ -88,7 +88,7 @@ describe('BucketService', () => {
                 expect(bucket).toEqual(mockBucket);
             });
 
-            const req = httpMock.expectOne('http://localhost:8080/api/buckets/1');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/buckets/1');
             expect(req.request.method).toBe('GET');
             req.flush(mockBucket);
         });
@@ -100,7 +100,7 @@ describe('BucketService', () => {
                 expect(result).toEqual(mockBucket);
             });
 
-            const req = httpMock.expectOne('http://localhost:8080/api/buckets?userId=1');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/buckets?userId=1');
             expect(req.request.method).toBe('POST');
             expect(req.request.body).toEqual(mockBucket);
             req.flush(mockBucket);
@@ -113,7 +113,7 @@ describe('BucketService', () => {
                 expect(result).toEqual(mockBucket);
             });
 
-            const req = httpMock.expectOne('http://localhost:8080/api/buckets/1');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/buckets/1');
             expect(req.request.method).toBe('PUT');
             req.flush(mockBucket);
         });
@@ -125,7 +125,7 @@ describe('BucketService', () => {
                 expect(result).toEqual(mockBucket);
             });
 
-            const req = httpMock.expectOne('http://localhost:8080/api/buckets/1/allocate');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/buckets/1/allocate');
             expect(req.request.method).toBe('POST');
             req.flush(mockBucket);
         });
@@ -135,7 +135,7 @@ describe('BucketService', () => {
         it('should send DELETE request', () => {
             service.deleteBucket(1).subscribe();
 
-            const req = httpMock.expectOne('http://localhost:8080/api/buckets/1');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/buckets/1');
             expect(req.request.method).toBe('DELETE');
             req.flush(null);
         });

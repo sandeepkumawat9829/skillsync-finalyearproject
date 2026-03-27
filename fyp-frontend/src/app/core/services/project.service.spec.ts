@@ -65,7 +65,7 @@ describe('ProjectService', () => {
                 expect(projects).toEqual(mockProjects);
             });
 
-            const req = httpMock.expectOne('http://localhost:8080/api/projects/public');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/projects/public');
             expect(req.request.method).toBe('GET');
             req.flush(mockProjects);
         });
@@ -76,7 +76,7 @@ describe('ProjectService', () => {
             service.getProjects(filters).subscribe();
 
             const req = httpMock.expectOne(request =>
-                request.url === 'http://localhost:8080/api/projects/public' &&
+                request.url === 'https://skillsync-finalyearproject.onrender.com/api/projects/public' &&
                 request.params.get('status') === 'COMPLETED' &&
                 request.params.get('domain') === 'Web'
             );
@@ -92,7 +92,7 @@ describe('ProjectService', () => {
                 expect(project.projectId).toBe(1);
             });
 
-            const req = httpMock.expectOne('http://localhost:8080/api/projects/1');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/projects/1');
             expect(req.request.method).toBe('GET');
             req.flush(mockProject);
         });
@@ -113,7 +113,7 @@ describe('ProjectService', () => {
                 expect(project).toEqual(mockProject);
             });
 
-            const req = httpMock.expectOne('http://localhost:8080/api/projects');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/projects');
             expect(req.request.method).toBe('POST');
             expect(req.request.body).toEqual(newProject);
             req.flush(mockProject);
@@ -131,7 +131,7 @@ describe('ProjectService', () => {
                 expect(project).toEqual(mockProject);
             });
 
-            const req = httpMock.expectOne('http://localhost:8080/api/projects/1');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/projects/1');
             expect(req.request.method).toBe('PUT');
             expect(req.request.body).toEqual(updates);
             req.flush(mockProject);
@@ -142,7 +142,7 @@ describe('ProjectService', () => {
         it('should send DELETE request', () => {
             service.deleteProject(1).subscribe();
 
-            const req = httpMock.expectOne('http://localhost:8080/api/projects/1');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/projects/1');
             expect(req.request.method).toBe('DELETE');
             req.flush(null);
         });
@@ -157,7 +157,7 @@ describe('ProjectService', () => {
                 expect(result[0]).toEqual(mockBucket);
             });
 
-            const req = httpMock.expectOne('http://localhost:8080/api/projects/buckets');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/projects/buckets');
             expect(req.request.method).toBe('GET');
             req.flush(buckets);
         });
@@ -167,7 +167,7 @@ describe('ProjectService', () => {
                 expect(result).toEqual([]);
             });
 
-            const req = httpMock.expectOne('http://localhost:8080/api/projects/buckets');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/projects/buckets');
             req.error(new ErrorEvent('Network error'));
         });
     });
@@ -178,7 +178,7 @@ describe('ProjectService', () => {
                 expect(projects).toEqual(mockProjects);
             });
 
-            const req = httpMock.expectOne('http://localhost:8080/api/projects/my');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/projects/my');
             expect(req.request.method).toBe('GET');
             req.flush(mockProjects);
         });
@@ -190,7 +190,7 @@ describe('ProjectService', () => {
                 expect(projects).toEqual(mockProjects);
             });
 
-            const req = httpMock.expectOne('http://localhost:8080/api/projects/status/COMPLETED');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/projects/status/COMPLETED');
             expect(req.request.method).toBe('GET');
             req.flush(mockProjects);
         });

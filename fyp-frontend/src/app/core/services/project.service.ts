@@ -7,7 +7,7 @@ import { Project, CollegeProjectBucket, CreateProjectRequest } from '../models/p
     providedIn: 'root'
 })
 export class ProjectService {
-    private apiUrl = 'http://localhost:8080/api/projects';
+    private apiUrl = 'https://skillsync-finalyearproject.onrender.com/api/projects';
 
     constructor(private http: HttpClient) { }
 

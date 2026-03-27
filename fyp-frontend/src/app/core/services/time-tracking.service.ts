@@ -7,7 +7,7 @@ import { TimeEntry, TimeReport, TeamTimeReport, LogTimeRequest, ReportPeriod } f
     providedIn: 'root'
 })
 export class TimeTrackingService {
-    private apiUrl = 'http://localhost:8080/api/time-entries';
+    private apiUrl = 'https://skillsync-finalyearproject.onrender.com/api/time-entries';
 
     constructor(private http: HttpClient) { }
 

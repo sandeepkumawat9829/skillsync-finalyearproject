@@ -45,7 +45,7 @@ describe('NotificationService', () => {
                 expect(notifications.length).toBe(2);
             });
 
-            const req = httpMock.expectOne('http://localhost:8080/api/notifications');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/notifications');
             expect(req.request.method).toBe('GET');
             req.flush(mockNotifications);
         });
@@ -57,7 +57,7 @@ describe('NotificationService', () => {
                 });
             });
 
-            const req = httpMock.expectOne('http://localhost:8080/api/notifications');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/notifications');
             req.flush(mockNotifications);
         });
     });
@@ -66,7 +66,7 @@ describe('NotificationService', () => {
         it('should send PUT request to mark notification as read', () => {
             service.markAsRead(1).subscribe();
 
-            const req = httpMock.expectOne('http://localhost:8080/api/notifications/1/read');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/notifications/1/read');
             expect(req.request.method).toBe('PUT');
             req.flush(null);
         });
@@ -74,7 +74,7 @@ describe('NotificationService', () => {
         it('should decrement unread count', () => {
             // First set the count
             service.getMyNotifications().subscribe();
-            const getReq = httpMock.expectOne('http://localhost:8080/api/notifications');
+            const getReq = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/notifications');
             getReq.flush(mockNotifications);
 
             // Then mark as read
@@ -84,7 +84,7 @@ describe('NotificationService', () => {
                 });
             });
 
-            const markReq = httpMock.expectOne('http://localhost:8080/api/notifications/1/read');
+            const markReq = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/notifications/1/read');
             markReq.flush(null);
         });
     });
@@ -93,7 +93,7 @@ describe('NotificationService', () => {
         it('should send PUT request to mark all as read', () => {
             service.markAllAsRead().subscribe();
 
-            const req = httpMock.expectOne('http://localhost:8080/api/notifications/read-all');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/notifications/read-all');
             expect(req.request.method).toBe('PUT');
             req.flush(null);
         });
@@ -105,7 +105,7 @@ describe('NotificationService', () => {
                 });
             });
 
-            const req = httpMock.expectOne('http://localhost:8080/api/notifications/read-all');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/notifications/read-all');
             req.flush(null);
         });
     });
@@ -114,7 +114,7 @@ describe('NotificationService', () => {
         it('should send DELETE request', () => {
             service.deleteNotification(1).subscribe();
 
-            const req = httpMock.expectOne('http://localhost:8080/api/notifications/1');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/notifications/1');
             expect(req.request.method).toBe('DELETE');
             req.flush(null);
         });
@@ -124,7 +124,7 @@ describe('NotificationService', () => {
         it('should fetch and update unread count', () => {
             service.refreshUnreadCount();
 
-            const req = httpMock.expectOne('http://localhost:8080/api/notifications/unread-count');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/notifications/unread-count');
             expect(req.request.method).toBe('GET');
             req.flush(5);
 

@@ -8,7 +8,7 @@ import { TeamInvitation, JoinRequest } from '../models/invitation.model';
     providedIn: 'root'
 })
 export class TeamService {
-    private apiUrl = 'http://localhost:8080/api/teams';
+    private apiUrl = 'https://skillsync-finalyearproject.onrender.com/api/teams';
 
     constructor(private http: HttpClient) { }
 

@@ -58,7 +58,7 @@ describe('AuthService', () => {
                 expect(localStorage.getItem('currentUser')).toBeTruthy();
             });
 
-            const req = httpMock.expectOne('http://localhost:8080/api/auth/login');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/auth/login');
             expect(req.request.method).toBe('POST');
             expect(req.request.body).toEqual(credentials);
             req.flush(mockAuthResponse);
@@ -77,7 +77,7 @@ describe('AuthService', () => {
                 expect(storedUser.role).toBe('STUDENT');
             });
 
-            const req = httpMock.expectOne('http://localhost:8080/api/auth/login');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/auth/login');
             req.flush(mockAuthResponse);
         });
 
@@ -93,7 +93,7 @@ describe('AuthService', () => {
                 expect(currentUser?.email).toBe('test@example.com');
             });
 
-            const req = httpMock.expectOne('http://localhost:8080/api/auth/login');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/auth/login');
             req.flush(mockAuthResponse);
         });
     });
@@ -111,7 +111,7 @@ describe('AuthService', () => {
                 expect(response).toEqual(mockRegisterResponse);
             });
 
-            const req = httpMock.expectOne('http://localhost:8080/api/auth/register');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/auth/register');
             expect(req.request.method).toBe('POST');
             expect(req.request.body).toEqual(registerData);
             req.flush(mockRegisterResponse);
@@ -135,7 +135,7 @@ describe('AuthService', () => {
                 expect(sessionStorage.getItem('verifyEmail')).toBe('newuser@example.com');
             });
 
-            const req = httpMock.expectOne('http://localhost:8080/api/auth/register');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/auth/register');
             req.flush(newUserRegisterResponse);
         });
     });
@@ -156,7 +156,7 @@ describe('AuthService', () => {
                 expect(localStorage.getItem('token')).toBe('test-token');
             });
 
-            const req = httpMock.expectOne('http://localhost:8080/api/auth/verify-email');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/auth/verify-email');
             expect(req.request.method).toBe('POST');
             expect(req.request.body).toEqual({ email: 'test@example.com', otp: '123456' });
             req.flush(verifyResponse);
@@ -174,7 +174,7 @@ describe('AuthService', () => {
                 expect(response).toEqual(resendResponse);
             });
 
-            const req = httpMock.expectOne('http://localhost:8080/api/auth/resend-otp');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/auth/resend-otp');
             expect(req.request.method).toBe('POST');
             expect(req.request.body).toEqual({ email: 'test@example.com' });
             req.flush(resendResponse);
@@ -233,7 +233,7 @@ describe('AuthService', () => {
                 expect(service.getUserRole()).toBe('STUDENT');
             });
 
-            const req = httpMock.expectOne('http://localhost:8080/api/auth/login');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/auth/login');
             req.flush(mockAuthResponse);
         });
 

@@ -32,7 +32,7 @@ export interface SimilarProject {
     providedIn: 'root'
 })
 export class AIService {
-    private apiUrl = 'http://localhost:8080/api/ai';
+    private apiUrl = 'https://skillsync-finalyearproject.onrender.com/api/ai';
 
     constructor(private http: HttpClient) { }
 

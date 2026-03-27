@@ -19,7 +19,7 @@ export interface SharedResource {
     providedIn: 'root'
 })
 export class ResourceService {
-    private apiUrl = 'http://localhost:8080/api/resources';
+    private apiUrl = 'https://skillsync-finalyearproject.onrender.com/api/resources';
 
     constructor(private http: HttpClient) { }
 

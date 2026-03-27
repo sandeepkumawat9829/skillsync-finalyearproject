@@ -57,7 +57,7 @@ describe('PeerReviewService', () => {
                 expect(result).toEqual(mockReview);
             });
 
-            const req = httpMock.expectOne('http://localhost:8080/api/peer-reviews');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/peer-reviews');
             expect(req.request.method).toBe('POST');
             expect(req.request.body).toEqual(mockReview);
             req.flush(mockReview);
@@ -70,7 +70,7 @@ describe('PeerReviewService', () => {
                 expect(reviews.length).toBe(1);
             });
 
-            const req = httpMock.expectOne('http://localhost:8080/api/peer-reviews/projects/1/my-feedback');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/peer-reviews/projects/1/my-feedback');
             expect(req.request.method).toBe('GET');
             req.flush([mockReview]);
         });
@@ -82,7 +82,7 @@ describe('PeerReviewService', () => {
                 expect(reviews.length).toBe(1);
             });
 
-            const req = httpMock.expectOne('http://localhost:8080/api/peer-reviews/my-reviews');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/peer-reviews/my-reviews');
             expect(req.request.method).toBe('GET');
             req.flush([mockReview]);
         });
@@ -95,7 +95,7 @@ describe('PeerReviewService', () => {
                 expect(summary.totalReviewsReceived).toBe(5);
             });
 
-            const req = httpMock.expectOne('http://localhost:8080/api/peer-reviews/my-summary');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/peer-reviews/my-summary');
             expect(req.request.method).toBe('GET');
             req.flush(mockSummary);
         });
@@ -107,7 +107,7 @@ describe('PeerReviewService', () => {
                 expect(summary).toEqual(mockSummary);
             });
 
-            const req = httpMock.expectOne('http://localhost:8080/api/peer-reviews/users/1/summary');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/peer-reviews/users/1/summary');
             expect(req.request.method).toBe('GET');
             req.flush(mockSummary);
         });

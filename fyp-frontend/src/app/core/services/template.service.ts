@@ -19,7 +19,7 @@ export interface ProjectTemplate {
     providedIn: 'root'
 })
 export class TemplateService {
-    private apiUrl = 'http://localhost:8080/api/templates';
+    private apiUrl = 'https://skillsync-finalyearproject.onrender.com/api/templates';
 
     constructor(private http: HttpClient) { }
 

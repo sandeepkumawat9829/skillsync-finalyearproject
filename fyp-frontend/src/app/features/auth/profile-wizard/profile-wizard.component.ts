@@ -909,7 +909,7 @@ export class ProfileWizardComponent implements OnInit {
     'Docker', 'AWS', 'Git', 'Machine Learning', 'Data Science'
   ];
 
-  private apiUrl = 'http://localhost:8080/api';
+  private apiUrl = 'https://skillsync-finalyearproject.onrender.com/api';
 
   constructor(
     private fb: FormBuilder,

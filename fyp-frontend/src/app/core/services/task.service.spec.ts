@@ -50,7 +50,7 @@ describe('TaskService', () => {
                 expect(result[0].projectId).toBe(1);
             });
 
-            const req = httpMock.expectOne('http://localhost:8080/api/tasks/project/1');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/tasks/project/1');
             expect(req.request.method).toBe('GET');
             req.flush(tasks);
         });
@@ -63,7 +63,7 @@ describe('TaskService', () => {
                 expect(task.taskId).toBe(1);
             });
 
-            const req = httpMock.expectOne('http://localhost:8080/api/tasks/1');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/tasks/1');
             expect(req.request.method).toBe('GET');
             req.flush(mockTask);
         });
@@ -82,7 +82,7 @@ describe('TaskService', () => {
                 expect(task).toEqual(mockTask);
             });
 
-            const req = httpMock.expectOne('http://localhost:8080/api/tasks');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/tasks');
             expect(req.request.method).toBe('POST');
             expect(req.request.body).toEqual(newTask);
             req.flush(mockTask);
@@ -100,7 +100,7 @@ describe('TaskService', () => {
                 expect(task).toEqual(mockTask);
             });
 
-            const req = httpMock.expectOne('http://localhost:8080/api/tasks/1');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/tasks/1');
             expect(req.request.method).toBe('PUT');
             expect(req.request.body).toEqual(updates);
             req.flush(mockTask);
@@ -113,7 +113,7 @@ describe('TaskService', () => {
                 expect(task).toEqual(mockTask);
             });
 
-            const req = httpMock.expectOne('http://localhost:8080/api/tasks/1/move');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/tasks/1/move');
             expect(req.request.method).toBe('PATCH');
             expect(req.request.body).toEqual({ status: 'IN_PROGRESS' });
             req.flush(mockTask);
@@ -124,7 +124,7 @@ describe('TaskService', () => {
         it('should send DELETE request', () => {
             service.deleteTask(1).subscribe();
 
-            const req = httpMock.expectOne('http://localhost:8080/api/tasks/1');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/tasks/1');
             expect(req.request.method).toBe('DELETE');
             req.flush(null);
         });
@@ -138,7 +138,7 @@ describe('TaskService', () => {
                 expect(result.length).toBe(1);
             });
 
-            const req = httpMock.expectOne('http://localhost:8080/api/tasks/my');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/tasks/my');
             expect(req.request.method).toBe('GET');
             req.flush(tasks);
         });
@@ -152,7 +152,7 @@ describe('TaskService', () => {
                 expect(result.length).toBe(1);
             });
 
-            const req = httpMock.expectOne('http://localhost:8080/api/tasks/sprint/1');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/tasks/sprint/1');
             expect(req.request.method).toBe('GET');
             req.flush(tasks);
         });
@@ -164,7 +164,7 @@ describe('TaskService', () => {
                 expect(task).toEqual(mockTask);
             });
 
-            const req = httpMock.expectOne('http://localhost:8080/api/tasks/1/assign');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/tasks/1/assign');
             expect(req.request.method).toBe('PUT');
             expect(req.request.body).toEqual({ userId: 5 });
             req.flush(mockTask);

@@ -57,7 +57,7 @@ describe('TimeTrackingService', () => {
                 expect(result).toEqual(mockTimeEntry);
             });
 
-            const req = httpMock.expectOne('http://localhost:8080/api/time-entries');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/time-entries');
             expect(req.request.method).toBe('POST');
             req.flush(mockTimeEntry);
         });
@@ -69,7 +69,7 @@ describe('TimeTrackingService', () => {
                 expect(entries.length).toBe(1);
             });
 
-            const req = httpMock.expectOne('http://localhost:8080/api/time-entries/my');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/time-entries/my');
             expect(req.request.method).toBe('GET');
             req.flush([mockTimeEntry]);
         });
@@ -79,7 +79,7 @@ describe('TimeTrackingService', () => {
         it('should fetch entries by task ID', () => {
             service.getTimeEntriesByTask(1).subscribe();
 
-            const req = httpMock.expectOne('http://localhost:8080/api/time-entries/task/1');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/time-entries/task/1');
             expect(req.request.method).toBe('GET');
             req.flush([mockTimeEntry]);
         });
@@ -91,7 +91,7 @@ describe('TimeTrackingService', () => {
                 expect(total).toBe(10.5);
             });
 
-            const req = httpMock.expectOne('http://localhost:8080/api/time-entries/task/1/total');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/time-entries/task/1/total');
             expect(req.request.method).toBe('GET');
             req.flush(10.5);
         });
@@ -105,7 +105,7 @@ describe('TimeTrackingService', () => {
                 expect(result).toEqual(mockTimeEntry);
             });
 
-            const req = httpMock.expectOne('http://localhost:8080/api/time-entries/1');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/time-entries/1');
             expect(req.request.method).toBe('PUT');
             req.flush(mockTimeEntry);
         });
@@ -115,7 +115,7 @@ describe('TimeTrackingService', () => {
         it('should send DELETE request', () => {
             service.deleteTimeEntry(1).subscribe();
 
-            const req = httpMock.expectOne('http://localhost:8080/api/time-entries/1');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/time-entries/1');
             expect(req.request.method).toBe('DELETE');
             req.flush(null);
         });
@@ -125,7 +125,7 @@ describe('TimeTrackingService', () => {
         it('should fetch weekly time entries', () => {
             service.getWeeklyTimeEntries().subscribe();
 
-            const req = httpMock.expectOne('http://localhost:8080/api/time-entries/my/this-week');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/time-entries/my/this-week');
             expect(req.request.method).toBe('GET');
             req.flush([mockTimeEntry]);
         });
@@ -137,7 +137,7 @@ describe('TimeTrackingService', () => {
                 expect(result.totalHours).toBe(15);
             });
 
-            const req = httpMock.expectOne('http://localhost:8080/api/time-entries/my/this-week/total');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/time-entries/my/this-week/total');
             expect(req.request.method).toBe('GET');
             req.flush({ totalHours: 15 });
         });
@@ -149,7 +149,7 @@ describe('TimeTrackingService', () => {
                 expect(report).toEqual(mockTeamTimeReport);
             });
 
-            const req = httpMock.expectOne('http://localhost:8080/api/time-entries/team/1?period=week');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/time-entries/team/1?period=week');
             expect(req.request.method).toBe('GET');
             req.flush(mockTeamTimeReport);
         });

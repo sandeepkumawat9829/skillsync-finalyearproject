@@ -7,7 +7,7 @@ import { Sprint, SprintStatus, SprintRetrospective, CreateSprintRequest } from '
     providedIn: 'root'
 })
 export class SprintService {
-    private apiUrl = 'http://localhost:8080/api/sprints';
+    private apiUrl = 'https://skillsync-finalyearproject.onrender.com/api/sprints';
 
     constructor(private http: HttpClient) { }
 

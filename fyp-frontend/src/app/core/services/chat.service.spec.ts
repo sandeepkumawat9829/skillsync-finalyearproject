@@ -8,7 +8,7 @@ import { ChatRoom, ChatMessage, SendMessageRequest } from '../models/chat.model'
 describe('ChatService REST API', () => {
     let httpMock: HttpTestingController;
     let http: any;
-    const apiUrl = 'http://localhost:8080/api/chat';
+    const apiUrl = 'https://skillsync-finalyearproject.onrender.com/api/chat';
 
     const mockRoom: ChatRoom = {
         roomId: 1,

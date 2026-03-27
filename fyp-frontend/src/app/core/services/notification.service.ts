@@ -7,7 +7,7 @@ import { Notification } from '../models/notification.model';
     providedIn: 'root'
 })
 export class NotificationService {
-    private apiUrl = 'http://localhost:8080/api/notifications';
+    private apiUrl = 'https://skillsync-finalyearproject.onrender.com/api/notifications';
 
     private unreadCountSubject = new BehaviorSubject<number>(0);
     public unreadCount$ = this.unreadCountSubject.asObservable();

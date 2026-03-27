@@ -15,8 +15,8 @@ import {
     providedIn: 'root'
 })
 export class TaskService implements OnDestroy {
-    private apiUrl = 'http://localhost:8080/api/tasks';
-    private wsUrl = 'http://localhost:8080/ws';
+    private apiUrl = 'https://skillsync-finalyearproject.onrender.com/api/tasks';
+    private wsUrl = 'https://skillsync-finalyearproject.onrender.com/ws';
 
     private stompClient: Client | null = null;
     private projectSubscriptions = new Map<number, StompSubscription>();

@@ -53,7 +53,7 @@ describe('IssueService', () => {
                 expect(issues.length).toBe(1);
             });
 
-            const req = httpMock.expectOne('http://localhost:8080/api/issues/project/1');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/issues/project/1');
             expect(req.request.method).toBe('GET');
             req.flush([mockIssue]);
         });
@@ -65,7 +65,7 @@ describe('IssueService', () => {
                 expect(issue).toEqual(mockIssue);
             });
 
-            const req = httpMock.expectOne('http://localhost:8080/api/issues/1');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/issues/1');
             expect(req.request.method).toBe('GET');
             req.flush(mockIssue);
         });
@@ -84,7 +84,7 @@ describe('IssueService', () => {
                 expect(result).toEqual(mockIssue);
             });
 
-            const req = httpMock.expectOne('http://localhost:8080/api/issues');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/issues');
             expect(req.request.method).toBe('POST');
             req.flush(mockIssue);
         });
@@ -100,7 +100,7 @@ describe('IssueService', () => {
                 expect(result).toEqual(mockIssue);
             });
 
-            const req = httpMock.expectOne('http://localhost:8080/api/issues/1');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/issues/1');
             expect(req.request.method).toBe('PUT');
             req.flush(mockIssue);
         });
@@ -112,7 +112,7 @@ describe('IssueService', () => {
                 expect(result).toEqual(mockIssue);
             });
 
-            const req = httpMock.expectOne('http://localhost:8080/api/issues/1/assign');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/issues/1/assign');
             expect(req.request.method).toBe('PUT');
             expect(req.request.body).toEqual({ userId: 5 });
             req.flush(mockIssue);
@@ -125,7 +125,7 @@ describe('IssueService', () => {
                 expect(result).toEqual(mockIssue);
             });
 
-            const req = httpMock.expectOne('http://localhost:8080/api/issues/1/link-task/10');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/issues/1/link-task/10');
             expect(req.request.method).toBe('POST');
             req.flush(mockIssue);
         });
@@ -137,7 +137,7 @@ describe('IssueService', () => {
                 expect(result).toEqual(mockComment);
             });
 
-            const req = httpMock.expectOne('http://localhost:8080/api/issues/1/comments');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/issues/1/comments');
             expect(req.request.method).toBe('POST');
             expect(req.request.body).toEqual({ commentText: 'This is a comment' });
             req.flush(mockComment);
@@ -150,7 +150,7 @@ describe('IssueService', () => {
                 expect(comments.length).toBe(1);
             });
 
-            const req = httpMock.expectOne('http://localhost:8080/api/issues/1/comments');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/issues/1/comments');
             expect(req.request.method).toBe('GET');
             req.flush([mockComment]);
         });
@@ -160,7 +160,7 @@ describe('IssueService', () => {
         it('should send DELETE request', () => {
             service.deleteIssue(1).subscribe();
 
-            const req = httpMock.expectOne('http://localhost:8080/api/issues/1');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/issues/1');
             expect(req.request.method).toBe('DELETE');
             req.flush(null);
         });

@@ -51,7 +51,7 @@ describe('AIService', () => {
                 expect(suggestions[0].matchScore).toBe(85);
             });
 
-            const req = httpMock.expectOne('http://localhost:8080/api/ai/projects/1/suggest-members?limit=10');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/ai/projects/1/suggest-members?limit=10');
             expect(req.request.method).toBe('GET');
             req.flush([mockSuggestion]);
         });
@@ -59,7 +59,7 @@ describe('AIService', () => {
         it('should fetch team member suggestions with custom limit', () => {
             service.suggestTeamMembers(1, 5).subscribe();
 
-            const req = httpMock.expectOne('http://localhost:8080/api/ai/projects/1/suggest-members?limit=5');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/ai/projects/1/suggest-members?limit=5');
             expect(req.request.method).toBe('GET');
             req.flush([mockSuggestion]);
         });
@@ -72,7 +72,7 @@ describe('AIService', () => {
                 expect(result.status).toBe('LOW_SIMILARITY');
             });
 
-            const req = httpMock.expectOne('http://localhost:8080/api/ai/projects/1/plagiarism-check');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/ai/projects/1/plagiarism-check');
             expect(req.request.method).toBe('GET');
             req.flush(mockPlagiarismResult);
         });
@@ -88,7 +88,7 @@ describe('AIService', () => {
                 expect(result.status).toBe('HIGH_SIMILARITY');
             });
 
-            const req = httpMock.expectOne('http://localhost:8080/api/ai/projects/1/plagiarism-check');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/ai/projects/1/plagiarism-check');
             req.flush(highSimilarity);
         });
     });

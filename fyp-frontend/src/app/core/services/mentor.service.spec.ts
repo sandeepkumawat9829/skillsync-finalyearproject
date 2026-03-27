@@ -61,7 +61,7 @@ describe('MentorService', () => {
                 expect(mentors.length).toBe(1);
             });
 
-            const req = httpMock.expectOne('http://localhost:8080/api/mentors');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/mentors');
             expect(req.request.method).toBe('GET');
             req.flush([mockMentor]);
         });
@@ -73,7 +73,7 @@ describe('MentorService', () => {
                 expect(mentors[0].isAvailable).toBeTrue();
             });
 
-            const req = httpMock.expectOne('http://localhost:8080/api/mentors/available');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/mentors/available');
             expect(req.request.method).toBe('GET');
             req.flush([mockMentor]);
         });
@@ -85,7 +85,7 @@ describe('MentorService', () => {
                 expect(mentor).toEqual(mockMentor);
             });
 
-            const req = httpMock.expectOne('http://localhost:8080/api/mentors/1');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/mentors/1');
             expect(req.request.method).toBe('GET');
             req.flush(mockMentor);
         });
@@ -95,7 +95,7 @@ describe('MentorService', () => {
         it('should search mentors by query', () => {
             service.searchMentors('AI').subscribe();
 
-            const req = httpMock.expectOne('http://localhost:8080/api/mentors/search?q=AI');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/mentors/search?q=AI');
             expect(req.request.method).toBe('GET');
             req.flush([mockMentor]);
         });
@@ -103,7 +103,7 @@ describe('MentorService', () => {
         it('should encode special characters in search query', () => {
             service.searchMentors('AI & ML').subscribe();
 
-            const req = httpMock.expectOne('http://localhost:8080/api/mentors/search?q=AI%20%26%20ML');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/mentors/search?q=AI%20%26%20ML');
             req.flush([mockMentor]);
         });
     });
@@ -116,7 +116,7 @@ describe('MentorService', () => {
                 expect(result).toEqual(mockMentorRequest);
             });
 
-            const req = httpMock.expectOne('http://localhost:8080/api/mentors/request');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/mentors/request');
             expect(req.request.method).toBe('POST');
             expect(req.request.body).toEqual(request);
             req.flush(mockMentorRequest);
@@ -129,7 +129,7 @@ describe('MentorService', () => {
                 expect(requests.length).toBe(1);
             });
 
-            const req = httpMock.expectOne('http://localhost:8080/api/mentors/requests/my');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/mentors/requests/my');
             expect(req.request.method).toBe('GET');
             req.flush([mockMentorRequest]);
         });
@@ -139,7 +139,7 @@ describe('MentorService', () => {
         it('should send DELETE request to cancel mentor request', () => {
             service.cancelRequest(1).subscribe();
 
-            const req = httpMock.expectOne('http://localhost:8080/api/mentors/requests/1');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/mentors/requests/1');
             expect(req.request.method).toBe('DELETE');
             req.flush(null);
         });
@@ -153,7 +153,7 @@ describe('MentorService', () => {
                 expect(result).toEqual(stats);
             });
 
-            const req = httpMock.expectOne('http://localhost:8080/api/mentors/1/stats');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/mentors/1/stats');
             expect(req.request.method).toBe('GET');
             req.flush(stats);
         });
@@ -163,7 +163,7 @@ describe('MentorService', () => {
         it('should fetch pending requests for mentor', () => {
             service.getPendingMentorRequests(1).subscribe();
 
-            const req = httpMock.expectOne('http://localhost:8080/api/mentors/requests/pending');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/mentors/requests/pending');
             expect(req.request.method).toBe('GET');
             req.flush([mockMentorRequest]);
         });
@@ -173,7 +173,7 @@ describe('MentorService', () => {
         it('should send POST request to accept mentor request', () => {
             service.acceptMentorRequest(1, 'Looking forward to working with you').subscribe();
 
-            const req = httpMock.expectOne('http://localhost:8080/api/mentors/requests/1/accept');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/mentors/requests/1/accept');
             expect(req.request.method).toBe('POST');
             expect(req.request.body).toEqual({ feedback: 'Looking forward to working with you' });
             req.flush(null);
@@ -184,7 +184,7 @@ describe('MentorService', () => {
         it('should send POST request to reject mentor request', () => {
             service.rejectMentorRequest(1, 'Already at capacity').subscribe();
 
-            const req = httpMock.expectOne('http://localhost:8080/api/mentors/requests/1/reject');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/mentors/requests/1/reject');
             expect(req.request.method).toBe('POST');
             expect(req.request.body).toEqual({ reason: 'Already at capacity' });
             req.flush(null);
@@ -195,7 +195,7 @@ describe('MentorService', () => {
         it('should fetch assigned teams for mentor', () => {
             service.getAssignedTeams(1).subscribe();
 
-            const req = httpMock.expectOne('http://localhost:8080/api/mentors/1/teams');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/mentors/1/teams');
             expect(req.request.method).toBe('GET');
             req.flush([]);
         });
@@ -205,7 +205,7 @@ describe('MentorService', () => {
         it('should fetch mentor assignments for current mentor', () => {
             service.getMyAssignments().subscribe();
 
-            const req = httpMock.expectOne('http://localhost:8080/api/mentors/assignments');
+            const req = httpMock.expectOne('https://skillsync-finalyearproject.onrender.com/api/mentors/assignments');
             expect(req.request.method).toBe('GET');
             req.flush([]);
         });

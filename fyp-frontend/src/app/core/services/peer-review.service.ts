@@ -34,7 +34,7 @@ export interface PeerReviewSummary {
     providedIn: 'root'
 })
 export class PeerReviewService {
-    private apiUrl = 'http://localhost:8080/api/peer-reviews';
+    private apiUrl = 'https://skillsync-finalyearproject.onrender.com/api/peer-reviews';
 
     constructor(private http: HttpClient) { }
 

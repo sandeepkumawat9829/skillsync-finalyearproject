@@ -22,7 +22,7 @@ export interface Milestone {
     providedIn: 'root'
 })
 export class MilestoneService {
-    private apiUrl = 'http://localhost:8080/api/milestones';
+    private apiUrl = 'https://skillsync-finalyearproject.onrender.com/api/milestones';
 
     constructor(private http: HttpClient) { }
 

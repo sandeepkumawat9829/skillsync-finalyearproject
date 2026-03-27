@@ -20,7 +20,7 @@ export interface ProjectAnalytics {
     providedIn: 'root'
 })
 export class AnalyticsService {
-    private apiUrl = 'http://localhost:8080/api/analytics';
+    private apiUrl = 'https://skillsync-finalyearproject.onrender.com/api/analytics';
 
     constructor(private http: HttpClient) { }
 
