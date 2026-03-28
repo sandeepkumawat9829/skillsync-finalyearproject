@@ -19,6 +19,10 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { StudentLayoutComponent } from './layout/student-layout.component';
 import { StudentDashboardComponent } from './dashboard/student-dashboard.component';
 import { AuthGuard } from '../../core/guards/auth.guard';
+import { StudentPagesModule } from './student-pages.module';
+import { StudentInvitationsComponent } from './invitations/student-invitations.component';
+import { StudentProfileComponent } from './profile/student-profile.component';
+import { StudentNotificationsComponent } from './notifications/student-notifications.component';
 
 const routes: Routes = [
     {
@@ -61,7 +65,7 @@ const routes: Routes = [
             },
             {
                 path: 'invitations',
-                loadChildren: () => import('./student-pages.module').then(m => m.StudentPagesModule)
+                component: StudentInvitationsComponent
             },
             {
                 path: 'meetings',
@@ -77,11 +81,11 @@ const routes: Routes = [
             },
             {
                 path: 'profile',
-                loadChildren: () => import('./student-pages.module').then(m => m.StudentPagesModule)
+                component: StudentProfileComponent
             },
             {
                 path: 'notifications',
-                loadChildren: () => import('./student-pages.module').then(m => m.StudentPagesModule)
+                component: StudentNotificationsComponent
             },
             {
                 path: '',
@@ -112,7 +116,8 @@ const routes: Routes = [
         MatChipsModule,
         MatTabsModule,
         MatMenuModule,
-        MatProgressSpinnerModule
+        MatProgressSpinnerModule,
+        StudentPagesModule
     ]
 })
 export class StudentModule { }
