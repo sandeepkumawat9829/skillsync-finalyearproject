@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { ToastService } from '../../../core/services/toast.service';
 import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
@@ -20,7 +20,7 @@ export class LoginComponent implements OnInit {
         private router: Router,
         private route: ActivatedRoute,
         private authService: AuthService,
-        private snackBar: MatSnackBar
+        private toastService: ToastService
     ) { }
 
     ngOnInit(): void {
@@ -47,17 +47,14 @@ export class LoginComponent implements OnInit {
         this.authService.login(this.loginForm.value).subscribe({
             next: (response) => {
                 this.loading = false;
-                this.snackBar.open('Login successful!', 'Close', {
-                    duration: 3000,
-                    panelClass: ['success-snackbar']
-                });
+                this.toastService.success('Login successful!');
 
                 // Navigate based on user role
                 const userRole = response.role ? response.role.toLowerCase() : 'student';
 
                 // ADMIN users skip the profile wizard check
                 if (userRole !== 'admin' && !response.profileCompleted) {
-                    this.router.navigate(['/auth/profile-wizard']);
+                    this.router.navigate(['/auth/complete-profile']);
                     return;
                 }
 
@@ -66,10 +63,7 @@ export class LoginComponent implements OnInit {
             error: (error) => {
                 this.loading = false;
                 const errorMessage = error.error?.message || 'Login failed. Please check your credentials.';
-                this.snackBar.open(errorMessage, 'Close', {
-                    duration: 5000,
-                    panelClass: ['error-snackbar']
-                });
+                this.toastService.error(errorMessage);
             }
         });
     }

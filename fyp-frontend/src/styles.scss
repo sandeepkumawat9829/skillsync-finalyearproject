@@ -284,3 +284,44 @@ button:disabled {
 .mat-progress-spinner circle {
     stroke: var(--primary-coral) !important;
 }
+
+/* 
+   Global Typographic Overrides
+   Ensures consistent font usage across the entire application,
+   effectively overriding Material defaults but safely preserving icons.
+*/
+html, body, .mat-typography, .mat-mdc-typography, 
+h1, h2, h3, h4, h5, h6,
+p, span, div, a, button, input, textarea, select, label,
+.mat-mdc-button, .mat-mdc-raised-button, .mat-mdc-card-title,
+.mat-form-field-label, .mat-list-item-content, .mat-table, .mat-header-cell, .mat-cell {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+}
+
+/* Exempt Material Icons from global font override */
+.mat-icon, 
+.material-icons, 
+.material-icons-outlined, 
+.material-symbols-outlined,
+.mat-mdc-icon {
+    font-family: 'Material Icons' !important;
+}
+
+/* Reset default snackbar container for custom ToastComponent */
+.transparent-toast-panel {
+    background: transparent !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin-top: 16px !important; // Add some breathing room from the top
+    
+    .mdc-snackbar__surface {
+        background: transparent !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        border-radius: 0 !important;
+    }
+    
+    .mat-mdc-snack-bar-label {
+        padding: 0 !important;
+    }
+}

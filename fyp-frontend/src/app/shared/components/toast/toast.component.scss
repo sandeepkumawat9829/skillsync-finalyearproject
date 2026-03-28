@@ -1,0 +1,77 @@
+.toast-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: white;
+  min-width: 300px;
+  max-width: 450px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  border-left: 6px solid #ccc;
+  
+  .toast-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    mat-icon {
+      font-size: 28px;
+      width: 28px;
+      height: 28px;
+    }
+  }
+
+  .toast-message {
+    flex: 1;
+    font-size: 15px;
+    font-weight: 600;
+    color: #1b1b1b;
+    line-height: 1.4;
+  }
+
+  .toast-action {
+    display: flex;
+    align-items: center;
+    .close-btn {
+      color: #9ca3af;
+      transform: scale(0.8);
+      transition: color 0.2s ease;
+      &:hover {
+        color: #1b1b1b;
+      }
+    }
+  }
+
+  // Type-specific styles
+  &.success {
+    border-left-color: #10b981; // Emerald
+    background: #eafaf1;
+    .toast-icon mat-icon {
+      color: #10b981;
+    }
+  }
+
+  &.error {
+    border-left-color: #ef4444; // Red
+    background: #fee2e2;
+    .toast-icon mat-icon {
+      color: #ef4444;
+    }
+  }
+
+  &.warning {
+    border-left-color: #f59e0b; // Amber
+    background: #fef3c7;
+    .toast-icon mat-icon {
+      color: #f59e0b;
+    }
+  }
+
+  &.info {
+    border-left-color: #3b82f6; // Blue
+    background: #eff6ff;
+    .toast-icon mat-icon {
+      color: #3b82f6;
+    }
+  }
+}

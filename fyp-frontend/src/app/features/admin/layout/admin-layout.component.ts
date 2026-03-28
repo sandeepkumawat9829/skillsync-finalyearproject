@@ -21,7 +21,7 @@ export class AdminLayoutComponent implements OnInit {
         private router: Router,
         private breakpointObserver: BreakpointObserver
     ) {
-        this.breakpointObserver.observe([Breakpoints.Handset]).subscribe(result => {
+        this.breakpointObserver.observe([Breakpoints.XSmall]).subscribe(result => {
             this.isMobile = result.matches;
             this.sidenavOpened = !this.isMobile;
         });

@@ -1,0 +1,13 @@
+<div [class]="containerClass">
+  <div class="toast-icon">
+    <mat-icon>{{ icon }}</mat-icon>
+  </div>
+  <div class="toast-message">
+    {{ data.message }}
+  </div>
+  <div class="toast-action">
+    <button mat-icon-button class="close-btn" (click)="snackBarRef.dismiss()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+</div>
