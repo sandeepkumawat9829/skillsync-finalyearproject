@@ -32,7 +32,7 @@ export interface SimilarProject {
     providedIn: 'root'
 })
 export class AIService {
-    private apiUrl = 'https://outermost-leisha-noncoherently.ngrok-free.de/api/ai';
+    private apiUrl = '/api/ai';
 
     constructor(private http: HttpClient) { }
 

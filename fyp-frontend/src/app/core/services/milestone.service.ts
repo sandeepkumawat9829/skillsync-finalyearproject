@@ -22,7 +22,7 @@ export interface Milestone {
     providedIn: 'root'
 })
 export class MilestoneService {
-    private apiUrl = 'https://outermost-leisha-noncoherently.ngrok-free.de/api/milestones';
+    private apiUrl = '/api/milestones';
 
     constructor(private http: HttpClient) { }
 

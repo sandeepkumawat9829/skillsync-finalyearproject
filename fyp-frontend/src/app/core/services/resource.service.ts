@@ -19,7 +19,7 @@ export interface SharedResource {
     providedIn: 'root'
 })
 export class ResourceService {
-    private apiUrl = 'https://outermost-leisha-noncoherently.ngrok-free.de/api/resources';
+    private apiUrl = '/api/resources';
 
     constructor(private http: HttpClient) { }
 

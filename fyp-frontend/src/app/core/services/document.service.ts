@@ -17,7 +17,7 @@ export interface FormGenerateRequest {
     providedIn: 'root'
 })
 export class DocumentService {
-    private apiUrl = 'https://outermost-leisha-noncoherently.ngrok-free.de/api/documents';
+    private apiUrl = '/api/documents';
 
     constructor(private http: HttpClient) { }
 

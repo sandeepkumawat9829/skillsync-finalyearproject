@@ -7,7 +7,7 @@ import { AssignedTeam, Mentor, MentorRequest } from '../models/mentor.model';
     providedIn: 'root'
 })
 export class MentorService {
-    private apiUrl = 'https://outermost-leisha-noncoherently.ngrok-free.de/api/mentors';
+    private apiUrl = '/api/mentors';
 
     constructor(private http: HttpClient) { }
 
@@ -50,7 +50,7 @@ export class MentorService {
 
     // Get mentor profile by user ID
     getMentorProfile(userId: number): Observable<any> {
-        return this.http.get<any>(`https://outermost-leisha-noncoherently.ngrok-free.de/api/profile/mentor/${userId}`);
+        return this.http.get<any>(`/api/profile/mentor/${userId}`);
     }
 
     // Get mentor stats

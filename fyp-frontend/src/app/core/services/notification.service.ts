@@ -7,7 +7,7 @@ import { Notification } from '../models/notification.model';
     providedIn: 'root'
 })
 export class NotificationService {
-    private apiUrl = 'https://outermost-leisha-noncoherently.ngrok-free.de/api/notifications';
+    private apiUrl = '/api/notifications';
 
     private unreadCountSubject = new BehaviorSubject<number>(0);
     public unreadCount$ = this.unreadCountSubject.asObservable();

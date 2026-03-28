@@ -7,7 +7,7 @@ import { Meeting, CreateMeetingRequest } from '../models/meeting.model';
     providedIn: 'root'
 })
 export class MeetingService {
-    private apiUrl = 'https://outermost-leisha-noncoherently.ngrok-free.de/api/meetings';
+    private apiUrl = '/api/meetings';
 
     constructor(private http: HttpClient) { }
 

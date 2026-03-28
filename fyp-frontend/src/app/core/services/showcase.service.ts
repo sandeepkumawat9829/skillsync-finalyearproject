@@ -39,7 +39,7 @@ export interface PublishRequest {
     providedIn: 'root'
 })
 export class ShowcaseService {
-    private apiUrl = 'https://outermost-leisha-noncoherently.ngrok-free.de/api/showcase';
+    private apiUrl = '/api/showcase';
 
     constructor(private http: HttpClient) { }
 

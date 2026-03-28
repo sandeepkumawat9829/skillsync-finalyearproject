@@ -7,7 +7,7 @@ import { Issue, IssueComment, CreateIssueRequest, UpdateIssueRequest } from '../
     providedIn: 'root'
 })
 export class IssueService {
-    private apiUrl = 'https://outermost-leisha-noncoherently.ngrok-free.de/api/issues';
+    private apiUrl = '/api/issues';
 
     constructor(private http: HttpClient) { }
 

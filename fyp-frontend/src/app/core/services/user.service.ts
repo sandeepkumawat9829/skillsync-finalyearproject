@@ -17,7 +17,7 @@ export interface DashboardData {
     providedIn: 'root'
 })
 export class UserService {
-    private apiUrl = 'https://outermost-leisha-noncoherently.ngrok-free.de/api/users';
+    private apiUrl = '/api/users';
 
     constructor(private http: HttpClient) { }
 

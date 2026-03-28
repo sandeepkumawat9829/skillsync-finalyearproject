@@ -58,7 +58,7 @@ describe('AnalyticsService', () => {
                 expect(analytics).toEqual(mockAnalytics);
             });
 
-            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/analytics/project/1');
+            const req = httpMock.expectOne('/api/analytics/project/1');
             expect(req.request.method).toBe('GET');
             req.flush(mockAnalytics);
         });
@@ -70,7 +70,7 @@ describe('AnalyticsService', () => {
                 expect(data.length).toBe(1);
             });
 
-            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/analytics/project/1/burndown?sprintId=5');
+            const req = httpMock.expectOne('/api/analytics/project/1/burndown?sprintId=5');
             expect(req.request.method).toBe('GET');
             req.flush(mockBurndownData);
         });
@@ -83,7 +83,7 @@ describe('AnalyticsService', () => {
                 expect(data[0].completedPoints).toBe(18);
             });
 
-            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/analytics/project/1/velocity');
+            const req = httpMock.expectOne('/api/analytics/project/1/velocity');
             expect(req.request.method).toBe('GET');
             req.flush(mockVelocityData);
         });
@@ -96,7 +96,7 @@ describe('AnalyticsService', () => {
                 expect(data[0].memberName).toBe('John');
             });
 
-            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/analytics/project/1/contributions');
+            const req = httpMock.expectOne('/api/analytics/project/1/contributions');
             expect(req.request.method).toBe('GET');
             req.flush(mockContributionData);
         });
@@ -106,7 +106,7 @@ describe('AnalyticsService', () => {
         it('should fetch sprint metrics', () => {
             service.getSprintMetrics(1).subscribe();
 
-            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/analytics/project/1/sprint-metrics');
+            const req = httpMock.expectOne('/api/analytics/project/1/sprint-metrics');
             expect(req.request.method).toBe('GET');
             req.flush([]);
         });
@@ -119,7 +119,7 @@ describe('AnalyticsService', () => {
                 expect(overview.teamEfficiency).toBe('high');
             });
 
-            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/analytics/project/1/overview');
+            const req = httpMock.expectOne('/api/analytics/project/1/overview');
             expect(req.request.method).toBe('GET');
             req.flush(mockOverview);
         });
@@ -129,7 +129,7 @@ describe('AnalyticsService', () => {
         it('should fetch time-based metrics with default days', () => {
             service.getTimeBasedMetrics(1).subscribe();
 
-            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/analytics/project/1/time-metrics?days=30');
+            const req = httpMock.expectOne('/api/analytics/project/1/time-metrics?days=30');
             expect(req.request.method).toBe('GET');
             req.flush([]);
         });
@@ -137,7 +137,7 @@ describe('AnalyticsService', () => {
         it('should fetch time-based metrics with custom days', () => {
             service.getTimeBasedMetrics(1, 60).subscribe();
 
-            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/analytics/project/1/time-metrics?days=60');
+            const req = httpMock.expectOne('/api/analytics/project/1/time-metrics?days=60');
             expect(req.request.method).toBe('GET');
             req.flush([]);
         });

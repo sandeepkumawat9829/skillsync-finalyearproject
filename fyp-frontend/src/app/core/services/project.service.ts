@@ -7,7 +7,7 @@ import { Project, CollegeProjectBucket, CreateProjectRequest } from '../models/p
     providedIn: 'root'
 })
 export class ProjectService {
-    private apiUrl = 'https://outermost-leisha-noncoherently.ngrok-free.de/api/projects';
+    private apiUrl = '/api/projects';
 
     constructor(private http: HttpClient) { }
 

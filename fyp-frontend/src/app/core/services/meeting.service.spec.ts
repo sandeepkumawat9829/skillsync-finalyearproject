@@ -46,7 +46,7 @@ describe('MeetingService', () => {
                 expect(meetings.length).toBe(1);
             });
 
-            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/meetings');
+            const req = httpMock.expectOne('/api/meetings');
             expect(req.request.method).toBe('GET');
             req.flush([mockMeeting]);
         });
@@ -58,7 +58,7 @@ describe('MeetingService', () => {
                 expect(meetings[0].teamId).toBe(1);
             });
 
-            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/meetings/team/1');
+            const req = httpMock.expectOne('/api/meetings/team/1');
             expect(req.request.method).toBe('GET');
             req.flush([mockMeeting]);
         });
@@ -68,7 +68,7 @@ describe('MeetingService', () => {
         it('should fetch upcoming meetings', () => {
             service.getUpcomingMeetings().subscribe();
 
-            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/meetings/upcoming');
+            const req = httpMock.expectOne('/api/meetings/upcoming');
             expect(req.request.method).toBe('GET');
             req.flush([mockMeeting]);
         });
@@ -78,7 +78,7 @@ describe('MeetingService', () => {
         it('should fetch past meetings', () => {
             service.getPastMeetings().subscribe();
 
-            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/meetings/past');
+            const req = httpMock.expectOne('/api/meetings/past');
             expect(req.request.method).toBe('GET');
             req.flush([mockMeeting]);
         });
@@ -90,7 +90,7 @@ describe('MeetingService', () => {
                 expect(meeting).toEqual(mockMeeting);
             });
 
-            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/meetings/1');
+            const req = httpMock.expectOne('/api/meetings/1');
             expect(req.request.method).toBe('GET');
             req.flush(mockMeeting);
         });
@@ -111,7 +111,7 @@ describe('MeetingService', () => {
                 expect(result).toEqual(mockMeeting);
             });
 
-            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/meetings');
+            const req = httpMock.expectOne('/api/meetings');
             expect(req.request.method).toBe('POST');
             req.flush(mockMeeting);
         });
@@ -125,7 +125,7 @@ describe('MeetingService', () => {
                 expect(result).toEqual(mockMeeting);
             });
 
-            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/meetings/1');
+            const req = httpMock.expectOne('/api/meetings/1');
             expect(req.request.method).toBe('PUT');
             req.flush(mockMeeting);
         });
@@ -135,7 +135,7 @@ describe('MeetingService', () => {
         it('should send POST request to add meeting notes', () => {
             service.addMeetingNotes(1, 'These are meeting notes').subscribe();
 
-            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/meetings/1/notes');
+            const req = httpMock.expectOne('/api/meetings/1/notes');
             expect(req.request.method).toBe('POST');
             expect(req.request.body).toEqual({ notes: 'These are meeting notes' });
             req.flush(null);
@@ -146,7 +146,7 @@ describe('MeetingService', () => {
         it('should send POST request to cancel meeting', () => {
             service.cancelMeeting(1).subscribe();
 
-            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/meetings/1/cancel');
+            const req = httpMock.expectOne('/api/meetings/1/cancel');
             expect(req.request.method).toBe('POST');
             req.flush(null);
         });
@@ -156,7 +156,7 @@ describe('MeetingService', () => {
         it('should send DELETE request', () => {
             service.deleteMeeting(1).subscribe();
 
-            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/meetings/1');
+            const req = httpMock.expectOne('/api/meetings/1');
             expect(req.request.method).toBe('DELETE');
             req.flush(null);
         });
@@ -166,7 +166,7 @@ describe('MeetingService', () => {
         it('should open ICS download URL', () => {
             spyOn(window, 'open');
             service.downloadIcs(1);
-            expect(window.open).toHaveBeenCalledWith('https://outermost-leisha-noncoherently.ngrok-free.de/api/meetings/1/ics', '_blank');
+            expect(window.open).toHaveBeenCalledWith('/api/meetings/1/ics', '_blank');
         });
     });
 });

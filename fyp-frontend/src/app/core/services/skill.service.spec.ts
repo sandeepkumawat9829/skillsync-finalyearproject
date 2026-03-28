@@ -54,7 +54,7 @@ describe('SkillCatalogService', () => {
                 expect(skills.length).toBe(1);
             });
 
-            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/skills');
+            const req = httpMock.expectOne('/api/skills');
             expect(req.request.method).toBe('GET');
             req.flush([mockSkill]);
         });
@@ -66,7 +66,7 @@ describe('SkillCatalogService', () => {
                 expect(categories).toContain('FRONTEND');
             });
 
-            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/skills/categories');
+            const req = httpMock.expectOne('/api/skills/categories');
             expect(req.request.method).toBe('GET');
             req.flush(['FRONTEND', 'BACKEND', 'DATABASE']);
         });
@@ -76,7 +76,7 @@ describe('SkillCatalogService', () => {
         it('should fetch skills by category', () => {
             service.getSkillsByCategory('FRONTEND').subscribe();
 
-            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/skills/category/FRONTEND');
+            const req = httpMock.expectOne('/api/skills/category/FRONTEND');
             expect(req.request.method).toBe('GET');
             req.flush([mockSkill]);
         });
@@ -88,7 +88,7 @@ describe('SkillCatalogService', () => {
                 expect(skill).toEqual(mockSkill);
             });
 
-            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/skills/1');
+            const req = httpMock.expectOne('/api/skills/1');
             expect(req.request.method).toBe('GET');
             req.flush(mockSkill);
         });
@@ -100,7 +100,7 @@ describe('SkillCatalogService', () => {
                 expect(result).toEqual(mockSkill);
             });
 
-            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/skills');
+            const req = httpMock.expectOne('/api/skills');
             expect(req.request.method).toBe('POST');
             req.flush(mockSkill);
         });
@@ -112,7 +112,7 @@ describe('SkillCatalogService', () => {
                 expect(skills.length).toBe(1);
             });
 
-            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/skills/student/1');
+            const req = httpMock.expectOne('/api/skills/student/1');
             expect(req.request.method).toBe('GET');
             req.flush([mockStudentSkill]);
         });
@@ -124,7 +124,7 @@ describe('SkillCatalogService', () => {
                 expect(result).toEqual(mockStudentSkill);
             });
 
-            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/skills/student/1');
+            const req = httpMock.expectOne('/api/skills/student/1');
             expect(req.request.method).toBe('POST');
             expect(req.request.body).toEqual({ skillId: 1, proficiencyLevel: 'INTERMEDIATE' });
             req.flush(mockStudentSkill);
@@ -135,7 +135,7 @@ describe('SkillCatalogService', () => {
         it('should send DELETE request to remove student skill', () => {
             service.removeStudentSkill(1, 1).subscribe();
 
-            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/skills/student/1/skill/1');
+            const req = httpMock.expectOne('/api/skills/student/1/skill/1');
             expect(req.request.method).toBe('DELETE');
             req.flush(null);
         });
@@ -145,7 +145,7 @@ describe('SkillCatalogService', () => {
         it('should fetch mentor specializations', () => {
             service.getMentorSpecializations(1).subscribe();
 
-            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/skills/mentor/1');
+            const req = httpMock.expectOne('/api/skills/mentor/1');
             expect(req.request.method).toBe('GET');
             req.flush([mockSkill]);
         });
@@ -155,7 +155,7 @@ describe('SkillCatalogService', () => {
         it('should send POST request to add mentor specialization', () => {
             service.addMentorSpecialization(1, 1).subscribe();
 
-            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/skills/mentor/1/skill/1');
+            const req = httpMock.expectOne('/api/skills/mentor/1/skill/1');
             expect(req.request.method).toBe('POST');
             req.flush(null);
         });
@@ -165,7 +165,7 @@ describe('SkillCatalogService', () => {
         it('should send DELETE request to remove mentor specialization', () => {
             service.removeMentorSpecialization(1, 1).subscribe();
 
-            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/skills/mentor/1/skill/1');
+            const req = httpMock.expectOne('/api/skills/mentor/1/skill/1');
             expect(req.request.method).toBe('DELETE');
             req.flush(null);
         });
@@ -177,7 +177,7 @@ describe('SkillCatalogService', () => {
                 expect(userIds).toEqual([1, 2, 3]);
             });
 
-            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/skills/search/students');
+            const req = httpMock.expectOne('/api/skills/search/students');
             expect(req.request.method).toBe('POST');
             expect(req.request.body).toEqual([1, 2]);
             req.flush([1, 2, 3]);
@@ -188,7 +188,7 @@ describe('SkillCatalogService', () => {
         it('should send POST request to find mentors with skills', () => {
             service.findMentorsWithSkills([1, 2]).subscribe();
 
-            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/skills/search/mentors');
+            const req = httpMock.expectOne('/api/skills/search/mentors');
             expect(req.request.method).toBe('POST');
             req.flush([1, 2]);
         });
@@ -201,7 +201,7 @@ describe('SkillCatalogService', () => {
                 expect(analytics.overallCoverage).toBe(75);
             });
 
-            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/skills/teams/1/skill-graph');
+            const req = httpMock.expectOne('/api/skills/teams/1/skill-graph');
             expect(req.request.method).toBe('GET');
             req.flush(mockAnalytics);
         });

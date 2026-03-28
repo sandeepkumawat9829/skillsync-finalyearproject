@@ -54,7 +54,7 @@ describe('SprintService', () => {
                 expect(sprints.length).toBe(1);
             });
 
-            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/sprints/project/1');
+            const req = httpMock.expectOne('/api/sprints/project/1');
             expect(req.request.method).toBe('GET');
             req.flush([mockSprint]);
         });
@@ -66,7 +66,7 @@ describe('SprintService', () => {
                 expect(sprint?.status).toBe(SprintStatus.ACTIVE);
             });
 
-            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/sprints/project/1/active');
+            const req = httpMock.expectOne('/api/sprints/project/1/active');
             expect(req.request.method).toBe('GET');
             req.flush(mockSprint);
         });
@@ -76,7 +76,7 @@ describe('SprintService', () => {
                 expect(sprint).toBeNull();
             });
 
-            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/sprints/project/1/active');
+            const req = httpMock.expectOne('/api/sprints/project/1/active');
             req.flush(null);
         });
     });
@@ -87,7 +87,7 @@ describe('SprintService', () => {
                 expect(sprint).toEqual(mockSprint);
             });
 
-            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/sprints/1');
+            const req = httpMock.expectOne('/api/sprints/1');
             expect(req.request.method).toBe('GET');
             req.flush(mockSprint);
         });
@@ -107,7 +107,7 @@ describe('SprintService', () => {
                 expect(result).toEqual(mockSprint);
             });
 
-            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/sprints');
+            const req = httpMock.expectOne('/api/sprints');
             expect(req.request.method).toBe('POST');
             req.flush(mockSprint);
         });
@@ -119,7 +119,7 @@ describe('SprintService', () => {
                 expect(result).toEqual(mockSprint);
             });
 
-            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/sprints/1/start');
+            const req = httpMock.expectOne('/api/sprints/1/start');
             expect(req.request.method).toBe('POST');
             req.flush(mockSprint);
         });
@@ -131,7 +131,7 @@ describe('SprintService', () => {
                 expect(result).toEqual(mockSprint);
             });
 
-            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/sprints/1/complete');
+            const req = httpMock.expectOne('/api/sprints/1/complete');
             expect(req.request.method).toBe('POST');
             req.flush(mockSprint);
         });
@@ -141,7 +141,7 @@ describe('SprintService', () => {
         it('should send DELETE request', () => {
             service.deleteSprint(1).subscribe();
 
-            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/sprints/1');
+            const req = httpMock.expectOne('/api/sprints/1');
             expect(req.request.method).toBe('DELETE');
             req.flush(null);
         });
@@ -153,7 +153,7 @@ describe('SprintService', () => {
                 expect(retro).toEqual(mockRetrospective);
             });
 
-            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/sprints/1/retrospective');
+            const req = httpMock.expectOne('/api/sprints/1/retrospective');
             expect(req.request.method).toBe('GET');
             req.flush(mockRetrospective);
         });
@@ -165,7 +165,7 @@ describe('SprintService', () => {
                 expect(result).toEqual(mockRetrospective);
             });
 
-            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/sprints/1/retrospective');
+            const req = httpMock.expectOne('/api/sprints/1/retrospective');
             expect(req.request.method).toBe('POST');
             req.flush(mockRetrospective);
         });
@@ -179,7 +179,7 @@ describe('SprintService', () => {
                 expect(result).toEqual(burndownData);
             });
 
-            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/sprints/1/burndown');
+            const req = httpMock.expectOne('/api/sprints/1/burndown');
             expect(req.request.method).toBe('GET');
             req.flush(burndownData);
         });

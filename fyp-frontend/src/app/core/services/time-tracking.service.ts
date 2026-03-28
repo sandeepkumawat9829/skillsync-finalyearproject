@@ -7,7 +7,7 @@ import { TimeEntry, TimeReport, TeamTimeReport, LogTimeRequest, ReportPeriod } f
     providedIn: 'root'
 })
 export class TimeTrackingService {
-    private apiUrl = 'https://outermost-leisha-noncoherently.ngrok-free.de/api/time-entries';
+    private apiUrl = '/api/time-entries';
 
     constructor(private http: HttpClient) { }
 

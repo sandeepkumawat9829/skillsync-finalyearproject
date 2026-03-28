@@ -44,7 +44,7 @@ describe('OtpService', () => {
                 expect(result.expiresInMinutes).toBe(10);
             });
 
-            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/otp/request');
+            const req = httpMock.expectOne('/api/otp/request');
             expect(req.request.method).toBe('POST');
             expect(req.request.body).toEqual({ action: 'PROJECT_SUBMIT' });
             req.flush(response);
@@ -62,7 +62,7 @@ describe('OtpService', () => {
                 expect(result.valid).toBeTrue();
             });
 
-            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/otp/verify');
+            const req = httpMock.expectOne('/api/otp/verify');
             expect(req.request.method).toBe('POST');
             expect(req.request.body).toEqual({ action: 'PROJECT_SUBMIT', otp: '123456' });
             req.flush(response);
@@ -79,7 +79,7 @@ describe('OtpService', () => {
                 expect(result.error).toBe('Invalid OTP');
             });
 
-            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/otp/verify');
+            const req = httpMock.expectOne('/api/otp/verify');
             req.flush(response);
         });
     });
@@ -95,7 +95,7 @@ describe('OtpService', () => {
                 expect(result.pending).toBeTrue();
             });
 
-            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/otp/status?action=PROJECT_SUBMIT');
+            const req = httpMock.expectOne('/api/otp/status?action=PROJECT_SUBMIT');
             expect(req.request.method).toBe('GET');
             req.flush(response);
         });
@@ -109,7 +109,7 @@ describe('OtpService', () => {
                 expect(result).toEqual(response);
             });
 
-            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/otp/cancel?action=PROJECT_SUBMIT');
+            const req = httpMock.expectOne('/api/otp/cancel?action=PROJECT_SUBMIT');
             expect(req.request.method).toBe('DELETE');
             req.flush(response);
         });

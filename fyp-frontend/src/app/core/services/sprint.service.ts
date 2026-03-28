@@ -7,7 +7,7 @@ import { Sprint, SprintStatus, SprintRetrospective, CreateSprintRequest } from '
     providedIn: 'root'
 })
 export class SprintService {
-    private apiUrl = 'https://outermost-leisha-noncoherently.ngrok-free.de/api/sprints';
+    private apiUrl = '/api/sprints';
 
     constructor(private http: HttpClient) { }
 

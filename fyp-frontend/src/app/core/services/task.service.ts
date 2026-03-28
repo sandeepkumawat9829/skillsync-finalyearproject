@@ -15,8 +15,8 @@ import {
     providedIn: 'root'
 })
 export class TaskService implements OnDestroy {
-    private apiUrl = 'https://outermost-leisha-noncoherently.ngrok-free.de/api/tasks';
-    private wsUrl = 'https://outermost-leisha-noncoherently.ngrok-free.de/ws';
+    private apiUrl = '/api/tasks';
+    private wsUrl = '/ws';
 
     private stompClient: Client | null = null;
     private projectSubscriptions = new Map<number, StompSubscription>();

@@ -42,7 +42,7 @@ describe('ResourceService', () => {
                 expect(result).toEqual(mockResource);
             });
 
-            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/resources');
+            const req = httpMock.expectOne('/api/resources');
             expect(req.request.method).toBe('POST');
             expect(req.request.body).toEqual(mockResource);
             req.flush(mockResource);
@@ -55,7 +55,7 @@ describe('ResourceService', () => {
                 expect(resources.length).toBe(1);
             });
 
-            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/resources/teams/1');
+            const req = httpMock.expectOne('/api/resources/teams/1');
             expect(req.request.method).toBe('GET');
             req.flush([mockResource]);
         });
@@ -63,7 +63,7 @@ describe('ResourceService', () => {
         it('should fetch team resources with type filter', () => {
             service.getTeamResources(1, 'TUTORIAL').subscribe();
 
-            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/resources/teams/1?type=TUTORIAL');
+            const req = httpMock.expectOne('/api/resources/teams/1?type=TUTORIAL');
             expect(req.request.method).toBe('GET');
             req.flush([mockResource]);
         });
@@ -71,7 +71,7 @@ describe('ResourceService', () => {
         it('should fetch team resources with phase filter', () => {
             service.getTeamResources(1, undefined, 'DEVELOPMENT').subscribe();
 
-            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/resources/teams/1?phase=DEVELOPMENT');
+            const req = httpMock.expectOne('/api/resources/teams/1?phase=DEVELOPMENT');
             expect(req.request.method).toBe('GET');
             req.flush([mockResource]);
         });
@@ -79,7 +79,7 @@ describe('ResourceService', () => {
         it('should fetch team resources with both filters', () => {
             service.getTeamResources(1, 'TUTORIAL', 'DEVELOPMENT').subscribe();
 
-            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/resources/teams/1?type=TUTORIAL&phase=DEVELOPMENT');
+            const req = httpMock.expectOne('/api/resources/teams/1?type=TUTORIAL&phase=DEVELOPMENT');
             expect(req.request.method).toBe('GET');
             req.flush([mockResource]);
         });
@@ -89,7 +89,7 @@ describe('ResourceService', () => {
         it('should send DELETE request', () => {
             service.deleteResource(1).subscribe();
 
-            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/resources/1');
+            const req = httpMock.expectOne('/api/resources/1');
             expect(req.request.method).toBe('DELETE');
             req.flush(null);
         });

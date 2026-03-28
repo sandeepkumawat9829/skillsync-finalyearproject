@@ -20,7 +20,7 @@ export interface ProjectAnalytics {
     providedIn: 'root'
 })
 export class AnalyticsService {
-    private apiUrl = 'https://outermost-leisha-noncoherently.ngrok-free.de/api/analytics';
+    private apiUrl = '/api/analytics';
 
     constructor(private http: HttpClient) { }
 

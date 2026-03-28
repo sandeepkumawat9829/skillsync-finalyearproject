@@ -19,7 +19,7 @@ export interface ProjectTemplate {
     providedIn: 'root'
 })
 export class TemplateService {
-    private apiUrl = 'https://outermost-leisha-noncoherently.ngrok-free.de/api/templates';
+    private apiUrl = '/api/templates';
 
     constructor(private http: HttpClient) { }
 

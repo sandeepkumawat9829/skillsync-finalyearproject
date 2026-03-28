@@ -52,7 +52,7 @@ describe('UserService', () => {
                 expect(profile).toEqual(mockProfile);
             });
 
-            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/users/profile');
+            const req = httpMock.expectOne('/api/users/profile');
             expect(req.request.method).toBe('GET');
             req.flush(mockProfile);
         });
@@ -66,7 +66,7 @@ describe('UserService', () => {
                 expect(result).toEqual(mockProfile);
             });
 
-            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/users/profile');
+            const req = httpMock.expectOne('/api/users/profile');
             expect(req.request.method).toBe('PUT');
             expect(req.request.body).toEqual(updates);
             req.flush(mockProfile);
@@ -80,7 +80,7 @@ describe('UserService', () => {
                 expect(data.tasksDue).toBe(5);
             });
 
-            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/users/dashboard');
+            const req = httpMock.expectOne('/api/users/dashboard');
             expect(req.request.method).toBe('GET');
             req.flush(mockDashboard);
         });
@@ -92,7 +92,7 @@ describe('UserService', () => {
                 expect(students.length).toBe(1);
             });
 
-            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/users/students/search?q=John');
+            const req = httpMock.expectOne('/api/users/students/search?q=John');
             expect(req.request.method).toBe('GET');
             req.flush([mockProfile]);
         });
@@ -101,7 +101,7 @@ describe('UserService', () => {
             service.searchStudents('John', 'Computer Science').subscribe();
 
             const req = httpMock.expectOne(
-                'https://outermost-leisha-noncoherently.ngrok-free.de/api/users/students/search?q=John&branch=Computer%20Science'
+                '/api/users/students/search?q=John&branch=Computer%20Science'
             );
             expect(req.request.method).toBe('GET');
             req.flush([mockProfile]);
@@ -110,7 +110,7 @@ describe('UserService', () => {
         it('should include semester filter when provided', () => {
             service.searchStudents('John', undefined, 6).subscribe();
 
-            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/users/students/search?q=John&semester=6');
+            const req = httpMock.expectOne('/api/users/students/search?q=John&semester=6');
             expect(req.request.method).toBe('GET');
             req.flush([mockProfile]);
         });
@@ -118,7 +118,7 @@ describe('UserService', () => {
         it('should include both filters when provided', () => {
             service.searchStudents('John', 'CS', 6).subscribe();
 
-            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/users/students/search?q=John&branch=CS&semester=6');
+            const req = httpMock.expectOne('/api/users/students/search?q=John&branch=CS&semester=6');
             expect(req.request.method).toBe('GET');
             req.flush([mockProfile]);
         });
@@ -126,7 +126,7 @@ describe('UserService', () => {
         it('should encode special characters in query', () => {
             service.searchStudents('John & Jane').subscribe();
 
-            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/users/students/search?q=John%20%26%20Jane');
+            const req = httpMock.expectOne('/api/users/students/search?q=John%20%26%20Jane');
             req.flush([]);
         });
     });
@@ -137,7 +137,7 @@ describe('UserService', () => {
                 expect(student).toEqual(mockProfile);
             });
 
-            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/users/students/1');
+            const req = httpMock.expectOne('/api/users/students/1');
             expect(req.request.method).toBe('GET');
             req.flush(mockProfile);
         });

@@ -63,7 +63,7 @@ describe('GitHubService', () => {
                 expect(result.success).toBeTrue();
             });
 
-            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/github/projects/1/sync');
+            const req = httpMock.expectOne('/api/github/projects/1/sync');
             expect(req.request.method).toBe('POST');
             req.flush(syncResult);
         });
@@ -76,7 +76,7 @@ describe('GitHubService', () => {
                 expect(stats.totalCommits).toBe(50);
             });
 
-            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/github/projects/1/stats');
+            const req = httpMock.expectOne('/api/github/projects/1/stats');
             expect(req.request.method).toBe('GET');
             req.flush(mockStats);
         });
@@ -88,7 +88,7 @@ describe('GitHubService', () => {
                 expect(commits.length).toBe(1);
             });
 
-            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/github/projects/1/commits?page=0&size=20');
+            const req = httpMock.expectOne('/api/github/projects/1/commits?page=0&size=20');
             expect(req.request.method).toBe('GET');
             req.flush([mockCommit]);
         });
@@ -96,7 +96,7 @@ describe('GitHubService', () => {
         it('should fetch commits with custom pagination', () => {
             service.getCommits(1, 2, 50).subscribe();
 
-            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/github/projects/1/commits?page=2&size=50');
+            const req = httpMock.expectOne('/api/github/projects/1/commits?page=2&size=50');
             expect(req.request.method).toBe('GET');
             req.flush([mockCommit]);
         });

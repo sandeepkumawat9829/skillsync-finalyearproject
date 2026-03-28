@@ -34,7 +34,7 @@ export interface PeerReviewSummary {
     providedIn: 'root'
 })
 export class PeerReviewService {
-    private apiUrl = 'https://outermost-leisha-noncoherently.ngrok-free.de/api/peer-reviews';
+    private apiUrl = '/api/peer-reviews';
 
     constructor(private http: HttpClient) { }
 

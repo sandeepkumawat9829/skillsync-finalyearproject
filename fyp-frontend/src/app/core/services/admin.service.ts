@@ -28,7 +28,7 @@ export interface ForceAssignResponse {
     providedIn: 'root'
 })
 export class AdminService {
-    private apiUrl = 'https://outermost-leisha-noncoherently.ngrok-free.de/api/admin';
+    private apiUrl = '/api/admin';
 
     constructor(private http: HttpClient) { }
 

@@ -40,7 +40,14 @@ public class SecurityConfig {
                 .cors(cors -> cors.configure(http))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        // Public endpoints
+                        // Static frontend resources (Angular app)
+                        .requestMatchers("/", "/index.html", "/favicon.ico").permitAll()
+                        .requestMatchers("/*.js", "/*.css", "/*.ico", "/*.png", "/*.svg", "/*.woff", "/*.woff2", "/*.ttf").permitAll()
+                        .requestMatchers("/assets/**").permitAll()
+                        .requestMatchers("/error").permitAll()
+                        // Angular SPA routes (forwarded to index.html by SpaController)
+                        .requestMatchers("/auth/**", "/student/**", "/mentor/**", "/admin/**").permitAll()
+                        // Public API endpoints
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
                         .requestMatchers("/h2-console/**").permitAll()

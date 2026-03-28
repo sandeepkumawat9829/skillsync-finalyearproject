@@ -41,7 +41,7 @@ describe('AnnouncementService', () => {
                 expect(announcements.length).toBe(1);
             });
 
-            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/announcements?audience=ALL');
+            const req = httpMock.expectOne('/api/announcements?audience=ALL');
             expect(req.request.method).toBe('GET');
             req.flush([mockAnnouncement]);
         });
@@ -49,7 +49,7 @@ describe('AnnouncementService', () => {
         it('should fetch announcements with specific audience', () => {
             service.getActiveAnnouncements('STUDENTS').subscribe();
 
-            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/announcements?audience=STUDENTS');
+            const req = httpMock.expectOne('/api/announcements?audience=STUDENTS');
             expect(req.request.method).toBe('GET');
             req.flush([mockAnnouncement]);
         });
@@ -61,7 +61,7 @@ describe('AnnouncementService', () => {
                 expect(announcements).toEqual([mockAnnouncement]);
             });
 
-            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/announcements/all');
+            const req = httpMock.expectOne('/api/announcements/all');
             expect(req.request.method).toBe('GET');
             req.flush([mockAnnouncement]);
         });
@@ -71,7 +71,7 @@ describe('AnnouncementService', () => {
         it('should fetch important announcements', () => {
             service.getImportantAnnouncements().subscribe();
 
-            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/announcements/important');
+            const req = httpMock.expectOne('/api/announcements/important');
             expect(req.request.method).toBe('GET');
             req.flush([mockAnnouncement]);
         });
@@ -83,7 +83,7 @@ describe('AnnouncementService', () => {
                 expect(announcement).toEqual(mockAnnouncement);
             });
 
-            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/announcements/1');
+            const req = httpMock.expectOne('/api/announcements/1');
             expect(req.request.method).toBe('GET');
             req.flush(mockAnnouncement);
         });
@@ -102,7 +102,7 @@ describe('AnnouncementService', () => {
                 expect(result).toEqual(mockAnnouncement);
             });
 
-            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/announcements?userId=1');
+            const req = httpMock.expectOne('/api/announcements?userId=1');
             expect(req.request.method).toBe('POST');
             expect(req.request.body).toEqual(newAnnouncement);
             req.flush(mockAnnouncement);
@@ -115,7 +115,7 @@ describe('AnnouncementService', () => {
                 expect(result).toEqual(mockAnnouncement);
             });
 
-            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/announcements/1');
+            const req = httpMock.expectOne('/api/announcements/1');
             expect(req.request.method).toBe('PUT');
             req.flush(mockAnnouncement);
         });
@@ -125,7 +125,7 @@ describe('AnnouncementService', () => {
         it('should send DELETE request', () => {
             service.deleteAnnouncement(1).subscribe();
 
-            const req = httpMock.expectOne('https://outermost-leisha-noncoherently.ngrok-free.de/api/announcements/1');
+            const req = httpMock.expectOne('/api/announcements/1');
             expect(req.request.method).toBe('DELETE');
             req.flush(null);
         });
