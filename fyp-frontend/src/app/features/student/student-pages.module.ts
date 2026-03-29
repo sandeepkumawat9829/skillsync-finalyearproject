@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule, Routes } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 // Angular Material
@@ -21,47 +21,6 @@ import { StudentProfileComponent } from './profile/student-profile.component';
 import { StudentNotificationsComponent } from './notifications/student-notifications.component';
 import { AuthGuard } from '../../core/guards/auth.guard';
 
-const routes: Routes = [
-    {
-        path: 'teams',
-        loadChildren: () => import('../teams/teams.module').then(m => m.TeamsModule),
-        canActivate: [AuthGuard],
-        data: { role: 'STUDENT' }
-    },
-    {
-        path: 'mentors',
-        loadChildren: () => import('../mentors/mentors.module').then(m => m.MentorsModule),
-        canActivate: [AuthGuard],
-        data: { role: 'STUDENT' }
-    },
-    {
-        path: 'tasks',
-        loadChildren: () => import('../tasks/tasks.module').then(m => m.TasksModule),
-        canActivate: [AuthGuard],
-        data: { role: 'STUDENT' }
-    },
-    { path: 'invitations', component: StudentInvitationsComponent, canActivate: [AuthGuard], data: { role: 'STUDENT' } },
-    { path: 'profile', component: StudentProfileComponent, canActivate: [AuthGuard], data: { role: 'STUDENT' } },
-    { path: 'notifications', component: StudentNotificationsComponent, canActivate: [AuthGuard], data: { role: 'STUDENT' } },
-    {
-        path: 'meetings',
-        loadChildren: () => import('../meetings/meetings.module').then(m => m.MeetingsModule),
-        canActivate: [AuthGuard],
-        data: { role: 'STUDENT' }
-    },
-    {
-        path: 'showcase',
-        loadChildren: () => import('../showcase/showcase.module').then(m => m.ShowcaseModule),
-        canActivate: [AuthGuard],
-        data: { role: 'STUDENT' }
-    },
-    {
-        path: 'buckets',
-        loadChildren: () => import('../buckets/buckets.module').then(m => m.BucketsModule),
-        canActivate: [AuthGuard],
-        data: { role: 'STUDENT' }
-    }
-];
 
 @NgModule({
     declarations: [
@@ -73,7 +32,7 @@ const routes: Routes = [
         CommonModule,
         FormsModule,
         ReactiveFormsModule,
-        RouterModule.forChild(routes),
+        RouterModule,
         MatCardModule,
         MatButtonModule,
         MatIconModule,
