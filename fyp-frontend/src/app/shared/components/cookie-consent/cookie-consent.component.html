@@ -1,0 +1,131 @@
+<!-- Cookie Consent Banner -->
+<div class="cookie-overlay" *ngIf="showBanner" [@fadeIn]>
+
+    <!-- Main Banner -->
+    <div class="cookie-banner" *ngIf="!showCustomize" [@slideUp]>
+        <div class="cookie-banner-content">
+            <div class="cookie-icon">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="12" cy="12" r="10" fill="url(#cookieGrad)" />
+                    <circle cx="8" cy="9" r="1.5" fill="#5a3e2b" />
+                    <circle cx="14" cy="7" r="1" fill="#5a3e2b" />
+                    <circle cx="10" cy="14" r="1.2" fill="#5a3e2b" />
+                    <circle cx="15" cy="13" r="1.5" fill="#5a3e2b" />
+                    <circle cx="6" cy="13" r="0.8" fill="#5a3e2b" />
+                    <defs>
+                        <linearGradient id="cookieGrad" x1="2" y1="2" x2="22" y2="22">
+                            <stop offset="0%" stop-color="#e8a87c" />
+                            <stop offset="100%" stop-color="#d4875e" />
+                        </linearGradient>
+                    </defs>
+                </svg>
+            </div>
+            <div class="cookie-text">
+                <h3>🍪 We use cookies</h3>
+                <p>
+                    We use essential cookies for authentication and security. We'd also like to use optional cookies
+                    to improve your experience. You can manage your preferences anytime.
+                </p>
+            </div>
+        </div>
+        <div class="cookie-actions">
+            <button class="btn-reject" (click)="rejectAll()" id="cookie-reject-btn">
+                Reject All
+            </button>
+            <button class="btn-customize" (click)="openCustomize()" id="cookie-customize-btn">
+                Customize
+            </button>
+            <button class="btn-accept" (click)="acceptAll()" id="cookie-accept-btn">
+                Accept All
+            </button>
+        </div>
+    </div>
+
+    <!-- Customize Panel -->
+    <div class="cookie-customize-panel" *ngIf="showCustomize" [@slideUp]>
+        <div class="customize-header">
+            <h3>🔧 Cookie Preferences</h3>
+            <button class="close-btn" (click)="closeCustomize()" id="cookie-close-customize">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 6L6 18M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+
+        <div class="cookie-categories">
+            <!-- Essential Cookies -->
+            <div class="cookie-category essential">
+                <div class="category-info">
+                    <div class="category-header">
+                        <span class="category-name">🔒 Essential Cookies</span>
+                        <span class="always-on-badge">Always Active</span>
+                    </div>
+                    <p class="category-desc">
+                        Required for authentication, security, and core functionality. These cannot be disabled.
+                    </p>
+                </div>
+                <div class="toggle-switch disabled">
+                    <input type="checkbox" checked disabled id="cookie-toggle-essential" />
+                    <span class="slider"></span>
+                </div>
+            </div>
+
+            <!-- Analytics Cookies -->
+            <div class="cookie-category">
+                <div class="category-info">
+                    <div class="category-header">
+                        <span class="category-name">📊 Analytics Cookies</span>
+                    </div>
+                    <p class="category-desc">
+                        Help us understand how you use the site so we can improve the experience.
+                    </p>
+                </div>
+                <div class="toggle-switch">
+                    <input type="checkbox" [(ngModel)]="preferences.analytics" id="cookie-toggle-analytics" />
+                    <span class="slider" (click)="preferences.analytics = !preferences.analytics"></span>
+                </div>
+            </div>
+
+            <!-- Performance Cookies -->
+            <div class="cookie-category">
+                <div class="category-info">
+                    <div class="category-header">
+                        <span class="category-name">⚡ Performance Cookies</span>
+                    </div>
+                    <p class="category-desc">
+                        Monitor site performance and help us optimize load times and responsiveness.
+                    </p>
+                </div>
+                <div class="toggle-switch">
+                    <input type="checkbox" [(ngModel)]="preferences.performance" id="cookie-toggle-performance" />
+                    <span class="slider" (click)="preferences.performance = !preferences.performance"></span>
+                </div>
+            </div>
+
+            <!-- Marketing Cookies -->
+            <div class="cookie-category">
+                <div class="category-info">
+                    <div class="category-header">
+                        <span class="category-name">📢 Marketing Cookies</span>
+                    </div>
+                    <p class="category-desc">
+                        Used to deliver relevant content and measure the effectiveness of campaigns.
+                    </p>
+                </div>
+                <div class="toggle-switch">
+                    <input type="checkbox" [(ngModel)]="preferences.marketing" id="cookie-toggle-marketing" />
+                    <span class="slider" (click)="preferences.marketing = !preferences.marketing"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="customize-actions">
+            <button class="btn-reject" (click)="rejectAll()" id="cookie-customize-reject">
+                Reject All
+            </button>
+            <button class="btn-accept" (click)="saveCustomPreferences()" id="cookie-customize-save">
+                Save Preferences
+            </button>
+        </div>
+    </div>
+</div>

@@ -28,7 +28,7 @@ import { AIService, PlagiarismResult } from '../../../core/services/ai.service';
                     </div>
                 </div>
                 
-                <div class="similar-projects" *ngIf="result.similarProjects?.length > 0">
+                <div class="similar-projects" *ngIf="result.similarProjects && result.similarProjects.length > 0">
                     <h4>Similar Projects Found:</h4>
                     <div class="project-item" *ngFor="let project of result.similarProjects">
                         <span class="project-title">{{ project.projectTitle }}</span>

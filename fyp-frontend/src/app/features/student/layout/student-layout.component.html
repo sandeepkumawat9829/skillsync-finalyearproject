@@ -1,11 +1,10 @@
 <div class="student-layout">
   <mat-toolbar color="primary" class="layout-toolbar">
-    <button mat-icon-button (click)="toggleSidenav()">
+    <button mat-icon-button (click)="toggleSidenav()" *ngIf="isMobile" class="mobile-menu-btn">
       <mat-icon>menu</mat-icon>
     </button>
     <div class="toolbar-brand">
-      <div class="skillsync-icon-small">SS</div>
-      <span class="toolbar-title">SkillSync</span>
+      <img src="assets/images/skillsync-logo.svg" alt="SkillSync" class="toolbar-logo" />
     </div>
     <span class="spacer"></span>
     <button mat-icon-button (click)="navigateTo('notifications')">

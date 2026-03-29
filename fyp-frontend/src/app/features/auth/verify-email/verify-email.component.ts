@@ -12,8 +12,7 @@ import { AuthService } from '../../../core/services/auth.service';
             <div class="verify-card">
                 <div class="verify-header">
                     <div class="logo-container">
-                        <div class="skillsync-icon">SS</div>
-                        <div class="skillsync-text">SkillSync</div>
+                        <img src="assets/images/skillsync-logo.svg" alt="SkillSync" class="skillsync-logo" />
                     </div>
                     <div class="email-icon">✉️</div>
                     <h1>Verify Your <span>Email</span></h1>
@@ -133,24 +132,10 @@ import { AuthService } from '../../../core/services/auth.service';
             margin-bottom: 24px;
         }
 
-        .skillsync-icon {
-            width: 52px;
-            height: 52px;
-            background: linear-gradient(135deg, #ff5754, #ff9a76);
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 800;
-            font-size: 24px;
-            box-shadow: 0 4px 16px rgba(255, 87, 84, 0.3);
-        }
-
-        .skillsync-text {
-            font-size: 32px;
-            font-weight: 800;
-            color: #1b1b1b;
+        .skillsync-logo {
+            height: 60px;
+            width: auto;
+            object-fit: contain;
         }
 
         .email-icon {

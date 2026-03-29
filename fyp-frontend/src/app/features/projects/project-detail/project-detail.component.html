@@ -195,7 +195,7 @@
           </button>
           <button mat-raised-button (click)="findMentor()" class="action-button" *ngIf="isOwner" [disabled]="!canRequestMentor">
             <mat-icon>school</mat-icon>
-            {{project?.hasMentor ? 'Mentor Assigned' : 'Find Mentor'}}
+            {{project.hasMentor ? 'Mentor Assigned' : 'Find Mentor'}}
           </button>
           <button mat-raised-button (click)="viewTeam()" class="action-button">
             <mat-icon>groups</mat-icon>

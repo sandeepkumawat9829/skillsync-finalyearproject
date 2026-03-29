@@ -17,17 +17,9 @@ export class JwtInterceptor implements HttpInterceptor {
     constructor(private authService: AuthService, private router: Router) { }
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-        // Get the auth token from the service
-        const token = this.authService.getToken();
-
-        // Clone the request and add the authorization header if token exists
-        if (token) {
-            request = request.clone({
-                setHeaders: {
-                    Authorization: `Bearer ${token}`
-                }
-            });
-        }
+        // Add withCredentials so that HttpOnly cookies are sent automatically
+        // No need to manually attach Authorization header — the cookie handles it
+        request = request.clone({ withCredentials: true });
 
         return next.handle(request).pipe(
             catchError((error: HttpErrorResponse) => {

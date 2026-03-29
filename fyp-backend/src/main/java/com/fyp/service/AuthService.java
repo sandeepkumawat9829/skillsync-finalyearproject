@@ -206,4 +206,23 @@ public class AuthService {
         }
         return user.getEmail();
     }
+
+    /**
+     * Returns user info by email (used by /api/auth/me endpoint).
+     * Does NOT generate a new JWT — the existing cookie is already valid.
+     */
+    public LoginResponse getUserInfoByEmail(String email) {
+        return userRepository.findByEmailIgnoreCase(email)
+                .map(user -> {
+                    String fullName = getFullName(user);
+                    return LoginResponse.builder()
+                            .userId(user.getId())
+                            .email(user.getEmail())
+                            .role(user.getRole().name())
+                            .fullName(fullName)
+                            .profileCompleted(Boolean.TRUE.equals(user.getProfileCompleted()))
+                            .build();
+                })
+                .orElse(null);
+    }
 }

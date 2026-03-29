@@ -48,18 +48,10 @@
     margin-bottom: 20px;
   }
 
-  .skillsync-icon {
-    width: 52px;
-    height: 52px;
-    background: linear-gradient(135deg, #ff5754, #ff9a76);
-    border-radius: 14px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-weight: 800;
-    font-size: 24px;
-    box-shadow: 0 4px 16px rgba(255, 87, 84, 0.3);
+  .skillsync-logo {
+    height: 60px;
+    width: auto;
+    object-fit: contain;
   }
 
   .skillsync-text {

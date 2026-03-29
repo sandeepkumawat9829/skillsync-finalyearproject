@@ -14,8 +14,70 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Splash Screen Loader Styles -->
+  <style>
+    .app-loader {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background: #1b1b1b;
+      font-family: 'Inter', sans-serif;
+    }
+    .app-loader .logo-text {
+      font-size: 42px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #ff5754, #ff9a76);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: pulse-logo 1.8s ease-in-out infinite;
+      letter-spacing: -1px;
+    }
+    .app-loader .loader-bar {
+      margin-top: 28px;
+      width: 160px;
+      height: 4px;
+      border-radius: 4px;
+      background: rgba(255,255,255,0.08);
+      overflow: hidden;
+    }
+    .app-loader .loader-bar::after {
+      content: '';
+      display: block;
+      width: 50%;
+      height: 100%;
+      border-radius: 4px;
+      background: linear-gradient(135deg, #ff5754, #bdbaff);
+      animation: slide-bar 1.2s ease-in-out infinite;
+    }
+    .app-loader .loader-text {
+      margin-top: 16px;
+      color: rgba(255,255,255,0.35);
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+    }
+    @keyframes pulse-logo {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.7; transform: scale(0.97); }
+    }
+    @keyframes slide-bar {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(300%); }
+    }
+  </style>
 </head>
 <body>
-  <app-root></app-root>
+  <app-root>
+    <!-- Splash screen: auto-removed when Angular bootstraps -->
+    <div class="app-loader">
+      <div class="logo-text">SkillSync</div>
+      <div class="loader-bar"></div>
+      <div class="loader-text">Loading...</div>
+    </div>
+  </app-root>
 </body>
 </html>

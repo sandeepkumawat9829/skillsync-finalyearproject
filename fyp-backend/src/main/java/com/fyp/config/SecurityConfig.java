@@ -47,7 +47,8 @@ public class SecurityConfig {
                         .requestMatchers("/error").permitAll()
                         // Angular SPA routes (forwarded to index.html by SpaController)
                         .requestMatchers("/auth/**", "/student/**", "/mentor/**", "/admin/**").permitAll()
-                        // Public API endpoints
+                        // Public API endpoints (order matters: specific before wildcard)
+                        .requestMatchers("/api/auth/me").authenticated()
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
                         .requestMatchers("/h2-console/**").permitAll()

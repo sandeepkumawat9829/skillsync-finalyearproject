@@ -4,6 +4,7 @@ import { Observable, Subject, BehaviorSubject } from 'rxjs';
 import { ChatRoom, ChatMessage, SendMessageRequest } from '../models/chat.model';
 import { Client, IMessage, StompSubscription } from '@stomp/stompjs';
 import * as SockJS from 'sockjs-client';
+import { AuthService } from './auth.service';
 
 @Injectable({
     providedIn: 'root'
@@ -17,7 +18,7 @@ export class ChatService implements OnDestroy {
     private messageSubject = new Subject<ChatMessage>();
     private connectionStatus = new BehaviorSubject<boolean>(false);
 
-    constructor(private http: HttpClient) {
+    constructor(private http: HttpClient, private authService: AuthService) {
         this.initializeWebSocket();
     }
 
@@ -34,7 +35,7 @@ export class ChatService implements OnDestroy {
             heartbeatIncoming: 4000,
             heartbeatOutgoing: 4000,
             connectHeaders: {
-                Authorization: `Bearer ${localStorage.getItem('token') || sessionStorage.getItem('token')}`
+                Authorization: `Bearer ${this.authService.getToken()}`
             },
             debug: (str) => {
                 // console.log('STOMP: ' + str);
@@ -58,7 +59,7 @@ export class ChatService implements OnDestroy {
     connect(): void {
         if (this.stompClient && !this.stompClient.active) {
             // Ensure we have the fresh token before connecting
-            const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+            const token = this.authService.getToken();
             if (token) {
                 this.stompClient.connectHeaders = {
                     Authorization: `Bearer ${token}`

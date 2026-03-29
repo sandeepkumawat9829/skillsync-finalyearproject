@@ -6,9 +6,13 @@ import com.fyp.model.dto.RegisterRequest;
 import com.fyp.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +26,12 @@ public class AuthController {
 
     private final AuthService authService;
 
+    @Value("${jwt.cookie.max-age:86400}")
+    private long cookieMaxAge; // default 24 hours in seconds
+
+    @Value("${jwt.cookie.secure:false}")
+    private boolean cookieSecure;
+
     @PostMapping("/register")
     @Operation(summary = "Register a new user", description = "Create a new student or mentor account. An OTP will be sent to the email for verification.")
     public ResponseEntity<Map<String, Object>> register(@Valid @RequestBody RegisterRequest request) {
@@ -31,7 +41,8 @@ public class AuthController {
 
     @PostMapping("/verify-email")
     @Operation(summary = "Verify email with OTP", description = "Verify email address using the OTP sent during registration")
-    public ResponseEntity<LoginResponse> verifyEmail(@RequestBody Map<String, String> request) {
+    public ResponseEntity<LoginResponse> verifyEmail(@RequestBody Map<String, String> request,
+                                                      HttpServletResponse httpResponse) {
         String email = request.get("email");
         String otp = request.get("otp");
 
@@ -40,6 +51,7 @@ public class AuthController {
         }
 
         LoginResponse response = authService.verifyEmailAndLogin(email, otp);
+        setAuthCookie(httpResponse, response.getToken());
         return ResponseEntity.ok(response);
     }
 
@@ -57,15 +69,62 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    @Operation(summary = "Login", description = "Authenticate user and get JWT token. Email must be verified first.")
-    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
+    @Operation(summary = "Login", description = "Authenticate user and get JWT token via HttpOnly cookie. Email must be verified first.")
+    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request,
+                                                HttpServletResponse httpResponse) {
         LoginResponse response = authService.login(request);
+        setAuthCookie(httpResponse, response.getToken());
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/logout")
+    @Operation(summary = "Logout", description = "Clear authentication cookie and end session")
+    public ResponseEntity<Map<String, String>> logout(HttpServletResponse httpResponse) {
+        // Clear the auth cookie by setting max-age to 0
+        ResponseCookie clearCookie = ResponseCookie.from("jwtToken", "")
+                .httpOnly(true)
+                .secure(cookieSecure)
+                .path("/")
+                .maxAge(0)
+                .sameSite("Strict")
+                .build();
+        httpResponse.addHeader(HttpHeaders.SET_COOKIE, clearCookie.toString());
+        return ResponseEntity.ok(Map.of("message", "Logged out successfully"));
     }
 
     @GetMapping("/health")
     @Operation(summary = "Health check", description = "Check if auth service is running")
     public ResponseEntity<String> health() {
         return ResponseEntity.ok("Auth service is running");
+    }
+
+    @GetMapping("/me")
+    @Operation(summary = "Get current user", description = "Returns the currently authenticated user info from the cookie session")
+    public ResponseEntity<LoginResponse> getCurrentUser(org.springframework.security.core.Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        String email = authentication.getName();
+        LoginResponse response = authService.getUserInfoByEmail(email);
+        if (response == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * Sets the JWT as an HttpOnly, Secure, SameSite=Strict cookie.
+     * This prevents XSS attacks from accessing the token through JavaScript.
+     */
+    private void setAuthCookie(HttpServletResponse response, String token) {
+        ResponseCookie cookie = ResponseCookie.from("jwtToken", token)
+                .httpOnly(true)
+                .secure(cookieSecure)
+                .path("/")
+                .maxAge(cookieMaxAge)
+                .sameSite("Strict")
+                .build();
+        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
     }
 }

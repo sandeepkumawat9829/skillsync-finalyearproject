@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, Subject } from 'rxjs';
 import { Client, IMessage, StompSubscription } from '@stomp/stompjs';
 import * as SockJS from 'sockjs-client';
+import { AuthService } from './auth.service';
 import {
     CreateTaskRequest,
     ReorderTaskRequest,
@@ -23,7 +24,7 @@ export class TaskService implements OnDestroy {
     private subscribedProjects = new Set<number>();
     private boardEventSubject = new Subject<TaskBoardEvent>();
 
-    constructor(private http: HttpClient) {
+    constructor(private http: HttpClient, private authService: AuthService) {
         this.initializeWebSocket();
     }
 
@@ -134,7 +135,7 @@ export class TaskService implements OnDestroy {
     }
 
     private getConnectHeaders(): { Authorization?: string } {
-        const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+        const token = this.authService.getToken();
         return token ? { Authorization: `Bearer ${token}` } : {};
     }
 }
