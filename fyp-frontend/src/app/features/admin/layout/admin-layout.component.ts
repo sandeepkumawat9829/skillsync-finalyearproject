@@ -33,7 +33,7 @@ export class AdminLayoutComponent implements OnInit {
 
     logout(): void {
         this.authService.logout();
-        this.router.navigate(['/home']);
+        this.router.navigate(['/']);
     }
 
     toggleSidenav(): void {

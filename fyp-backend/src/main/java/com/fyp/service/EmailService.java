@@ -74,21 +74,24 @@ public class EmailService {
     }
 
     @Async
-    public void sendTeamInvitationEmail(String toEmail, String inviteeName, String teamName, String inviterName, String inviteToken) {
+    public void sendTeamInvitationEmail(String toEmail, String inviteeName, String teamName, String inviterName,
+            String inviteToken) {
         String subject = "You've been invited to join " + teamName;
         String htmlContent = buildTeamInvitationTemplate(inviteeName, teamName, inviterName, inviteToken, toEmail);
         sendHtmlEmail(toEmail, subject, htmlContent);
     }
 
     @Async
-    public void sendMentorRequestEmail(String toEmail, String mentorName, String teamName, String projectTitle, String requestId) {
+    public void sendMentorRequestEmail(String toEmail, String mentorName, String teamName, String projectTitle,
+            String requestId) {
         String subject = "Mentorship Request from team: " + teamName;
         String htmlContent = buildMentorRequestTemplate(mentorName, teamName, projectTitle, requestId, toEmail);
         sendHtmlEmail(toEmail, subject, htmlContent);
     }
 
     @Async
-    public void sendTaskAssignedEmail(String toEmail, String assigneeName, String taskTitle, String projectName, String dueDate, String taskId) {
+    public void sendTaskAssignedEmail(String toEmail, String assigneeName, String taskTitle, String projectName,
+            String dueDate, String taskId) {
         String subject = "New Task Assigned: " + taskTitle;
         String htmlContent = buildTaskAssignedTemplate(assigneeName, taskTitle, projectName, dueDate, taskId, toEmail);
         sendHtmlEmail(toEmail, subject, htmlContent);
@@ -102,9 +105,11 @@ public class EmailService {
     }
 
     @Async
-    public void sendMeetingScheduledEmail(String toEmail, String userName, String meetingTitle, String dateStr, String timeStr, String meetingLink) {
+    public void sendMeetingScheduledEmail(String toEmail, String userName, String meetingTitle, String dateStr,
+            String timeStr, String meetingLink) {
         String subject = "Meeting Scheduled: " + meetingTitle;
-        String htmlContent = buildMeetingScheduledTemplate(userName, meetingTitle, dateStr, timeStr, meetingLink, toEmail);
+        String htmlContent = buildMeetingScheduledTemplate(userName, meetingTitle, dateStr, timeStr, meetingLink,
+                toEmail);
         sendHtmlEmail(toEmail, subject, htmlContent);
     }
 
@@ -483,7 +488,8 @@ public class EmailService {
                 .formatted(userName);
     }
 
-    private String buildTeamInvitationTemplate(String inviteeName, String teamName, String inviterName, String inviteToken, String email) {
+    private String buildTeamInvitationTemplate(String inviteeName, String teamName, String inviterName,
+            String inviteToken, String email) {
         return """
                 <!DOCTYPE html>
                 <html lang="en">
@@ -548,7 +554,8 @@ public class EmailService {
                 .formatted(inviteeName, inviterName, teamName, inviteToken, email);
     }
 
-    private String buildMentorRequestTemplate(String mentorName, String teamName, String projectTitle, String requestId, String email) {
+    private String buildMentorRequestTemplate(String mentorName, String teamName, String projectTitle, String requestId,
+            String email) {
         return """
                 <!DOCTYPE html>
                 <html lang="en">
@@ -612,7 +619,8 @@ public class EmailService {
                 .formatted(mentorName, teamName, projectTitle, requestId, email);
     }
 
-    private String buildTaskAssignedTemplate(String assigneeName, String taskTitle, String projectName, String dueDate, String taskId, String email) {
+    private String buildTaskAssignedTemplate(String assigneeName, String taskTitle, String projectName, String dueDate,
+            String taskId, String email) {
         return """
                 <!DOCTYPE html>
                 <html lang="en">
@@ -677,7 +685,8 @@ public class EmailService {
                 .formatted(assigneeName, taskTitle, projectName, dueDate, taskId, email);
     }
 
-    private String buildDocumentGeneratedTemplate(String userName, String documentType, String projectTitle, String email) {
+    private String buildDocumentGeneratedTemplate(String userName, String documentType, String projectTitle,
+            String email) {
         return """
                 <!DOCTYPE html>
                 <html lang="en">
@@ -741,7 +750,8 @@ public class EmailService {
                 .formatted(userName, documentType, projectTitle, email);
     }
 
-    private String buildMeetingScheduledTemplate(String userName, String meetingTitle, String dateStr, String timeStr, String meetingLink, String email) {
+    private String buildMeetingScheduledTemplate(String userName, String meetingTitle, String dateStr, String timeStr,
+            String meetingLink, String email) {
         return """
                 <!DOCTYPE html>
                 <html lang="en">
@@ -807,5 +817,3 @@ public class EmailService {
                 .formatted(userName, meetingTitle, dateStr, timeStr, meetingLink, email);
     }
 }
-
-
