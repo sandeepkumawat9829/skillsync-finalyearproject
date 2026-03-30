@@ -5,9 +5,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 /**
- * Minimal manual overrides for generated forms.
- * If a field is null/blank, the system auto-fills it where possible.
+ * Manual overrides for generated forms.
+ * Provides data to populate exact tables in Form 1 and Form 2.
  */
 @Data
 @Builder
@@ -15,11 +17,45 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class FormGenerateRequest {
     private String labCoordinatorName;
-    private String projectTrack; // e.g. "R&D, STARTUP"
+    private String projectTrack; // e.g. "R&D", "CONSULTANCY"
     private String briefIntroduction;
-    private String toolsTechnologies; // free text
-    private String proposedModules; // free text
-    private String roleSpecificationNotes; // free text (Form-2)
-    private String mentorName; // Form-2
+    
+    // Form 1 lists
+    private List<ToolTechPayload> tools;
+    private List<ModulePayload> modules;
+    
+    // Form 2 lists
+    private List<MemberRolePayload> memberRoles;
+    private String mentorName; 
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ToolTechPayload {
+        private String name;
+        private String version;
+        private String type; // SOFTWARE / HARDWARE
+        private String purpose;
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ModulePayload {
+        private String name;
+        private String functionality;
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class MemberRolePayload {
+        private String memberName; // Just for reference
+        private String handlingModule;
+        private String activityName;
+        private String softDeadline;
+        private String hardDeadline;
+        private String story;
+    }
 }
 

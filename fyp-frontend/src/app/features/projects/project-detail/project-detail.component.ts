@@ -285,6 +285,14 @@ export class ProjectDetailComponent implements OnInit {
         });
     }
 
+    getBaseRoute(): string {
+        return this.currentUser?.role === 'MENTOR' ? '/mentor' : '/student';
+    }
+
+    getBoardRoute(): string {
+        return this.currentUser?.role === 'MENTOR' ? '/mentor/task-workspace/board' : '/student/tasks/board';
+    }
+
     private getProjectsRoute(): string {
         return this.currentUser?.role === 'MENTOR' ? '/mentor/projects' : '/student/projects';
     }

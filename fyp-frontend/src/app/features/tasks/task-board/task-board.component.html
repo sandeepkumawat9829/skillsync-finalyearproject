@@ -9,19 +9,89 @@
       <p *ngIf="project">{{project.title}}</p>
     </div>
     <div class="header-actions">
+      <!-- Sprint Selector -->
+      <mat-form-field appearance="outline" style="width: 200px; margin-right: 8px;" *ngIf="sprints.length > 0">
+        <mat-label>Sprint</mat-label>
+        <mat-select [value]="sprintId" (selectionChange)="selectSprint($event.value)">
+          <mat-option *ngFor="let sprint of sprints" [value]="sprint">
+            {{sprint.sprintName}} <span *ngIf="sprint.status === 'ACTIVE'" style="color:#16a34a;"> (Active)</span>
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
       <button mat-button (click)="goToAnalytics()">
         <mat-icon>analytics</mat-icon>
         Analytics
       </button>
-      <button mat-raised-button color="primary" (click)="createTask()">
+      <button *ngIf="isLeaderOrMentor" mat-stroked-button color="accent" (click)="toggleSprintCreate()">
+        <mat-icon>{{showSprintCreate ? 'close' : 'add_circle'}}</mat-icon>
+        {{showSprintCreate ? 'Cancel' : 'New Sprint'}}
+      </button>
+      <button *ngIf="isLeaderOrMentor && sprintId" mat-raised-button color="primary" (click)="createTask()">
         <mat-icon>add</mat-icon>
         New Task
       </button>
     </div>
   </div>
 
-  <!-- Kanban Board -->
-  <div class="kanban-board">
+  <!-- Sprint Create Card -->
+  <mat-card *ngIf="showSprintCreate" style="margin-bottom: 24px; border-left: 4px solid #6366f1;">
+    <mat-card-header>
+      <mat-card-title>Create New Sprint</mat-card-title>
+      <mat-card-subtitle>Define a time-boxed iteration for your team to work on tasks.</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px; margin-top:16px;">
+        <mat-form-field appearance="outline">
+          <mat-label>Sprint Name</mat-label>
+          <input matInput [(ngModel)]="newSprint.sprintName" placeholder="e.g. Sprint 1 - Foundation">
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Sprint Goal</mat-label>
+          <input matInput [(ngModel)]="newSprint.sprintGoal" placeholder="e.g. Complete UI wireframes">
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Start Date</mat-label>
+          <input matInput [matDatepicker]="startPicker" [(ngModel)]="newSprint.startDate">
+          <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+          <mat-datepicker #startPicker></mat-datepicker>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>End Date</mat-label>
+          <input matInput [matDatepicker]="endPicker" [(ngModel)]="newSprint.endDate">
+          <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+          <mat-datepicker #endPicker></mat-datepicker>
+        </mat-form-field>
+      </div>
+    </mat-card-content>
+    <mat-card-actions style="padding:0 16px 16px;">
+      <button mat-raised-button color="primary" (click)="createSprint()" [disabled]="isCreatingSprint">
+        <mat-icon *ngIf="!isCreatingSprint">rocket_launch</mat-icon>
+        <mat-spinner *ngIf="isCreatingSprint" diameter="18" style="display:inline-block; margin-right:8px;"></mat-spinner>
+        {{isCreatingSprint ? 'Creating...' : 'Create Sprint'}}
+      </button>
+      <button mat-button (click)="toggleSprintCreate()">Cancel</button>
+    </mat-card-actions>
+  </mat-card>
+
+  <!-- No Sprints Prompt -->
+  <div *ngIf="sprints.length === 0 && !showSprintCreate" class="empty-state" style="text-align:center; padding:64px 24px;">
+    <mat-icon style="font-size:64px; width:64px; height:64px; color:#9ca3af;">timer</mat-icon>
+    <h3 style="margin-top:16px; color:#374151;">No Sprints Created Yet</h3>
+    <p style="color:#6b7280; max-width:400px; margin:8px auto 24px;">
+      A Sprint is a time-boxed period (usually 1-2 weeks) where your team works on a set of tasks. Create your first sprint to start organizing work.
+    </p>
+    <button *ngIf="isLeaderOrMentor" mat-raised-button color="primary" (click)="toggleSprintCreate()">
+      <mat-icon>add_circle</mat-icon>
+      Create First Sprint
+    </button>
+    <p *ngIf="!isLeaderOrMentor" style="color:#9ca3af; font-style: italic;">
+      Only the team leader or mentor can create sprints.
+    </p>
+  </div>
+
+  <!-- Kanban Board (only when sprint exists) -->
+  <div class="kanban-board" *ngIf="sprintId">
     <div *ngFor="let column of columns" class="kanban-column" [ngClass]="getColumnClass(column.id)">
       <div class="column-header">
         <h3>{{column.title}}</h3>

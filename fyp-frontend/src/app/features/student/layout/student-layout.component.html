@@ -3,8 +3,8 @@
     <button mat-icon-button (click)="toggleSidenav()" *ngIf="isMobile" class="mobile-menu-btn">
       <mat-icon>menu</mat-icon>
     </button>
-    <div class="toolbar-brand">
-      <img src="assets/images/skillsync-logo.svg" alt="SkillSync" class="toolbar-logo" />
+    <div class="toolbar-brand" [routerLink]="'/home'" style="cursor: pointer;">
+      <img src="/assets/images/skillsync-logo.svg" alt="SkillSync" class="toolbar-logo" />
     </div>
     <span class="spacer"></span>
     <button mat-icon-button (click)="navigateTo('notifications')">

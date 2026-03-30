@@ -7,7 +7,7 @@ import { Component } from '@angular/core';
       <div class="footer-content">
         <div class="footer-main">
           <div class="footer-brand">
-            <img src="assets/images/skillsync-logo.svg" alt="SkillSync" class="footer-logo" />
+            <img src="/assets/images/skillsync-logo.svg" alt="SkillSync" class="footer-logo" />
             <p class="footer-tagline">Empowering students and mentors to collaborate on final year projects seamlessly.</p>
           </div>
 

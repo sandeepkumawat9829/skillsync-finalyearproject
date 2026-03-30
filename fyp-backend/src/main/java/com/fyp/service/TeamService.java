@@ -40,16 +40,7 @@ public class TeamService {
     private final ChatService chatService;
     private final EmailService emailService;
 
-    private boolean isUserInWorkingTeam(Long userId) {
-        List<TeamMember> memberships = teamMemberRepository.findByUserId(userId);
-        for (TeamMember member : memberships) {
-            Team team = member.getTeam();
-            if (team != null && mentorAssignmentRepository.findByTeamId(team.getId()).isPresent()) {
-                return true;
-            }
-        }
-        return false;
-    }
+    // isUserInWorkingTeam check removed — students can join multiple teams freely
 
     @Transactional(readOnly = true)
     public TeamDTO getTeam(Long teamId) {
@@ -81,10 +72,7 @@ public class TeamService {
             throw new BusinessRuleViolationException("Project already has a team", "PROJECT_HAS_TEAM");
         }
 
-        // Check if user is already in a team with a mentor
-        if (isUserInWorkingTeam(userId)) {
-            throw new BusinessRuleViolationException("You are already in an active team with a mentor", "USER_IN_ACTIVE_TEAM");
-        }
+        // Students can join multiple teams — no restriction here
 
         // Create the team
         Team team = Team.builder()
@@ -187,10 +175,7 @@ public class TeamService {
             throw new BusinessRuleViolationException("Team is already full", "TEAM_FULL");
         }
 
-        // Check if invitee is already in a team with a mentor
-        if (isUserInWorkingTeam(inviteeUserId)) {
-            throw new BusinessRuleViolationException("User is already in an active team with a mentor", "USER_IN_ACTIVE_TEAM");
-        }
+        // Students can join multiple teams — no restriction here
 
         // Check if invitation already exists
         List<TeamInvitation> existing = teamInvitationRepository.findByTeamId(teamId).stream()
@@ -245,10 +230,7 @@ public class TeamService {
             throw new BusinessRuleViolationException("Invitation is no longer pending", "INVITATION_EXPIRED");
         }
 
-        // Check if user is already in a team with a mentor
-        if (isUserInWorkingTeam(userId)) {
-            throw new BusinessRuleViolationException("You are already in an active team with a mentor", "USER_IN_ACTIVE_TEAM");
-        }
+        // Students can join multiple teams — no restriction here
 
         // Use pessimistic lock to prevent race condition when accepting invitation
         Team team = teamRepository.findByIdWithLock(invitation.getTeam().getId())
@@ -259,6 +241,11 @@ public class TeamService {
             throw new BusinessRuleViolationException(
                     "Team is already full. Another member joined before you.",
                     "TEAM_FULL");
+        }
+
+        // Check if user is already a member of this team
+        if (teamMemberRepository.existsByTeamIdAndUserId(team.getId(), invitation.getToUser().getId())) {
+            throw new BusinessRuleViolationException("You are already a member of this team", "ALREADY_MEMBER");
         }
 
         // Accept invitation
@@ -411,10 +398,7 @@ public class TeamService {
             throw new BusinessRuleViolationException("Team is already full", "TEAM_FULL");
         }
 
-        // Check if user is already in a team with a mentor
-        if (isUserInWorkingTeam(userId)) {
-            throw new BusinessRuleViolationException("You are already in an active team with a mentor", "USER_IN_ACTIVE_TEAM");
-        }
+        // Students can join multiple teams — no restriction here
 
         // Check if a request/invitation already exists
         List<TeamInvitation> existing = teamInvitationRepository.findByTeamId(teamId).stream()
@@ -525,10 +509,12 @@ public class TeamService {
             throw new BusinessRuleViolationException("Team is already full", "TEAM_FULL");
         }
 
-        // Check if requester is already in a team with a mentor
+        // Students can join multiple teams — no restriction here
         User requester = joinRequest.getFromUser();
-        if (isUserInWorkingTeam(requester.getId())) {
-            throw new BusinessRuleViolationException("Requester is already in an active team with a mentor", "USER_IN_ACTIVE_TEAM");
+
+        // Check if requester is already a member of this team
+        if (teamMemberRepository.existsByTeamIdAndUserId(team.getId(), requester.getId())) {
+            throw new BusinessRuleViolationException("Requester is already a member of this team", "ALREADY_MEMBER");
         }
 
         // Accept the request

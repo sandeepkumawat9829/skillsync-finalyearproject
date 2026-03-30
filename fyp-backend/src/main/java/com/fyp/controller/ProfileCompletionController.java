@@ -135,6 +135,7 @@ public class ProfileCompletionController {
                 }
         }
 
+        @SuppressWarnings("unchecked")
         private Long completeStudentProfileInternal(User user, Map<String, Object> request) {
                 StudentProfile profile = studentProfileRepository.findByUserId(user.getId())
                                 .orElse(StudentProfile.builder().user(user).build());
@@ -153,6 +154,21 @@ public class ProfileCompletionController {
                 profile.setGithubUrl((String) request.get("githubUrl"));
                 profile.setLinkedinUrl((String) request.get("linkedinUrl"));
                 profile.setPortfolioUrl((String) request.get("portfolioUrl"));
+
+                if (request.get("skills") != null) {
+                        Object skillsValue = request.get("skills");
+                        if (skillsValue instanceof List) {
+                                profile.setSkills((List<String>) skillsValue);
+                        } else if (skillsValue instanceof String) {
+                                String skillsStr = (String) skillsValue;
+                                profile.setSkills(
+                                        java.util.Arrays.stream(skillsStr.split(","))
+                                                .map(String::trim)
+                                                .filter(s -> !s.isEmpty())
+                                                .collect(Collectors.toList())
+                                );
+                        }
+                }
 
                 studentProfileRepository.save(profile);
                 return profile.getId();

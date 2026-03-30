@@ -171,6 +171,12 @@
                     <mat-icon>task_alt</mat-icon>
                     View Tasks
                   </button>
+                  <button mat-button color="accent" (click)="exportTeamData(team); $event.stopPropagation()" [disabled]="exportingTeamId === team.teamId">
+                    <mat-icon *ngIf="exportingTeamId !== team.teamId">picture_as_pdf</mat-icon>
+                    <mat-spinner diameter="18" *ngIf="exportingTeamId === team.teamId" style="display:inline-block; margin-right:8px;"></mat-spinner>
+                    <span *ngIf="exportingTeamId !== team.teamId">Export Data</span>
+                    <span *ngIf="exportingTeamId === team.teamId">Generating...</span>
+                  </button>
                 </mat-card-actions>
               </mat-card>
             </div>

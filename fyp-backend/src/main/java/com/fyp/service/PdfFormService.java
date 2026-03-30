@@ -54,7 +54,14 @@ public class PdfFormService {
                 // Project Track
                 y = boldLine(cs, y, "PROJECT TRACK: (Tick the appropriate one / ones)");
                 y -= 4;
-                String[] tracks = {"1. R&D\n(Innovation)", "2. CONSULTANCY\n(Fetched from Industry)", "3. STARTUP\n(Self-Business Initiative)", "4. PROJECT POOL\n(From IBM / INFOSYS)", "5. HARDWARE\n/ EMBEDDED"};
+                String trackVal = safe(req.getProjectTrack()).toUpperCase();
+                String[] tracks = {
+                    trackVal.contains("R&D") ? "[\u2713] 1. R&D\n(Innovation)" : "1. R&D\n(Innovation)",
+                    trackVal.contains("CONSULTANCY") ? "[\u2713] 2. CONSULTANCY\n(Fetched from Industry)" : "2. CONSULTANCY\n(Fetched from Industry)",
+                    trackVal.contains("STARTUP") ? "[\u2713] 3. STARTUP\n(Self-Business Initiative)" : "3. STARTUP\n(Self-Business Initiative)",
+                    trackVal.contains("PROJECT POOL") ? "[\u2713] 4. PROJECT POOL\n(From IBM / INFOSYS)" : "4. PROJECT POOL\n(From IBM / INFOSYS)",
+                    trackVal.contains("HARDWARE") || trackVal.contains("EMBEDDED") ? "[\u2713] 5. HARDWARE\n/ EMBEDDED" : "5. HARDWARE\n/ EMBEDDED"
+                };
                 float[] trackWidths = {TABLE_WIDTH / 5, TABLE_WIDTH / 5, TABLE_WIDTH / 5, TABLE_WIDTH / 5, TABLE_WIDTH / 5};
                 y = tableRow(cs, y, tracks, trackWidths, 28, true);
                 y -= 10;
@@ -73,19 +80,25 @@ public class PdfFormService {
                 float[] toolWidths = {TABLE_WIDTH * 0.35f, TABLE_WIDTH * 0.15f, TABLE_WIDTH * 0.18f, TABLE_WIDTH * 0.32f};
                 y = tableRow(cs, y, toolHeaders, toolWidths, 28, true);
 
-                // Auto-fill tools from project technologies
-                String techStr = orAuto(req.getToolsTechnologies(), "");
-                if (project.getTechnologies() != null && !project.getTechnologies().isEmpty() && techStr.isEmpty()) {
+                List<FormGenerateRequest.ToolTechPayload> toolList = req.getTools();
+                int toolRows = 0;
+                if (toolList != null && !toolList.isEmpty()) {
+                    for (FormGenerateRequest.ToolTechPayload t : toolList) {
+                        String[] row = {safe(t.getName()), safe(t.getVersion()), safe(t.getType()), safe(t.getPurpose())};
+                        y = tableRow(cs, y, row, toolWidths, 18, false);
+                        toolRows++;
+                    }
+                } else if (project.getTechnologies() != null && !project.getTechnologies().isEmpty()) {
                     for (String t : project.getTechnologies()) {
                         String[] row = {safe(t), "", "SOFTWARE", ""};
                         y = tableRow(cs, y, row, toolWidths, 18, false);
+                        toolRows++;
                     }
-                } else {
-                    // add 4 empty rows
-                    for (int i = 0; i < 4; i++) {
-                        String[] row = {"", "", "", ""};
-                        y = tableRow(cs, y, row, toolWidths, 18, false);
-                    }
+                }
+                while (toolRows < 4) {
+                    String[] row = {"", "", "", ""};
+                    y = tableRow(cs, y, row, toolWidths, 18, false);
+                    toolRows++;
                 }
                 y -= 10;
 
@@ -95,9 +108,19 @@ public class PdfFormService {
                 String[] modHeaders = {"NAME OF MODULE", "PROPOSED FUNCTIONALITY IN PROJECT"};
                 float[] modWidths = {TABLE_WIDTH * 0.35f, TABLE_WIDTH * 0.65f};
                 y = tableRow(cs, y, modHeaders, modWidths, 20, true);
-                for (int i = 0; i < 5; i++) {
+                List<FormGenerateRequest.ModulePayload> modList = req.getModules();
+                int modRows = 0;
+                if (modList != null && !modList.isEmpty()) {
+                    for (FormGenerateRequest.ModulePayload m : modList) {
+                        String[] row = {safe(m.getName()), safe(m.getFunctionality())};
+                        y = tableRow(cs, y, row, modWidths, 18, false);
+                        modRows++;
+                    }
+                }
+                while (modRows < 5) {
                     String[] row = {"", ""};
                     y = tableRow(cs, y, row, modWidths, 18, false);
+                    modRows++;
                 }
                 y -= 10;
 
@@ -143,21 +166,36 @@ public class PdfFormService {
                 String[] actHeaders = {"NAME OF ACTIVITY", "SOFT\nDEADLINE DATE", "HARD\nDEADLINE DATE", "DETAILS OF ACTIVITY (STORY)"};
                 float[] actWidths = {TABLE_WIDTH * 0.28f, TABLE_WIDTH * 0.16f, TABLE_WIDTH * 0.16f, TABLE_WIDTH * 0.40f};
 
+                List<FormGenerateRequest.MemberRolePayload> mrList = req.getMemberRoles();
                 int memberCount = Math.min(members.size(), 4);
                 for (int i = 0; i < Math.max(memberCount, 4); i++) {
                     String memberName = i < memberCount ? safe(members.get(i).getUser().getEmail()) : "________________";
+                    
+                    FormGenerateRequest.MemberRolePayload mr = null;
+                    if (mrList != null && i < mrList.size()) {
+                        mr = mrList.get(i);
+                    }
+                    
+                    String handlingMod = mr != null && !safe(mr.getHandlingModule()).isEmpty() ? safe(mr.getHandlingModule()) : "________________________________";
 
                     y = boldLine(cs, y, "MEMBER " + (i + 1) + " " + memberName);
                     cs.beginText();
                     cs.setFont(FONT_BOLD, 10);
                     cs.newLineAtOffset(PAGE_LEFT + TABLE_WIDTH / 2, y + 14);
-                    cs.showText("HANDLING MODULE ________________________________");
+                    cs.showText("HANDLING MODULE " + handlingMod);
                     cs.endText();
                     y -= 4;
 
                     y = tableRow(cs, y, actHeaders, actWidths, 28, true);
-                    for (int r = 0; r < 5; r++) {
+                    int actRows = 0;
+                    if (mr != null && (!safe(mr.getActivityName()).isEmpty() || !safe(mr.getStory()).isEmpty())) {
+                        String[] row = {safe(mr.getActivityName()), safe(mr.getSoftDeadline()), safe(mr.getHardDeadline()), safe(mr.getStory())};
+                        y = tableRow(cs, y, row, actWidths, 16, false);
+                        actRows++;
+                    }
+                    while (actRows < 5) {
                         y = tableRow(cs, y, new String[]{"", "", "", ""}, actWidths, 16, false);
+                        actRows++;
                     }
                     y -= 12;
 

@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
 import { Chart, registerables } from 'chart.js';
 import { AnalyticsService } from '../../core/services/analytics.service';
 
@@ -8,32 +9,32 @@ Chart.register(...registerables);
 @Component({
     selector: 'app-analytics-dashboard',
     standalone: true,
-    imports: [CommonModule],
+    imports: [CommonModule, MatIconModule],
     template: `
         <div class="analytics-container">
             <div class="analytics-header">
-                <h1>📊 Analytics Dashboard</h1>
+                <h1><mat-icon style="vertical-align: middle; font-size: 28px; height: 28px; width: 28px; margin-right: 8px;">analytics</mat-icon>Analytics Dashboard</h1>
                 <p>Track your project progress and team performance</p>
             </div>
 
             <div class="stats-grid">
                 <div class="stat-card">
-                    <div class="stat-icon">📋</div>
+                    <div class="stat-icon"><mat-icon style="font-size: 36px; height: 36px; width: 36px; color: #667eea;">assignment</mat-icon></div>
                     <div class="stat-value">{{ totalTasks }}</div>
                     <div class="stat-label">Total Tasks</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-icon">✅</div>
+                    <div class="stat-icon"><mat-icon style="font-size: 36px; height: 36px; width: 36px; color: #10b981;">check_circle</mat-icon></div>
                     <div class="stat-value">{{ completedTasks }}</div>
                     <div class="stat-label">Completed</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-icon">⏰</div>
+                    <div class="stat-icon"><mat-icon style="font-size: 36px; height: 36px; width: 36px; color: #f59e0b;">schedule</mat-icon></div>
                     <div class="stat-value">{{ totalHours }}h</div>
                     <div class="stat-label">Hours Logged</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-icon">🎯</div>
+                    <div class="stat-icon"><mat-icon style="font-size: 36px; height: 36px; width: 36px; color: #ef4444;">track_changes</mat-icon></div>
                     <div class="stat-value">{{ completionRate }}%</div>
                     <div class="stat-label">Completion Rate</div>
                 </div>

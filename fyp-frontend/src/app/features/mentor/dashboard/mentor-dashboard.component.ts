@@ -2,8 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MentorService } from '../../../core/services/mentor.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { DocumentService } from '../../../core/services/document.service';
 import { AssignedTeam } from '../../../core/models/mentor.model';
-import { User } from '../../../core/models/user.model';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Chart } from 'chart.js/auto';
 
 @Component({
     selector: 'app-mentor-dashboard',
@@ -12,6 +14,7 @@ import { User } from '../../../core/models/user.model';
 })
 export class MentorDashboardComponent implements OnInit {
     loading = false;
+    exportingTeamId: number | null = null;
 
     // Stats
     stats = {
@@ -29,6 +32,8 @@ export class MentorDashboardComponent implements OnInit {
 
     constructor(
         private mentorService: MentorService,
+        private documentService: DocumentService,
+        private snackBar: MatSnackBar,
         private authService: AuthService,
         private router: Router
     ) { }
@@ -81,5 +86,47 @@ export class MentorDashboardComponent implements OnInit {
         });
     }
 
+    exportTeamData(team: AssignedTeam): void {
+        this.exportingTeamId = team.teamId;
+        this.snackBar.open('Generating Mega Report...', 'Close', { duration: 3000 });
+        
+        // Render chart hidden
+        const canvas = document.createElement('canvas');
+        canvas.width = 400;
+        canvas.height = 400;
+        
+        const myChart = new Chart(canvas, {
+            type: 'doughnut',
+            data: {
+                labels: ['Completed', 'Remaining'],
+                datasets: [{
+                    data: [team.progress, 100 - team.progress],
+                    backgroundColor: ['#4caf50', '#e0e0e0']
+                }]
+            },
+            options: { animation: false } // Disable animation to draw immediately
+        });
 
+        const chartBase64 = myChart.toBase64Image();
+        myChart.destroy();
+        
+        this.documentService.exportMegaReport(team.projectId, { progressChartBase64: chartBase64 }).subscribe({
+            next: (blob) => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `Mega_Report_${team.teamName.replace(/\s+/g, '_')}.pdf`;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                a.remove();
+                this.snackBar.open('Export downloaded successfully!', 'Close', { duration: 3000 });
+                this.exportingTeamId = null;
+            },
+            error: () => {
+                this.snackBar.open('Failed to generate export', 'Close', { duration: 3000 });
+                this.exportingTeamId = null;
+            }
+        });
+    }
 }

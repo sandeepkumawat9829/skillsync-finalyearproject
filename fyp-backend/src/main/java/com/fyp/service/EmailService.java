@@ -46,7 +46,7 @@ public class EmailService {
 
     @Async
     public void sendWelcomeEmail(String toEmail, String userName) {
-        String subject = "Welcome to SkillSync! 🎉";
+        String subject = "Welcome to SkillSync!";
         String htmlContent = buildWelcomeTemplate(userName);
         sendHtmlEmail(toEmail, subject, htmlContent);
     }
@@ -127,11 +127,8 @@ public class EmailService {
                                         <td style="padding: 40px 40px 24px; text-align: center;">
                                             <table cellpadding="0" cellspacing="0" style="margin: 0 auto;">
                                                 <tr>
-                                                    <td style="width: 48px; height: 48px; background: linear-gradient(135deg, #ff5754, #ff9a76); border-radius: 12px; text-align: center; vertical-align: middle;">
-                                                        <span style="color: white; font-weight: 800; font-size: 20px;">SS</span>
-                                                    </td>
-                                                    <td style="padding-left: 12px;">
-                                                        <span style="font-size: 26px; font-weight: 800; color: #1b1b1b;">SkillSync</span>
+                                                    <td style="text-align: center;">
+                                                        <img src="http://localhost:4200/assets/images/skillsync-logo.svg" alt="SkillSync" style="height: 48px; display: block; margin: 0 auto; border: 0;" />
                                                     </td>
                                                 </tr>
                                             </table>
@@ -142,7 +139,7 @@ public class EmailService {
                                     <tr>
                                         <td style="text-align: center; padding: 0 40px 16px;">
                                             <div style="width: 72px; height: 72px; background: #dbeafe; border-radius: 50%%; margin: 0 auto; display: flex; align-items: center; justify-content: center;">
-                                                <span style="font-size: 36px;">🔐</span>
+                                                <span style="font-size: 36px; color: #3b82f6; font-family: monospace;">Sec</span>
                                             </div>
                                         </td>
                                     </tr>
@@ -244,11 +241,8 @@ public class EmailService {
                                         <td style="padding: 40px 40px 24px; text-align: center;">
                                             <table cellpadding="0" cellspacing="0" style="margin: 0 auto;">
                                                 <tr>
-                                                    <td style="width: 48px; height: 48px; background: linear-gradient(135deg, #ff5754, #ff9a76); border-radius: 12px; text-align: center; vertical-align: middle;">
-                                                        <span style="color: white; font-weight: 800; font-size: 20px;">SS</span>
-                                                    </td>
-                                                    <td style="padding-left: 12px;">
-                                                        <span style="font-size: 26px; font-weight: 800; color: #1b1b1b;">SkillSync</span>
+                                                    <td style="text-align: center;">
+                                                        <img src="http://localhost:4200/assets/images/skillsync-logo.svg" alt="SkillSync" style="height: 48px; display: block; margin: 0 auto; border: 0;" />
                                                     </td>
                                                 </tr>
                                             </table>
@@ -323,11 +317,8 @@ public class EmailService {
                                         <td style="padding: 40px 40px 24px; text-align: center;">
                                             <table cellpadding="0" cellspacing="0" style="margin: 0 auto;">
                                                 <tr>
-                                                    <td style="width: 48px; height: 48px; background: linear-gradient(135deg, #ff5754, #ff9a76); border-radius: 12px; text-align: center; vertical-align: middle;">
-                                                        <span style="color: white; font-weight: 800; font-size: 20px;">SS</span>
-                                                    </td>
-                                                    <td style="padding-left: 12px;">
-                                                        <span style="font-size: 26px; font-weight: 800; color: #1b1b1b;">SkillSync</span>
+                                                    <td style="text-align: center;">
+                                                        <img src="http://localhost:4200/assets/images/skillsync-logo.svg" alt="SkillSync" style="height: 48px; display: block; margin: 0 auto; border: 0;" />
                                                     </td>
                                                 </tr>
                                             </table>
@@ -338,7 +329,7 @@ public class EmailService {
                                     <tr>
                                         <td style="text-align: center; padding: 0 40px 16px;">
                                             <div style="width: 72px; height: 72px; background: #fef3c7; border-radius: 50%%; margin: 0 auto; display: flex; align-items: center; justify-content: center;">
-                                                <span style="font-size: 36px;">🔐</span>
+                                                <span style="font-size: 36px; color: #ca8a04; font-family: monospace;">Key</span>
                                             </div>
                                         </td>
                                     </tr>
@@ -409,15 +400,12 @@ public class EmailService {
                                         <td style="background: linear-gradient(135deg, #ff5754, #ff9a76); padding: 48px 40px; text-align: center;">
                                             <table cellpadding="0" cellspacing="0" style="margin: 0 auto 24px;">
                                                 <tr>
-                                                    <td style="width: 56px; height: 56px; background: rgba(255,255,255,0.2); border-radius: 14px; text-align: center; vertical-align: middle;">
-                                                        <span style="color: white; font-weight: 800; font-size: 24px;">SS</span>
-                                                    </td>
-                                                    <td style="padding-left: 12px;">
-                                                        <span style="font-size: 28px; font-weight: 800; color: white;">SkillSync</span>
+                                                    <td style="text-align: center;">
+                                                        <img src="http://localhost:4200/assets/images/skillsync-logo.svg" alt="SkillSync" style="height: 56px; display: block; margin: 0 auto; border: 0;" />
                                                     </td>
                                                 </tr>
                                             </table>
-                                            <h1 style="margin: 0; font-size: 28px; font-weight: 700; color: white;">Welcome aboard! 🎉</h1>
+                                            <h1 style="margin: 0; font-size: 28px; font-weight: 700; color: white;">Welcome aboard!</h1>
                                         </td>
                                     </tr>
 
@@ -433,7 +421,7 @@ public class EmailService {
                                                     <td style="padding: 14px 0; border-bottom: 1px solid #f3f4f6;">
                                                         <table cellpadding="0" cellspacing="0">
                                                             <tr>
-                                                                <td style="width: 36px;"><span style="font-size: 20px;">📋</span></td>
+                                                                <td style="width: 36px;"><span style="font-size: 20px; color: #3b82f6; font-family: monospace;">#</span></td>
                                                                 <td style="font-size: 14px; color: #374151; font-weight: 500;">Create and manage FYP project ideas</td>
                                                             </tr>
                                                         </table>
@@ -443,7 +431,7 @@ public class EmailService {
                                                     <td style="padding: 14px 0; border-bottom: 1px solid #f3f4f6;">
                                                         <table cellpadding="0" cellspacing="0">
                                                             <tr>
-                                                                <td style="width: 36px;"><span style="font-size: 20px;">👥</span></td>
+                                                                <td style="width: 36px;"><span style="font-size: 20px; color: #3b82f6; font-family: monospace;">+</span></td>
                                                                 <td style="font-size: 14px; color: #374151; font-weight: 500;">Form teams and invite collaborators</td>
                                                             </tr>
                                                         </table>
@@ -453,7 +441,7 @@ public class EmailService {
                                                     <td style="padding: 14px 0; border-bottom: 1px solid #f3f4f6;">
                                                         <table cellpadding="0" cellspacing="0">
                                                             <tr>
-                                                                <td style="width: 36px;"><span style="font-size: 20px;">🎓</span></td>
+                                                                <td style="width: 36px;"><span style="font-size: 20px; color: #3b82f6; font-family: monospace;">*</span></td>
                                                                 <td style="font-size: 14px; color: #374151; font-weight: 500;">Request mentors for expert guidance</td>
                                                             </tr>
                                                         </table>
@@ -463,7 +451,7 @@ public class EmailService {
                                                     <td style="padding: 14px 0;">
                                                         <table cellpadding="0" cellspacing="0">
                                                             <tr>
-                                                                <td style="width: 36px;"><span style="font-size: 20px;">📊</span></td>
+                                                                <td style="width: 36px;"><span style="font-size: 20px; color: #3b82f6; font-family: monospace;">&gt;</span></td>
                                                                 <td style="font-size: 14px; color: #374151; font-weight: 500;">Track progress with visual Kanban boards</td>
                                                             </tr>
                                                         </table>
@@ -513,11 +501,8 @@ public class EmailService {
                                         <td style="padding: 40px 40px 24px; text-align: center;">
                                             <table cellpadding="0" cellspacing="0" style="margin: 0 auto;">
                                                 <tr>
-                                                    <td style="width: 48px; height: 48px; background: linear-gradient(135deg, #ff5754, #ff9a76); border-radius: 12px; text-align: center; vertical-align: middle;">
-                                                        <span style="color: white; font-weight: 800; font-size: 20px;">SS</span>
-                                                    </td>
-                                                    <td style="padding-left: 12px;">
-                                                        <span style="font-size: 26px; font-weight: 800; color: #1b1b1b;">SkillSync</span>
+                                                    <td style="text-align: center;">
+                                                        <img src="http://localhost:4200/assets/images/skillsync-logo.svg" alt="SkillSync" style="height: 48px; display: block; margin: 0 auto; border: 0;" />
                                                     </td>
                                                 </tr>
                                             </table>
@@ -526,7 +511,7 @@ public class EmailService {
                                     <tr>
                                         <td style="text-align: center; padding: 0 40px 16px;">
                                             <div style="width: 72px; height: 72px; background: #dbeafe; border-radius: 50%%; margin: 0 auto; display: flex; align-items: center; justify-content: center;">
-                                                <span style="font-size: 36px;">🤝</span>
+                                                <span style="font-size: 36px; color: #3b82f6; font-family: monospace;">Inv</span>
                                             </div>
                                         </td>
                                     </tr>
@@ -581,11 +566,8 @@ public class EmailService {
                                         <td style="padding: 40px 40px 24px; text-align: center;">
                                             <table cellpadding="0" cellspacing="0" style="margin: 0 auto;">
                                                 <tr>
-                                                    <td style="width: 48px; height: 48px; background: linear-gradient(135deg, #ff5754, #ff9a76); border-radius: 12px; text-align: center; vertical-align: middle;">
-                                                        <span style="color: white; font-weight: 800; font-size: 20px;">SS</span>
-                                                    </td>
-                                                    <td style="padding-left: 12px;">
-                                                        <span style="font-size: 26px; font-weight: 800; color: #1b1b1b;">SkillSync</span>
+                                                    <td style="text-align: center;">
+                                                        <img src="http://localhost:4200/assets/images/skillsync-logo.svg" alt="SkillSync" style="height: 48px; display: block; margin: 0 auto; border: 0;" />
                                                     </td>
                                                 </tr>
                                             </table>
@@ -594,7 +576,7 @@ public class EmailService {
                                     <tr>
                                         <td style="text-align: center; padding: 0 40px 16px;">
                                             <div style="width: 72px; height: 72px; background: #fef3c7; border-radius: 50%%; margin: 0 auto; display: flex; align-items: center; justify-content: center;">
-                                                <span style="font-size: 36px;">🎓</span>
+                                                <span style="font-size: 36px; color: #ca8a04; font-family: monospace;">Men</span>
                                             </div>
                                         </td>
                                     </tr>
@@ -648,11 +630,8 @@ public class EmailService {
                                         <td style="padding: 40px 40px 24px; text-align: center;">
                                             <table cellpadding="0" cellspacing="0" style="margin: 0 auto;">
                                                 <tr>
-                                                    <td style="width: 48px; height: 48px; background: linear-gradient(135deg, #ff5754, #ff9a76); border-radius: 12px; text-align: center; vertical-align: middle;">
-                                                        <span style="color: white; font-weight: 800; font-size: 20px;">SS</span>
-                                                    </td>
-                                                    <td style="padding-left: 12px;">
-                                                        <span style="font-size: 26px; font-weight: 800; color: #1b1b1b;">SkillSync</span>
+                                                    <td style="text-align: center;">
+                                                        <img src="http://localhost:4200/assets/images/skillsync-logo.svg" alt="SkillSync" style="height: 48px; display: block; margin: 0 auto; border: 0;" />
                                                     </td>
                                                 </tr>
                                             </table>
@@ -661,7 +640,7 @@ public class EmailService {
                                     <tr>
                                         <td style="text-align: center; padding: 0 40px 16px;">
                                             <div style="width: 72px; height: 72px; background: #dcfce7; border-radius: 50%%; margin: 0 auto; display: flex; align-items: center; justify-content: center;">
-                                                <span style="font-size: 36px;">📋</span>
+                                                <span style="font-size: 36px; color: #16a34a; font-family: monospace;">Tas</span>
                                             </div>
                                         </td>
                                     </tr>
@@ -716,11 +695,8 @@ public class EmailService {
                                         <td style="padding: 40px 40px 24px; text-align: center;">
                                             <table cellpadding="0" cellspacing="0" style="margin: 0 auto;">
                                                 <tr>
-                                                    <td style="width: 48px; height: 48px; background: linear-gradient(135deg, #ff5754, #ff9a76); border-radius: 12px; text-align: center; vertical-align: middle;">
-                                                        <span style="color: white; font-weight: 800; font-size: 20px;">SS</span>
-                                                    </td>
-                                                    <td style="padding-left: 12px;">
-                                                        <span style="font-size: 26px; font-weight: 800; color: #1b1b1b;">SkillSync</span>
+                                                    <td style="text-align: center;">
+                                                        <img src="http://localhost:4200/assets/images/skillsync-logo.svg" alt="SkillSync" style="height: 48px; display: block; margin: 0 auto; border: 0;" />
                                                     </td>
                                                 </tr>
                                             </table>
@@ -729,7 +705,7 @@ public class EmailService {
                                     <tr>
                                         <td style="text-align: center; padding: 0 40px 16px;">
                                             <div style="width: 72px; height: 72px; background: #e0e7ff; border-radius: 50%%; margin: 0 auto; display: flex; align-items: center; justify-content: center;">
-                                                <span style="font-size: 36px;">📄</span>
+                                                <span style="font-size: 36px; color: #4f46e5; font-family: monospace;">Doc</span>
                                             </div>
                                         </td>
                                     </tr>
@@ -783,11 +759,8 @@ public class EmailService {
                                         <td style="padding: 40px 40px 24px; text-align: center;">
                                             <table cellpadding="0" cellspacing="0" style="margin: 0 auto;">
                                                 <tr>
-                                                    <td style="width: 48px; height: 48px; background: linear-gradient(135deg, #ff5754, #ff9a76); border-radius: 12px; text-align: center; vertical-align: middle;">
-                                                        <span style="color: white; font-weight: 800; font-size: 20px;">SS</span>
-                                                    </td>
-                                                    <td style="padding-left: 12px;">
-                                                        <span style="font-size: 26px; font-weight: 800; color: #1b1b1b;">SkillSync</span>
+                                                    <td style="text-align: center;">
+                                                        <img src="http://localhost:4200/assets/images/skillsync-logo.svg" alt="SkillSync" style="height: 48px; display: block; margin: 0 auto; border: 0;" />
                                                     </td>
                                                 </tr>
                                             </table>
@@ -796,7 +769,7 @@ public class EmailService {
                                     <tr>
                                         <td style="text-align: center; padding: 0 40px 16px;">
                                             <div style="width: 72px; height: 72px; background: #ddd6fe; border-radius: 50%%; margin: 0 auto; display: flex; align-items: center; justify-content: center;">
-                                                <span style="font-size: 36px;">📅</span>
+                                                <span style="font-size: 36px; color: #7c3aed; font-family: monospace;">Cal</span>
                                             </div>
                                         </td>
                                     </tr>

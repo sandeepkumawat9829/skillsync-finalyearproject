@@ -221,15 +221,15 @@
             Request Sent
           </button>
           <ng-container *ngIf="showTeamWorkspaceActions">
-            <button mat-raised-button [routerLink]="['/student/projects', projectId, 'documents']" class="action-button">
+            <button mat-raised-button [routerLink]="[getBaseRoute() + '/projects', projectId, 'documents']" class="action-button">
               <mat-icon>folder</mat-icon>
               View Documents
             </button>
-            <button mat-raised-button [routerLink]="['/student/tasks/board']" [queryParams]="{projectId: projectId}" class="action-button">
+            <button mat-raised-button [routerLink]="[getBoardRoute()]" [queryParams]="{projectId: projectId}" class="action-button">
               <mat-icon>view_kanban</mat-icon>
               Kanban Board
             </button>
-            <button mat-raised-button [routerLink]="['/student/projects', projectId, 'issues']" class="action-button">
+            <button mat-raised-button [routerLink]="[getBaseRoute() + '/projects', projectId, 'issues']" class="action-button">
               <mat-icon>bug_report</mat-icon>
               View Issues
             </button>

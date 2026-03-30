@@ -13,6 +13,7 @@ export interface Document {
     status: DocumentStatus;
     approvedBy?: number;
     approvedAt?: Date;
+    rejectionReason?: string;
 }
 
 export enum DocumentType {

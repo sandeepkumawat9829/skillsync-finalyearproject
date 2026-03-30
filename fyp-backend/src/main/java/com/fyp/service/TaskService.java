@@ -36,6 +36,8 @@ import java.util.stream.Collectors;
 public class TaskService {
 
     private static final Set<String> VALID_COLUMNS = Set.of("TODO", "IN_PROGRESS", "IN_REVIEW", "DONE");
+    private static final Map<String, Integer> COLUMN_ORDER = Map.of(
+            "TODO", 0, "IN_PROGRESS", 1, "IN_REVIEW", 2, "DONE", 3);
 
     private final TaskRepository taskRepository;
     private final ProjectRepository projectRepository;
@@ -55,6 +57,11 @@ public class TaskService {
                 .orElseThrow(() -> new RuntimeException("Project not found"));
         User creator = userRepository.findById(creatorId)
                 .orElseThrow(() -> new RuntimeException("Creator not found"));
+
+        // Only team leader or mentor can create tasks
+        if (!isLeaderOrMentor(project, creatorId)) {
+            throw new RuntimeException("Only the team leader or mentor can create tasks");
+        }
 
         validateProjectAccess(project, creatorId);
 
@@ -129,9 +136,18 @@ public class TaskService {
                 .orElseThrow(() -> new RuntimeException("Project not found"));
         validateProjectAccess(project, userId);
 
-        return taskRepository.findByProjectIdOrderByColumnNameAscPositionAscCreatedAtAsc(projectId).stream()
+        List<TaskDTO> allTasks = taskRepository.findByProjectIdOrderByColumnNameAscPositionAscCreatedAtAsc(projectId).stream()
                 .map(this::toDTO)
                 .collect(Collectors.toList());
+
+        // Leader/mentor see all tasks; regular members see only their own
+        if (isLeaderOrMentor(project, userId)) {
+            return allTasks;
+        } else {
+            return allTasks.stream()
+                    .filter(t -> t.getAssignedTo() != null && t.getAssignedTo().equals(userId))
+                    .collect(Collectors.toList());
+        }
     }
 
     @Transactional(readOnly = true)
@@ -250,7 +266,19 @@ public class TaskService {
 
         validateProjectAccess(task.getProject(), userId);
 
-        task.setColumnName(normalizeColumnName(newColumnName));
+        String normalizedNew = normalizeColumnName(newColumnName);
+        String oldColumn = task.getColumnName();
+
+        // Check backward movement for non-leader/non-mentor
+        if (!isLeaderOrMentor(task.getProject(), userId)) {
+            int oldOrder = COLUMN_ORDER.getOrDefault(oldColumn, 0);
+            int newOrder = COLUMN_ORDER.getOrDefault(normalizedNew, 0);
+            if (newOrder < oldOrder) {
+                throw new RuntimeException("Only the team leader or mentor can revert task progress");
+            }
+        }
+
+        task.setColumnName(normalizedNew);
         task.setPosition(newPosition);
 
         if ("DONE".equals(task.getColumnName())) {
@@ -436,5 +464,33 @@ public class TaskService {
         messagingTemplate.convertAndSend(
                 "/topic/projects/" + projectId + "/tasks",
                 Map.of("eventType", eventType, "payload", payload));
+    }
+
+    private boolean isLeaderOrMentor(Project project, Long userId) {
+        User user = userRepository.findById(userId).orElse(null);
+        if (user == null) return false;
+
+        // Admin always has full access
+        if (user.getRole() == com.fyp.model.enums.Role.ADMIN) return true;
+
+        // Mentor role check
+        if (user.getRole() == com.fyp.model.enums.Role.MENTOR) {
+            Team team = teamRepository.findByProjectId(project.getId()).orElse(null);
+            if (team != null) {
+                return mentorAssignmentRepository.findByTeamId(team.getId())
+                        .map(a -> a.getMentor() != null && a.getMentor().getId().equals(userId))
+                        .orElse(false);
+            }
+            return false;
+        }
+
+        // Team leader check
+        Team team = teamRepository.findByProjectId(project.getId()).orElse(null);
+        if (team != null && team.getTeamLeader() != null) {
+            return team.getTeamLeader().getId().equals(userId);
+        }
+
+        // Project creator
+        return project.getCreatedBy() != null && project.getCreatedBy().getId().equals(userId);
     }
 }

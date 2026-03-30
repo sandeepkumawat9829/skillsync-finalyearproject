@@ -12,7 +12,7 @@ import { AuthService } from '../../../core/services/auth.service';
             <div class="verify-card">
                 <div class="verify-header">
                     <div class="logo-container">
-                        <img src="assets/images/skillsync-logo.svg" alt="SkillSync" class="skillsync-logo" />
+                        <img src="/assets/images/skillsync-logo.svg" alt="SkillSync" class="skillsync-logo" />
                     </div>
                     <div class="email-icon">✉️</div>
                     <h1>Verify Your <span>Email</span></h1>

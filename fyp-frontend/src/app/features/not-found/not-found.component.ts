@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
   template: `
     <div class="not-found-container">
       <div class="not-found-card">
-        <img src="assets/images/skillsync-logo.svg" alt="SkillSync" class="nf-logo" />
+        <img src="/assets/images/skillsync-logo.svg" alt="SkillSync" class="nf-logo" />
         <div class="error-code">404</div>
         <h1>Page Not Found</h1>
         <p>Oops! The page you're looking for doesn't exist or has been moved.</p>

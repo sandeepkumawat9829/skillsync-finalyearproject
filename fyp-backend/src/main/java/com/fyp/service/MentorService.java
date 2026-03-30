@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,6 +31,7 @@ public class MentorService {
     private final StudentProfileRepository studentProfileRepository;
     private final NotificationService notificationService;
     private final EmailService emailService;
+    private final TeamMemberRepository teamMemberRepository;
 
     public List<MentorProfileDTO> getAvailableMentors() {
         return mentorProfileRepository.findAll().stream()
@@ -177,6 +179,9 @@ public class MentorService {
                 "Mentor Assigned",
                 mentorName + " has accepted to be your mentor!",
                 "/team");
+
+        // Remove members from other teams and notify those team leaders
+        removeTeamMembersFromOtherTeams(team);
     }
 
     @Transactional
@@ -386,6 +391,9 @@ public class MentorService {
                 "You have been assigned to mentor team '" + team.getTeamName() + "' by the administrator.",
                 "/mentor/assignments");
 
+        // Remove members from other teams and notify those team leaders
+        removeTeamMembersFromOtherTeams(team);
+
         return saved;
     }
 
@@ -404,5 +412,68 @@ public class MentorService {
                     return isComplete && !hasMentor;
                 })
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * When a mentor is assigned to a team, remove each member of that team from all OTHER teams.
+     * Notify the leaders of those other teams about the removal.
+     */
+    private void removeTeamMembersFromOtherTeams(Team assignedTeam) {
+        Long assignedTeamId = assignedTeam.getId();
+        List<TeamMember> assignedMembers = teamMemberRepository.findByTeamId(assignedTeamId);
+
+        for (TeamMember member : assignedMembers) {
+            Long userId = member.getUser().getId();
+            String memberName = studentProfileRepository.findByUserId(userId)
+                    .map(StudentProfile::getFullName)
+                    .orElse(member.getUser().getEmail());
+
+            // Find all other team memberships for this user
+            List<TeamMember> allMemberships = teamMemberRepository.findByUserId(userId);
+            for (TeamMember otherMembership : allMemberships) {
+                Team otherTeam = otherMembership.getTeam();
+                if (otherTeam == null || otherTeam.getId().equals(assignedTeamId)) {
+                    continue; // skip the assigned team itself
+                }
+
+                // Don't remove a team leader from their own team
+                if (otherMembership.getRole() == com.fyp.model.enums.MemberRole.LEADER) {
+                    continue;
+                }
+
+                // Remove from other team
+                teamMemberRepository.delete(otherMembership);
+
+                // Update other team's member count
+                otherTeam.setCurrentMemberCount(Math.max(0, otherTeam.getCurrentMemberCount() - 1));
+                if (otherTeam.getCurrentMemberCount() < otherTeam.getMaxMembers()) {
+                    otherTeam.setIsComplete(false);
+                    if (otherTeam.getStatus() == TeamStatus.COMPLETE) {
+                        otherTeam.setStatus(TeamStatus.FORMING);
+                    }
+                }
+                teamRepository.save(otherTeam);
+
+                // Notify the other team's leader
+                if (otherTeam.getTeamLeader() != null) {
+                    notificationService.sendNotification(
+                            otherTeam.getTeamLeader().getId(),
+                            "MEMBER_AUTO_REMOVED",
+                            "Team Member Left",
+                            memberName + " has been automatically removed from your team '" + otherTeam.getTeamName()
+                                    + "' because they have been assigned a mentor in team '" + assignedTeam.getTeamName() + "'.",
+                            "/student/teams/" + otherTeam.getId());
+                }
+
+                // Notify the removed member
+                notificationService.sendNotification(
+                        userId,
+                        "MEMBER_AUTO_REMOVED",
+                        "Removed from Team",
+                        "You have been automatically removed from team '" + otherTeam.getTeamName()
+                                + "' because your team '" + assignedTeam.getTeamName() + "' has been assigned a mentor.",
+                        "/student/projects");
+            }
+        }
     }
 }

@@ -46,7 +46,7 @@ public class StudentProfile {
     private String bio;
 
     @ElementCollection
-    @CollectionTable(name = "student_skills", joinColumns = @JoinColumn(name = "student_id"))
+    @CollectionTable(name = "student_profile_skills", joinColumns = @JoinColumn(name = "student_profile_id"))
     @Column(name = "skill")
     private List<String> skills;
 

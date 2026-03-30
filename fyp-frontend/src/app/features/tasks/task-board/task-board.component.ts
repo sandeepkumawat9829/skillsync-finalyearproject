@@ -6,10 +6,12 @@ import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/dr
 import { Subject, takeUntil } from 'rxjs';
 import { Project, Team } from '../../../core/models/project.model';
 import { ReorderTaskRequest, Task, TaskColumn, TaskBoardEvent } from '../../../core/models/task.model';
+import { Sprint, CreateSprintRequest } from '../../../core/models/sprint.model';
 import { ProjectService } from '../../../core/services/project.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { TaskService } from '../../../core/services/task.service';
 import { TeamService } from '../../../core/services/team.service';
+import { SprintService } from '../../../core/services/sprint.service';
 import { TaskDialogComponent } from '../task-dialog/task-dialog.component';
 
 @Component({
@@ -27,6 +29,25 @@ export class TaskBoardComponent implements OnInit, OnDestroy {
 
     private destroy$ = new Subject<void>();
 
+    // Sprint management
+    sprints: Sprint[] = [];
+    activeSprint: Sprint | null = null;
+    showSprintCreate = false;
+    isCreatingSprint = false;
+    newSprint: Partial<CreateSprintRequest> = {};
+
+    // Permission flags
+    isLeaderOrMentor = false;
+    currentUserId = 0;
+
+    // Column order for backward-move detection
+    private readonly COLUMN_ORDER: Record<string, number> = {
+        'TODO': 0,
+        'IN_PROGRESS': 1,
+        'IN_REVIEW': 2,
+        'DONE': 3
+    };
+
     columns: TaskColumn[] = [
         { id: 'TODO', title: 'To Do', tasks: [] },
         { id: 'IN_PROGRESS', title: 'In Progress', tasks: [] },
@@ -40,12 +61,16 @@ export class TaskBoardComponent implements OnInit, OnDestroy {
         private taskService: TaskService,
         private projectService: ProjectService,
         private teamService: TeamService,
+        private sprintService: SprintService,
         private authService: AuthService,
         private snackBar: MatSnackBar,
         private dialog: MatDialog
     ) { }
 
     ngOnInit(): void {
+        const currentUser = this.authService.currentUserValue;
+        this.currentUserId = currentUser?.userId || 0;
+
         this.route.queryParams
             .pipe(takeUntil(this.destroy$))
             .subscribe(params => {
@@ -65,7 +90,7 @@ export class TaskBoardComponent implements OnInit, OnDestroy {
                 this.subscribeToBoardEvents();
                 this.loadProject();
                 this.loadTeam();
-                this.loadTasks();
+                this.loadSprints();
             });
     }
 
@@ -79,10 +104,10 @@ export class TaskBoardComponent implements OnInit, OnDestroy {
 
     loadProject(): void {
         this.projectService.getProjectById(this.projectId).subscribe({
-            next: (data) => {
+            next: (data: any) => {
                 this.project = data;
             },
-            error: (error) => {
+            error: (error: any) => {
                 const message = error?.error?.message || 'Error loading project';
                 this.snackBar.open(message, 'Close', { duration: 3000 });
             }
@@ -91,11 +116,42 @@ export class TaskBoardComponent implements OnInit, OnDestroy {
 
     loadTeam(): void {
         this.teamService.getTeamByProject(this.projectId).subscribe({
-            next: (team) => {
+            next: (team: any) => {
                 this.team = team;
+                this.resolvePermissions();
             },
             error: () => {
                 this.team = null;
+                this.resolvePermissions();
+            }
+        });
+    }
+
+    loadSprints(): void {
+        this.sprintService.getSprintsByProject(this.projectId).subscribe({
+            next: (sprints: Sprint[]) => {
+                this.sprints = sprints;
+                // Find active sprint or use the first one
+                this.activeSprint = sprints.find(s => s.status === 'ACTIVE') || null;
+
+                if (this.sprintId) {
+                    // Use URL param sprint
+                    this.loadTasks();
+                } else if (this.activeSprint) {
+                    // Auto-select active sprint
+                    this.sprintId = this.activeSprint.sprintId;
+                    this.loadTasks();
+                } else if (sprints.length > 0) {
+                    // Use latest sprint
+                    this.sprintId = sprints[0].sprintId;
+                    this.loadTasks();
+                } else {
+                    // No sprints — show create sprint prompt
+                    this.loading = false;
+                }
+            },
+            error: () => {
+                this.loading = false;
             }
         });
     }
@@ -107,11 +163,11 @@ export class TaskBoardComponent implements OnInit, OnDestroy {
             : this.taskService.getTasksByProject(this.projectId);
 
         taskRequest.subscribe({
-            next: (tasks) => {
+            next: (tasks: any) => {
                 this.organizeTasks(tasks);
                 this.loading = false;
             },
-            error: (error) => {
+            error: (error: any) => {
                 const message = error?.error?.message || 'Error loading tasks';
                 this.snackBar.open(message, 'Close', { duration: 3000 });
                 this.loading = false;
@@ -137,6 +193,20 @@ export class TaskBoardComponent implements OnInit, OnDestroy {
     }
 
     onDrop(event: CdkDragDrop<Task[]>, targetColumn: TaskColumn): void {
+        const movedTask = event.previousContainer.data[event.previousIndex];
+        const oldColumnId = movedTask.status;
+        const newColumnId = targetColumn.id;
+
+        // Check backward movement for regular members
+        if (!this.isLeaderOrMentor && event.previousContainer !== event.container) {
+            const oldOrder = this.COLUMN_ORDER[oldColumnId] ?? 0;
+            const newOrder = this.COLUMN_ORDER[newColumnId] ?? 0;
+            if (newOrder < oldOrder) {
+                this.snackBar.open('Only the team leader or mentor can revert task progress', 'Close', { duration: 3000 });
+                return;
+            }
+        }
+
         if (event.previousContainer === event.container) {
             moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
         } else {
@@ -146,8 +216,8 @@ export class TaskBoardComponent implements OnInit, OnDestroy {
                 event.previousIndex,
                 event.currentIndex
             );
-            const movedTask = event.container.data[event.currentIndex];
-            movedTask.status = targetColumn.id as Task['status'];
+            const task = event.container.data[event.currentIndex];
+            task.status = targetColumn.id as Task['status'];
         }
 
         this.syncColumnPositions();
@@ -165,11 +235,16 @@ export class TaskBoardComponent implements OnInit, OnDestroy {
     }
 
     createTask(): void {
+        if (!this.sprintId) {
+            this.snackBar.open('Please create a sprint first before adding tasks', 'Close', { duration: 3000 });
+            return;
+        }
+
         const dialogRef = this.dialog.open(TaskDialogComponent, {
             width: '600px',
             data: {
                 projectId: this.projectId,
-                sprintId: this.sprintId ?? undefined,
+                sprintId: this.sprintId,
                 teamId: this.team?.teamId
             }
         });
@@ -181,6 +256,54 @@ export class TaskBoardComponent implements OnInit, OnDestroy {
                     this.loadTasks();
                 }
             });
+    }
+
+    // Sprint creation
+    toggleSprintCreate(): void {
+        this.showSprintCreate = !this.showSprintCreate;
+        if (this.showSprintCreate) {
+            this.newSprint = {
+                projectId: this.projectId,
+                sprintName: '',
+                sprintGoal: '',
+            };
+        }
+    }
+
+    createSprint(): void {
+        if (!this.newSprint.sprintName || !this.newSprint.startDate || !this.newSprint.endDate) {
+            this.snackBar.open('Please fill sprint name, start date and end date', 'Close', { duration: 3000 });
+            return;
+        }
+
+        this.isCreatingSprint = true;
+        const request: CreateSprintRequest = {
+            projectId: this.projectId,
+            sprintName: this.newSprint.sprintName!,
+            sprintGoal: this.newSprint.sprintGoal || '',
+            startDate: this.newSprint.startDate!,
+            endDate: this.newSprint.endDate!
+        };
+
+        this.sprintService.createSprint(request).subscribe({
+            next: (sprint: Sprint) => {
+                this.snackBar.open('Sprint created successfully!', 'Close', { duration: 3000 });
+                this.isCreatingSprint = false;
+                this.showSprintCreate = false;
+                this.sprintId = sprint.sprintId;
+                this.loadSprints();
+            },
+            error: (error: any) => {
+                const message = error?.error?.message || 'Error creating sprint';
+                this.snackBar.open(message, 'Close', { duration: 3000 });
+                this.isCreatingSprint = false;
+            }
+        });
+    }
+
+    selectSprint(sprint: Sprint): void {
+        this.sprintId = sprint.sprintId;
+        this.loadTasks();
     }
 
     goToAnalytics(): void {
@@ -222,6 +345,28 @@ export class TaskBoardComponent implements OnInit, OnDestroy {
 
     get connectedDropLists(): string[] {
         return this.columns.map(column => column.id);
+    }
+
+    private resolvePermissions(): void {
+        const currentUser = this.authService.currentUserValue;
+        if (!currentUser) {
+            this.isLeaderOrMentor = false;
+            return;
+        }
+
+        // Mentor always has full access
+        if (currentUser.role === 'MENTOR') {
+            this.isLeaderOrMentor = true;
+            return;
+        }
+
+        // Team leader has full access
+        if (this.team && this.team.teamLeaderId === currentUser.userId) {
+            this.isLeaderOrMentor = true;
+            return;
+        }
+
+        this.isLeaderOrMentor = false;
     }
 
     private syncColumnPositions(): void {

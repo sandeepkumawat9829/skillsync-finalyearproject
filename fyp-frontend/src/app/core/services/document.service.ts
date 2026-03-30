@@ -76,6 +76,13 @@ export class DocumentService {
         return this.http.delete<void>(`${this.apiUrl}/${documentId}`);
     }
 
+    // Export Mega-Report
+    exportMegaReport(projectId: number, request: { progressChartBase64?: string, tasksChartBase64?: string }): Observable<Blob> {
+        return this.http.post(`/api/export/project/${projectId}/mega-report`, request, {
+            responseType: 'blob'
+        });
+    }
+
     // Helper: Format file size
     formatFileSize(bytes: number): string {
         if (bytes === 0) return '0 Bytes';
@@ -133,7 +140,8 @@ export class DocumentService {
             description: document.description,
             status: document.status,
             approvedBy: document.approvedById,
-            approvedAt: document.approvedAt
+            approvedAt: document.approvedAt,
+            rejectionReason: document.rejectionReason
         };
     }
 }

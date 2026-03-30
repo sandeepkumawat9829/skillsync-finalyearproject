@@ -8,18 +8,25 @@
       </h2>
     </div>
     <div class="header-actions" style="display:flex; gap:12px; align-items:center;">
-      <button mat-stroked-button color="primary" (click)="toggleGenerateUI()" class="toggle-gen-btn">
-        <mat-icon>{{showGenerateUI ? 'close' : 'magic_button'}}</mat-icon>
-        {{showGenerateUI ? 'Cancel Generation' : 'Generate Project Log / Matrix'}}
+      <button mat-flat-button color="accent" (click)="exportAllDocuments()" [disabled]="isExporting">
+        <mat-icon *ngIf="!isExporting">picture_as_pdf</mat-icon>
+        <mat-spinner diameter="18" *ngIf="isExporting" style="display:inline-block; margin-right:8px;"></mat-spinner>
+        {{isExporting ? 'Exporting...' : 'Export Mega-Report'}}
       </button>
-      <button mat-fab color="primary" (click)="openUploadDialog()" class="fab-button">
-        <mat-icon>add</mat-icon>
-      </button>
+      <ng-container *ngIf="!isMentor">
+        <button mat-stroked-button color="primary" (click)="toggleGenerateUI()" class="toggle-gen-btn">
+          <mat-icon>{{showGenerateUI ? 'close' : 'magic_button'}}</mat-icon>
+          {{showGenerateUI ? 'Cancel Generation' : 'Generate Project Log / Matrix'}}
+        </button>
+        <button mat-fab color="primary" (click)="openUploadDialog()" class="fab-button">
+          <mat-icon>add</mat-icon>
+        </button>
+      </ng-container>
     </div>
   </div>
 
-  <!-- Document Generation Card UI -->
-  <mat-card class="generation-card" *ngIf="showGenerateUI">
+  <!-- Document Generation Card UI (student only) -->
+  <mat-card class="generation-card" *ngIf="showGenerateUI && !isMentor">
     <mat-card-header>
       <mat-card-title>Generate Required Forms</mat-card-title>
       <mat-card-subtitle>Create standard documentation forms for project submissions.</mat-card-subtitle>
@@ -67,15 +74,50 @@
 
           <mat-form-field appearance="outline">
             <mat-label>Project Track</mat-label>
-            <input matInput [(ngModel)]="generateFormData.projectTrack" placeholder="e.g. R&D, STARTUP">
+            <mat-select [(ngModel)]="generateFormData.projectTrack">
+              <mat-option value="R&D">R&D (Innovation)</mat-option>
+              <mat-option value="CONSULTANCY">CONSULTANCY (Fetched from Industry)</mat-option>
+              <mat-option value="STARTUP">STARTUP (Self-Business Initiative)</mat-option>
+              <mat-option value="PROJECT POOL">PROJECT POOL (From IBM / INFOSYS)</mat-option>
+              <mat-option value="HARDWARE / EMBEDDED">HARDWARE / EMBEDDED</mat-option>
+            </mat-select>
           </mat-form-field>
         </div>
         
-        <div *ngIf="selectedFormType === 'form2'" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px;">
-          <mat-form-field appearance="outline">
-            <mat-label>Mentor Name</mat-label>
-            <input matInput [(ngModel)]="generateFormData.mentorName" placeholder="Actual Mentor Assigned">
-          </mat-form-field>
+        <div *ngIf="selectedFormType === 'form2'">
+          <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin-bottom: 24px;">
+            <mat-form-field appearance="outline">
+              <mat-label>Mentor Name</mat-label>
+              <input matInput [(ngModel)]="generateFormData.mentorName" placeholder="Actual Mentor Assigned">
+            </mat-form-field>
+          </div>
+
+          <p style="font-weight: 500; margin-bottom: 12px;">Team Members Role Specification</p>
+          <div *ngFor="let role of generateFormData.memberRoles; let i = index" style="padding:16px; border:1px solid #e0e0e0; border-radius:8px; margin-bottom:16px; background-color: #fafafa;">
+            <p style="font-weight: 600; margin-top:0; margin-bottom: 12px; color: #1e40af;">Member {{i + 1}}</p>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
+              <mat-form-field appearance="outline">
+                <mat-label>Handling Module</mat-label>
+                <input matInput [(ngModel)]="role.handlingModule">
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>Name of Activity</mat-label>
+                <input matInput [(ngModel)]="role.activityName">
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>Soft Deadline Date</mat-label>
+                <input matInput [(ngModel)]="role.softDeadline" placeholder="e.g. 15 Oct">
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>Hard Deadline Date</mat-label>
+                <input matInput [(ngModel)]="role.hardDeadline" placeholder="e.g. 20 Oct">
+              </mat-form-field>
+            </div>
+            <mat-form-field appearance="outline" style="width:100%;">
+              <mat-label>Details of Activity (Story)</mat-label>
+              <textarea matInput [(ngModel)]="role.story" rows="2"></textarea>
+            </mat-form-field>
+          </div>
         </div>
 
         <div *ngIf="selectedFormType === 'form3'" style="padding: 16px; background: #f3f4f6; border-radius: 8px; margin-bottom: 16px;">
@@ -89,15 +131,48 @@
             <textarea matInput [(ngModel)]="generateFormData.briefIntroduction" rows="2"></textarea>
           </mat-form-field>
 
-          <mat-form-field appearance="outline">
-            <mat-label>Tools / Technologies Used</mat-label>
-            <textarea matInput [(ngModel)]="generateFormData.toolsTechnologies" rows="2"></textarea>
-          </mat-form-field>
+          <p style="font-weight: 500; margin-bottom: 0px; margin-top: 8px;">Tools / Technologies To Be Used</p>
+          <div *ngFor="let tool of generateFormData.tools; let i = index" style="display:flex; gap:12px; align-items: flex-start;">
+            <mat-form-field appearance="outline" style="flex:2">
+              <mat-label>Tool Name</mat-label>
+              <input matInput [(ngModel)]="tool.name">
+            </mat-form-field>
+            <mat-form-field appearance="outline" style="flex:1">
+              <mat-label>Version</mat-label>
+              <input matInput [(ngModel)]="tool.version">
+            </mat-form-field>
+            <mat-form-field appearance="outline" style="flex:1">
+              <mat-label>Type</mat-label>
+              <mat-select [(ngModel)]="tool.type">
+                <mat-option value="SOFTWARE">SOFTWARE</mat-option>
+                <mat-option value="HARDWARE">HARDWARE</mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline" style="flex:2">
+              <mat-label>Purpose</mat-label>
+              <input matInput [(ngModel)]="tool.purpose">
+            </mat-form-field>
+            <button mat-icon-button color="warn" (click)="removeTool(i)" style="margin-top:8px"><mat-icon>delete</mat-icon></button>
+          </div>
+          <div>
+            <button mat-stroked-button color="primary" (click)="addTool()"><mat-icon>add</mat-icon> Add Tool</button>
+          </div>
 
-          <mat-form-field appearance="outline">
-            <mat-label>Proposed Modules / Milestones</mat-label>
-            <textarea matInput [(ngModel)]="generateFormData.proposedModules" rows="2"></textarea>
-          </mat-form-field>
+          <p style="font-weight: 500; margin-bottom: 0px; margin-top: 16px;">Proposed Project Modules</p>
+          <div *ngFor="let mod of generateFormData.modules; let i = index" style="display:flex; gap:12px; align-items: flex-start;">
+            <mat-form-field appearance="outline" style="flex:1">
+              <mat-label>Module Name</mat-label>
+              <input matInput [(ngModel)]="mod.name">
+            </mat-form-field>
+            <mat-form-field appearance="outline" style="flex:3">
+              <mat-label>Proposed Functionality</mat-label>
+              <input matInput [(ngModel)]="mod.functionality">
+            </mat-form-field>
+            <button mat-icon-button color="warn" (click)="removeModule(i)" style="margin-top:8px"><mat-icon>delete</mat-icon></button>
+          </div>
+          <div>
+            <button mat-stroked-button color="primary" (click)="addModule()"><mat-icon>add</mat-icon> Add Module</button>
+          </div>
         </div>
       </div>
     </mat-card-content>
@@ -119,6 +194,47 @@
   <!-- Document Sections -->
   <div *ngIf="!loading" class="document-sections">
 
+    <!-- REUSABLE DOCUMENT CARD TEMPLATE -->
+    <ng-template #docCard let-doc>
+      <mat-card class="document-card">
+        <div class="card-header">
+          <mat-icon [class]="'file-icon ' + getFileIcon(doc.fileName)">{{getFileIcon(doc.fileName)}}</mat-icon>
+          <mat-chip [class]="getStatusColor(doc.status)" class="status-chip">{{doc.status}}</mat-chip>
+        </div>
+        <div class="card-content">
+          <h4>{{doc.fileName}}</h4>
+          <p class="description" *ngIf="doc.description">{{doc.description}}</p>
+          <div class="metadata">
+            <span><mat-icon>person</mat-icon> {{doc.uploadedByName}}</span>
+            <span><mat-icon>schedule</mat-icon> {{formatDate(doc.uploadedAt)}}</span>
+            <span *ngIf="doc.fileSize"><mat-icon>storage</mat-icon> {{formatFileSize(doc.fileSize)}}</span>
+          </div>
+          <!-- Rejection Reason -->
+          <div *ngIf="doc.status === 'REJECTED' && doc.rejectionReason" 
+               style="margin-top: 8px; padding: 10px 12px; background-color: #fee2e2; border-left: 4px solid #ef4444; border-radius: 4px;">
+            <strong style="color: #b91c1c; font-size: 12px; text-transform: uppercase;">
+              <mat-icon style="font-size: 14px; width: 14px; height: 14px; vertical-align: middle; margin-right: 4px;">error</mat-icon>
+              Rejected
+            </strong>
+            <p style="margin: 4px 0 0 0; font-size: 13px; color: #7f1d1d;">{{doc.rejectionReason}}</p>
+          </div>
+        </div>
+        <div class="card-actions">
+          <!-- Mentor Review Buttons -->
+          <ng-container *ngIf="isMentor && doc.status === 'PENDING'">
+            <button mat-icon-button (click)="approveDocument(doc)" matTooltip="Approve" style="color: #16a34a;">
+              <mat-icon>check_circle</mat-icon>
+            </button>
+            <button mat-icon-button (click)="openRejectDialog(doc, rejectDialogTemplate)" matTooltip="Reject" color="warn">
+              <mat-icon>cancel</mat-icon>
+            </button>
+          </ng-container>
+          <button mat-icon-button (click)="downloadDocument(doc)" matTooltip="Download"><mat-icon>download</mat-icon></button>
+          <button *ngIf="!isMentor" mat-icon-button (click)="deleteDocument(doc)" matTooltip="Delete" color="warn"><mat-icon>delete</mat-icon></button>
+        </div>
+      </mat-card>
+    </ng-template>
+
     <!-- Generated Forms -->
     <div class="document-section" *ngIf="form1Docs.length > 0">
       <div class="section-header">
@@ -126,23 +242,9 @@
         <h3>Form-1 ({{form1Docs.length}})</h3>
       </div>
       <div class="document-grid">
-        <mat-card *ngFor="let doc of form1Docs" class="document-card">
-          <div class="card-header">
-            <mat-icon [class]="'file-icon ' + getFileIcon(doc.fileName)">{{getFileIcon(doc.fileName)}}</mat-icon>
-            <mat-chip [class]="getStatusColor(doc.status)" class="status-chip">{{doc.status}}</mat-chip>
-          </div>
-          <div class="card-content">
-            <h4>{{doc.fileName}}</h4>
-            <div class="metadata">
-              <span><mat-icon>person</mat-icon> {{doc.uploadedByName}}</span>
-              <span><mat-icon>schedule</mat-icon> {{formatDate(doc.uploadedAt)}}</span>
-            </div>
-          </div>
-          <div class="card-actions">
-            <button mat-icon-button (click)="downloadDocument(doc)" matTooltip="Download"><mat-icon>download</mat-icon></button>
-            <button mat-icon-button (click)="deleteDocument(doc)" matTooltip="Delete" color="warn"><mat-icon>delete</mat-icon></button>
-          </div>
-        </mat-card>
+        <ng-container *ngFor="let doc of form1Docs">
+          <ng-container *ngTemplateOutlet="docCard; context: {$implicit: doc}"></ng-container>
+        </ng-container>
       </div>
     </div>
 
@@ -152,23 +254,9 @@
         <h3>Form-2 ({{form2Docs.length}})</h3>
       </div>
       <div class="document-grid">
-        <mat-card *ngFor="let doc of form2Docs" class="document-card">
-          <div class="card-header">
-            <mat-icon [class]="'file-icon ' + getFileIcon(doc.fileName)">{{getFileIcon(doc.fileName)}}</mat-icon>
-            <mat-chip [class]="getStatusColor(doc.status)" class="status-chip">{{doc.status}}</mat-chip>
-          </div>
-          <div class="card-content">
-            <h4>{{doc.fileName}}</h4>
-            <div class="metadata">
-              <span><mat-icon>person</mat-icon> {{doc.uploadedByName}}</span>
-              <span><mat-icon>schedule</mat-icon> {{formatDate(doc.uploadedAt)}}</span>
-            </div>
-          </div>
-          <div class="card-actions">
-            <button mat-icon-button (click)="downloadDocument(doc)" matTooltip="Download"><mat-icon>download</mat-icon></button>
-            <button mat-icon-button (click)="deleteDocument(doc)" matTooltip="Delete" color="warn"><mat-icon>delete</mat-icon></button>
-          </div>
-        </mat-card>
+        <ng-container *ngFor="let doc of form2Docs">
+          <ng-container *ngTemplateOutlet="docCard; context: {$implicit: doc}"></ng-container>
+        </ng-container>
       </div>
     </div>
 
@@ -178,23 +266,9 @@
         <h3>Form-3 ({{form3Docs.length}})</h3>
       </div>
       <div class="document-grid">
-        <mat-card *ngFor="let doc of form3Docs" class="document-card">
-          <div class="card-header">
-            <mat-icon [class]="'file-icon ' + getFileIcon(doc.fileName)">{{getFileIcon(doc.fileName)}}</mat-icon>
-            <mat-chip [class]="getStatusColor(doc.status)" class="status-chip">{{doc.status}}</mat-chip>
-          </div>
-          <div class="card-content">
-            <h4>{{doc.fileName}}</h4>
-            <div class="metadata">
-              <span><mat-icon>person</mat-icon> {{doc.uploadedByName}}</span>
-              <span><mat-icon>schedule</mat-icon> {{formatDate(doc.uploadedAt)}}</span>
-            </div>
-          </div>
-          <div class="card-actions">
-            <button mat-icon-button (click)="downloadDocument(doc)" matTooltip="Download"><mat-icon>download</mat-icon></button>
-            <button mat-icon-button (click)="deleteDocument(doc)" matTooltip="Delete" color="warn"><mat-icon>delete</mat-icon></button>
-          </div>
-        </mat-card>
+        <ng-container *ngFor="let doc of form3Docs">
+          <ng-container *ngTemplateOutlet="docCard; context: {$implicit: doc}"></ng-container>
+        </ng-container>
       </div>
     </div>
     
@@ -205,33 +279,9 @@
         <h3>Project Proposals ({{proposalDocs.length}})</h3>
       </div>
       <div class="document-grid">
-        <mat-card *ngFor="let doc of proposalDocs" class="document-card">
-          <div class="card-header">
-            <mat-icon [class]="'file-icon ' + getFileIcon(doc.fileName)">
-              {{getFileIcon(doc.fileName)}}
-            </mat-icon>
-            <mat-chip [class]="getStatusColor(doc.status)" class="status-chip">
-              {{doc.status}}
-            </mat-chip>
-          </div>
-          <div class="card-content">
-            <h4>{{doc.fileName}}</h4>
-            <p class="description" *ngIf="doc.description">{{doc.description}}</p>
-            <div class="metadata">
-              <span><mat-icon>person</mat-icon> {{doc.uploadedByName}}</span>
-              <span><mat-icon>schedule</mat-icon> {{formatDate(doc.uploadedAt)}}</span>
-              <span><mat-icon>storage</mat-icon> {{formatFileSize(doc.fileSize)}}</span>
-            </div>
-          </div>
-          <div class="card-actions">
-            <button mat-icon-button (click)="downloadDocument(doc)" matTooltip="Download">
-              <mat-icon>download</mat-icon>
-            </button>
-            <button mat-icon-button (click)="deleteDocument(doc)" matTooltip="Delete" color="warn">
-              <mat-icon>delete</mat-icon>
-            </button>
-          </div>
-        </mat-card>
+        <ng-container *ngFor="let doc of proposalDocs">
+          <ng-container *ngTemplateOutlet="docCard; context: {$implicit: doc}"></ng-container>
+        </ng-container>
       </div>
     </div>
 
@@ -242,33 +292,9 @@
         <h3>SRS Documents ({{srsDocs.length}})</h3>
       </div>
       <div class="document-grid">
-        <mat-card *ngFor="let doc of srsDocs" class="document-card">
-          <div class="card-header">
-            <mat-icon [class]="'file-icon ' + getFileIcon(doc.fileName)">
-              {{getFileIcon(doc.fileName)}}
-            </mat-icon>
-            <mat-chip [class]="getStatusColor(doc.status)" class="status-chip">
-              {{doc.status}}
-            </mat-chip>
-          </div>
-          <div class="card-content">
-            <h4>{{doc.fileName}}</h4>
-            <p class="description" *ngIf="doc.description">{{doc.description}}</p>
-            <div class="metadata">
-              <span><mat-icon>person</mat-icon> {{doc.uploadedByName}}</span>
-              <span><mat-icon>schedule</mat-icon> {{formatDate(doc.uploadedAt)}}</span>
-              <span><mat-icon>storage</mat-icon> {{formatFileSize(doc.fileSize)}}</span>
-            </div>
-          </div>
-          <div class="card-actions">
-            <button mat-icon-button (click)="downloadDocument(doc)" matTooltip="Download">
-              <mat-icon>download</mat-icon>
-            </button>
-            <button mat-icon-button (click)="deleteDocument(doc)" matTooltip="Delete" color="warn">
-              <mat-icon>delete</mat-icon>
-            </button>
-          </div>
-        </mat-card>
+        <ng-container *ngFor="let doc of srsDocs">
+          <ng-container *ngTemplateOutlet="docCard; context: {$implicit: doc}"></ng-container>
+        </ng-container>
       </div>
     </div>
 
@@ -279,33 +305,9 @@
         <h3>Design Documents ({{designDocs.length}})</h3>
       </div>
       <div class="document-grid">
-        <mat-card *ngFor="let doc of designDocs" class="document-card">
-          <div class="card-header">
-            <mat-icon [class]="'file-icon ' + getFileIcon(doc.fileName)">
-              {{getFileIcon(doc.fileName)}}
-            </mat-icon>
-            <mat-chip [class]="getStatusColor(doc.status)" class="status-chip">
-              {{doc.status}}
-            </mat-chip>
-          </div>
-          <div class="card-content">
-            <h4>{{doc.fileName}}</h4>
-            <p class="description" *ngIf="doc.description">{{doc.description}}</p>
-            <div class="metadata">
-              <span><mat-icon>person</mat-icon> {{doc.uploadedByName}}</span>
-              <span><mat-icon>schedule</mat-icon> {{formatDate(doc.uploadedAt)}}</span>
-              <span><mat-icon>storage</mat-icon> {{formatFileSize(doc.fileSize)}}</span>
-            </div>
-          </div>
-          <div class="card-actions">
-            <button mat-icon-button (click)="downloadDocument(doc)" matTooltip="Download">
-              <mat-icon>download</mat-icon>
-            </button>
-            <button mat-icon-button (click)="deleteDocument(doc)" matTooltip="Delete" color="warn">
-              <mat-icon>delete</mat-icon>
-            </button>
-          </div>
-        </mat-card>
+        <ng-container *ngFor="let doc of designDocs">
+          <ng-container *ngTemplateOutlet="docCard; context: {$implicit: doc}"></ng-container>
+        </ng-container>
       </div>
     </div>
 
@@ -316,33 +318,22 @@
         <h3>Progress Reports ({{reportDocs.length}})</h3>
       </div>
       <div class="document-grid">
-        <mat-card *ngFor="let doc of reportDocs" class="document-card">
-          <div class="card-header">
-            <mat-icon [class]="'file-icon ' + getFileIcon(doc.fileName)">
-              {{getFileIcon(doc.fileName)}}
-            </mat-icon>
-            <mat-chip [class]="getStatusColor(doc.status)" class="status-chip">
-              {{doc.status}}
-            </mat-chip>
-          </div>
-          <div class="card-content">
-            <h4>{{doc.fileName}}</h4>
-            <p class="description" *ngIf="doc.description">{{doc.description}}</p>
-            <div class="metadata">
-              <span><mat-icon>person</mat-icon> {{doc.uploadedByName}}</span>
-              <span><mat-icon>schedule</mat-icon> {{formatDate(doc.uploadedAt)}}</span>
-              <span><mat-icon>storage</mat-icon> {{formatFileSize(doc.fileSize)}}</span>
-            </div>
-          </div>
-          <div class="card-actions">
-            <button mat-icon-button (click)="downloadDocument(doc)" matTooltip="Download">
-              <mat-icon>download</mat-icon>
-            </button>
-            <button mat-icon-button (click)="deleteDocument(doc)" matTooltip="Delete" color="warn">
-              <mat-icon>delete</mat-icon>
-            </button>
-          </div>
-        </mat-card>
+        <ng-container *ngFor="let doc of reportDocs">
+          <ng-container *ngTemplateOutlet="docCard; context: {$implicit: doc}"></ng-container>
+        </ng-container>
+      </div>
+    </div>
+
+    <!-- Other Documents -->
+    <div class="document-section" *ngIf="otherDocs.length > 0">
+      <div class="section-header">
+        <mat-icon>insert_drive_file</mat-icon>
+        <h3>Other Documents ({{otherDocs.length}})</h3>
+      </div>
+      <div class="document-grid">
+        <ng-container *ngFor="let doc of otherDocs">
+          <ng-container *ngTemplateOutlet="docCard; context: {$implicit: doc}"></ng-container>
+        </ng-container>
       </div>
     </div>
 
@@ -350,11 +341,35 @@
     <div *ngIf="documents.length === 0" class="empty-state">
       <mat-icon>folder_open</mat-icon>
       <h3>No documents yet</h3>
-      <p>Upload your first project document to get started</p>
-      <button mat-raised-button color="primary" (click)="openUploadDialog()">
+      <p *ngIf="!isMentor">Upload your first project document to get started</p>
+      <p *ngIf="isMentor">No documents have been submitted by the team yet.</p>
+      <button *ngIf="!isMentor" mat-raised-button color="primary" (click)="openUploadDialog()">
         <mat-icon>upload</mat-icon>
         Upload Document
       </button>
     </div>
   </div>
 </div>
+
+<!-- Reject Dialog Template -->
+<ng-template #rejectDialogTemplate>
+  <h2 mat-dialog-title style="display:flex; align-items:center; gap:8px;">
+    <mat-icon style="color: #dc2626;">cancel</mat-icon>
+    Reject Document
+  </h2>
+  <mat-dialog-content>
+    <p style="margin-bottom: 16px; color: #374151;">Please provide a reason for rejecting <strong>{{rejectingDoc?.fileName}}</strong>.</p>
+    <mat-form-field appearance="outline" style="width: 100%;">
+      <mat-label>Rejection Reason</mat-label>
+      <textarea matInput [(ngModel)]="rejectReason" rows="4" placeholder="E.g., The abstract needs more detail on methodology."></textarea>
+    </mat-form-field>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="closeRejectDialog()">Cancel</button>
+    <button mat-raised-button color="warn" (click)="submitReject()" [disabled]="!rejectReason.trim() || isRejecting">
+      <mat-icon *ngIf="!isRejecting">cancel</mat-icon>
+      <mat-spinner *ngIf="isRejecting" diameter="18" style="display:inline-block; margin-right:8px;"></mat-spinner>
+      {{isRejecting ? 'Rejecting...' : 'Confirm Reject'}}
+    </button>
+  </mat-dialog-actions>
+</ng-template>

@@ -4,7 +4,9 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
 import { DocumentService } from '../../../core/services/document.service';
 import { Document, DocumentType, DocumentStatus } from '../../../core/models/document.model';
+import { AuthService } from '../../../core/services/auth.service';
 import { DocumentUploadComponent } from '../document-upload/document-upload.component';
+import { Chart } from 'chart.js/auto';
 
 @Component({
     selector: 'app-document-list',
@@ -16,6 +18,13 @@ export class DocumentListComponent implements OnInit {
 
     documents: Document[] = [];
     loading = true;
+    isMentor = false;
+    currentUserId = 0;
+
+    // Reject Dialog state
+    rejectReason = '';
+    rejectingDoc: Document | null = null;
+    isRejecting = false;
 
     // Group documents by type
     proposalDocs: Document[] = [];
@@ -35,8 +44,18 @@ export class DocumentListComponent implements OnInit {
         labCoordinatorName: '',
         projectTrack: '',
         briefIntroduction: '',
-        toolsTechnologies: '',
-        proposedModules: '',
+        tools: [
+            { name: '', version: '', type: 'SOFTWARE', purpose: '' }
+        ],
+        modules: [
+            { name: '', functionality: '' }
+        ],
+        memberRoles: [
+            { handlingModule: '', activityName: '', softDeadline: '', hardDeadline: '', story: '' },
+            { handlingModule: '', activityName: '', softDeadline: '', hardDeadline: '', story: '' },
+            { handlingModule: '', activityName: '', softDeadline: '', hardDeadline: '', story: '' },
+            { handlingModule: '', activityName: '', softDeadline: '', hardDeadline: '', story: '' }
+        ],
         mentorName: ''
     };
 
@@ -51,12 +70,17 @@ export class DocumentListComponent implements OnInit {
 
     constructor(
         private documentService: DocumentService,
+        private authService: AuthService,
         private route: ActivatedRoute,
         private snackBar: MatSnackBar,
         private dialog: MatDialog
     ) { }
 
     ngOnInit(): void {
+        const currentUser = this.authService.currentUserValue;
+        this.isMentor = currentUser?.role === 'MENTOR';
+        this.currentUserId = currentUser?.userId || 0;
+
         if (!this.projectId) {
             this.projectId = +(this.route.parent?.snapshot.paramMap.get('id')
                 || this.route.snapshot.paramMap.get('projectId')
@@ -76,12 +100,12 @@ export class DocumentListComponent implements OnInit {
     loadDocuments(): void {
         this.loading = true;
         this.documentService.getDocumentsByProject(this.projectId).subscribe({
-            next: (data) => {
+            next: (data: any) => {
                 this.documents = data;
                 this.groupDocuments();
                 this.loading = false;
             },
-            error: (error) => {
+            error: (error: any) => {
                 const message = error?.error?.message || 'Error loading documents';
                 this.snackBar.open(message, 'Close', { duration: 3000 });
                 this.loading = false;
@@ -132,6 +156,73 @@ export class DocumentListComponent implements OnInit {
         this.showGenerateUI = !this.showGenerateUI;
     }
 
+    isExporting = false;
+    exportAllDocuments(): void {
+        this.isExporting = true;
+        this.snackBar.open('Generating Mega Report...', 'Close', { duration: 3000 });
+        
+        // Render chart hidden based on document statuses
+        const canvas = document.createElement('canvas');
+        canvas.width = 400;
+        canvas.height = 400;
+        
+        const approvedCount = this.documents.filter(d => d.status === 'APPROVED').length;
+        const pendingCount = this.documents.filter(d => d.status !== 'APPROVED').length;
+
+        const myChart = new Chart(canvas, {
+            type: 'doughnut',
+            data: {
+                labels: ['Approved Docs', 'Pending Docs'],
+                datasets: [{
+                    data: [approvedCount, pendingCount],
+                    backgroundColor: ['#4caf50', '#ff9800']
+                }]
+            },
+            options: { animation: false } 
+        });
+
+        let chartBase64 = '';
+        if (approvedCount > 0 || pendingCount > 0) {
+            chartBase64 = myChart.toBase64Image();
+        }
+        myChart.destroy();
+        
+        this.documentService.exportMegaReport(this.projectId, { progressChartBase64: chartBase64 }).subscribe({
+            next: (blob: any) => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `Mega_Report_Project_${this.projectId}.pdf`;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                a.remove();
+                this.snackBar.open('Export downloaded successfully!', 'Close', { duration: 3000 });
+                this.isExporting = false;
+            },
+            error: (error: any) => {
+                this.snackBar.open('Failed to generate export', 'Close', { duration: 3000 });
+                this.isExporting = false;
+            }
+        });
+    }
+
+    addTool(): void {
+        this.generateFormData.tools.push({ name: '', version: '', type: 'SOFTWARE', purpose: '' });
+    }
+
+    removeTool(index: number): void {
+        this.generateFormData.tools.splice(index, 1);
+    }
+
+    addModule(): void {
+        this.generateFormData.modules.push({ name: '', functionality: '' });
+    }
+
+    removeModule(index: number): void {
+        this.generateFormData.modules.splice(index, 1);
+    }
+
     submitGenerateForm(): void {
         this.isGenerating = true;
         const req: any = {};
@@ -139,8 +230,9 @@ export class DocumentListComponent implements OnInit {
             req.labCoordinatorName = this.generateFormData.labCoordinatorName;
             req.projectTrack = this.generateFormData.projectTrack;
             req.briefIntroduction = this.generateFormData.briefIntroduction;
-            req.toolsTechnologies = this.generateFormData.toolsTechnologies;
-            req.proposedModules = this.generateFormData.proposedModules;
+            req.tools = this.generateFormData.tools;
+            req.modules = this.generateFormData.modules;
+            req.memberRoles = this.generateFormData.memberRoles;
             req.mentorName = this.generateFormData.mentorName;
         }
 
@@ -217,5 +309,51 @@ export class DocumentListComponent implements OnInit {
             month: 'short',
             day: 'numeric'
         });
+    }
+
+    approveDocument(doc: Document): void {
+        if (confirm(`Approve ${doc.fileName}?`)) {
+            this.documentService.approveDocument(doc.documentId).subscribe({
+                next: () => {
+                    this.snackBar.open('Document approved', 'Close', { duration: 2000 });
+                    this.loadDocuments();
+                },
+                error: (error: any) => {
+                    this.snackBar.open(error?.error?.message || 'Error approving document', 'Close', { duration: 3000 });
+                }
+            });
+        }
+    }
+
+    openRejectDialog(doc: Document, templateRef: any): void {
+        this.rejectingDoc = doc;
+        this.rejectReason = '';
+        this.dialog.open(templateRef, {
+            width: '400px'
+        });
+    }
+
+    submitReject(): void {
+        if (!this.rejectingDoc || !this.rejectReason.trim()) return;
+
+        this.isRejecting = true;
+        this.documentService.rejectDocument(this.rejectingDoc.documentId, this.rejectReason).subscribe({
+            next: () => {
+                this.snackBar.open('Document rejected', 'Close', { duration: 2000 });
+                this.isRejecting = false;
+                this.dialog.closeAll();
+                this.loadDocuments();
+            },
+            error: (error: any) => {
+                this.snackBar.open(error?.error?.message || 'Error rejecting document', 'Close', { duration: 3000 });
+                this.isRejecting = false;
+            }
+        });
+    }
+
+    closeRejectDialog(): void {
+        this.dialog.closeAll();
+        this.rejectingDoc = null;
+        this.rejectReason = '';
     }
 }

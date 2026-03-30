@@ -28,7 +28,7 @@ interface ParsedProfileDTO {
         <!-- Header -->
         <div class="wizard-header">
           <div class="logo-container">
-            <img src="assets/images/skillsync-logo.svg" alt="SkillSync" class="skillsync-logo" />
+            <img src="/assets/images/skillsync-logo.svg" alt="SkillSync" class="skillsync-logo" />
           </div>
           <h1>Complete Your <span>Profile</span></h1>
           <p>{{ userRole === 'MENTOR' ? 'Fill in your details to start mentoring teams' : 'Fill in your details to get started with your FYP journey' }}</p>
