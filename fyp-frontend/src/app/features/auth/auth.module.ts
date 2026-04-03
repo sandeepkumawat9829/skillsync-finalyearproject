@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
+import { HttpClientModule } from '@angular/common/http';
 
 // Material imports
 import { MatCardModule } from '@angular/material/card';
@@ -20,6 +21,8 @@ import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { VerifyEmailComponent } from './verify-email/verify-email.component';
 import { ProfileWizardComponent } from './profile-wizard/profile-wizard.component';
+import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
+import { ResetPasswordComponent } from './reset-password/reset-password.component';
 
 const routes: Routes = [
     {
@@ -39,6 +42,14 @@ const routes: Routes = [
         component: ProfileWizardComponent
     },
     {
+        path: 'forgot-password',
+        component: ForgotPasswordComponent
+    },
+    {
+        path: 'reset-password',
+        component: ResetPasswordComponent
+    },
+    {
         path: '',
         redirectTo: 'login',
         pathMatch: 'full'
@@ -49,7 +60,9 @@ const routes: Routes = [
     declarations: [
         LoginComponent,
         RegisterComponent,
-        ProfileWizardComponent
+        ProfileWizardComponent,
+        ForgotPasswordComponent,
+        ResetPasswordComponent
     ],
     imports: [
         CommonModule,

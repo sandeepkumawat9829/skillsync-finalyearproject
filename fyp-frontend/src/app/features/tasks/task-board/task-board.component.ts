@@ -13,6 +13,7 @@ import { TaskService } from '../../../core/services/task.service';
 import { TeamService } from '../../../core/services/team.service';
 import { SprintService } from '../../../core/services/sprint.service';
 import { TaskDialogComponent } from '../task-dialog/task-dialog.component';
+import { ConfirmDialogComponent } from '../../sprints/confirm-dialog/confirm-dialog.component';
 
 @Component({
     selector: 'app-task-board',
@@ -259,56 +260,96 @@ export class TaskBoardComponent implements OnInit, OnDestroy {
     }
 
     // Sprint creation
-    toggleSprintCreate(): void {
-        this.showSprintCreate = !this.showSprintCreate;
-        if (this.showSprintCreate) {
-            this.newSprint = {
-                projectId: this.projectId,
-                sprintName: '',
-                sprintGoal: '',
-            };
+
+
+    goToSprints(): void {
+        const role = this.authService.currentUserValue?.role;
+        if (role === 'MENTOR') {
+            this.router.navigate(['/mentor/teams']);
+            this.snackBar.open('Please manage sprints from the team view', 'Close', { duration: 3000 });
+        } else {
+            this.router.navigate(['/student/sprints']);
         }
     }
 
-    createSprint(): void {
-        if (!this.newSprint.sprintName || !this.newSprint.startDate || !this.newSprint.endDate) {
-            this.snackBar.open('Please fill sprint name, start date and end date', 'Close', { duration: 3000 });
-            return;
-        }
-
-        this.isCreatingSprint = true;
-        const request: CreateSprintRequest = {
-            projectId: this.projectId,
-            sprintName: this.newSprint.sprintName!,
-            sprintGoal: this.newSprint.sprintGoal || '',
-            startDate: this.newSprint.startDate!,
-            endDate: this.newSprint.endDate!
-        };
-
-        this.sprintService.createSprint(request).subscribe({
-            next: (sprint: Sprint) => {
-                this.snackBar.open('Sprint created successfully!', 'Close', { duration: 3000 });
-                this.isCreatingSprint = false;
-                this.showSprintCreate = false;
-                this.sprintId = sprint.sprintId;
-                this.loadSprints();
-            },
-            error: (error: any) => {
-                const message = error?.error?.message || 'Error creating sprint';
-                this.snackBar.open(message, 'Close', { duration: 3000 });
-                this.isCreatingSprint = false;
-            }
-        });
-    }
-
-    selectSprint(sprint: Sprint): void {
-        this.sprintId = sprint.sprintId;
+    selectSprint(sprintId: number): void {
+        this.sprintId = sprintId;
         this.loadTasks();
     }
 
     goToAnalytics(): void {
         this.router.navigate([this.getAnalyticsRoute()], {
             queryParams: { projectId: this.projectId }
+        });
+    }
+
+    getSprintCompletionWarning(): string | null {
+        if (!this.activeSprint || this.sprintId != this.activeSprint.sprintId) {
+            return null; // Not viewing the active sprint, so button shouldn't even show
+        }
+        
+        // Backend requires at least one task overall...
+        const totalTasks = this.columns.reduce((sum, col) => sum + col.tasks.length, 0);
+        if (totalTasks === 0) return 'Sprint must have at least one task before completing.';
+
+        // ...and at least one DONE task
+        const doneColumn = this.columns.find(c => c.id === 'DONE');
+        if (!doneColumn || doneColumn.tasks.length === 0) {
+            return 'At least one task must be in the Done column.';
+        }
+
+        return null; // Can complete!
+    }
+
+    completeCurrentSprint(): void {
+        if (!this.activeSprint) return;
+        
+        const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+            width: '440px',
+            data: {
+                title: 'Complete Sprint',
+                message: `Are you sure you want to complete "${this.activeSprint.sprintName}"? Incomplete tasks will remain in their columns.`,
+                confirmText: 'Complete',
+                cancelText: 'Cancel',
+                color: 'accent',
+                icon: 'check_circle'
+            }
+        });
+
+        dialogRef.afterClosed().subscribe(confirmed => {
+            if (confirmed) {
+                this.sprintService.completeSprint(this.activeSprint!.sprintId).subscribe({
+                    next: () => {
+                        this.snackBar.open('Sprint completed successfully!', 'Close', { duration: 3000 });
+                        this.loadSprints(); // This will refresh and select the next available sprint
+                    },
+                    error: (error) => {
+                        const message = error?.error?.message || 'Error completing sprint';
+                        this.snackBar.open(message, 'Close', { duration: 4000 });
+                    }
+                });
+            }
+        });
+    }
+
+    canStartCurrentSprint(): boolean {
+        if (!this.isLeaderOrMentor || !this.sprintId) return false;
+        const currentSprint = this.sprints.find(s => s.sprintId == this.sprintId);
+        if (!currentSprint || currentSprint.status !== 'PLANNED') return false;
+        return !this.activeSprint; // Can only start if there is no active sprint
+    }
+
+    startCurrentSprint(): void {
+        if (!this.sprintId) return;
+        this.sprintService.startSprint(this.sprintId).subscribe({
+            next: (sprint: Sprint) => {
+                this.snackBar.open('Sprint started successfully!', 'Close', { duration: 3000 });
+                this.loadSprints(); // Refresh to set as active sprint
+            },
+            error: (error) => {
+                const message = error?.error?.message || 'Error starting sprint';
+                this.snackBar.open(message, 'Close', { duration: 4000 });
+            }
         });
     }
 

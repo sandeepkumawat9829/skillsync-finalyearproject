@@ -28,6 +28,11 @@ import { AuthGuard } from '../../core/guards/auth.guard';
         StudentProfileComponent,
         StudentNotificationsComponent
     ],
+    exports: [
+        StudentInvitationsComponent,
+        StudentProfileComponent,
+        StudentNotificationsComponent
+    ],
     imports: [
         CommonModule,
         FormsModule,

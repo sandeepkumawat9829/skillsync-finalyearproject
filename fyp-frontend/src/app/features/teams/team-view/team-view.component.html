@@ -129,7 +129,11 @@
           </button>
           <button mat-raised-button class="action-button" (click)="toggleInviteForm()" *ngIf="!team.isComplete">
             <mat-icon>person_add</mat-icon>
-            Invite Member
+            Invite by Email
+          </button>
+          <button mat-raised-button color="primary" class="action-button" (click)="viewRecommendations()" *ngIf="!team.isComplete">
+            <mat-icon>people_outline</mat-icon>
+            Find Members
           </button>
         </mat-card-content>
       </mat-card>

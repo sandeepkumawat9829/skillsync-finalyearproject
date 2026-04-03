@@ -78,6 +78,7 @@ public class RecommendationService {
 
             matches.add(StudentMatchDTO.builder()
                     .userId(student.getUser().getId())
+                    .email(student.getUser().getEmail())
                     .fullName(student.getFullName())
                     .enrollmentNumber(student.getEnrollmentNumber())
                     .branch(student.getBranch())
@@ -89,10 +90,9 @@ public class RecommendationService {
                     .build());
         }
 
-        // 4. Sort by Match Score Descending and return top 15
+        // 4. Sort by Match Score Descending
         return matches.stream()
                 .sorted(Comparator.comparing(StudentMatchDTO::getMatchScore).reversed())
-                .limit(15)
                 .collect(Collectors.toList());
     }
 

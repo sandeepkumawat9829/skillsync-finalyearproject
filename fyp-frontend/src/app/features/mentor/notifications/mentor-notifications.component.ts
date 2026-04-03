@@ -35,6 +35,19 @@ export class MentorNotificationsComponent implements OnInit {
                 );
                 this.applyFilter();
                 this.loading = false;
+
+                // Auto-mark all as read after a short delay so user can see unread state
+                const hasUnread = this.notifications.some(n => !n.isRead);
+                if (hasUnread) {
+                    setTimeout(() => {
+                        this.notificationService.markAllAsRead().subscribe({
+                            next: () => {
+                                this.notifications.forEach(n => n.isRead = true);
+                                this.applyFilter();
+                            }
+                        });
+                    }, 1500);
+                }
             },
             error: () => {
                 this.snackBar.open('Error loading notifications', 'Close', { duration: 3000 });

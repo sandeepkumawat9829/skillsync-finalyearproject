@@ -14,6 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 public class StudentMatchDTO {
     private Long userId; // The ID to use for invitation
+    private String email;
     private String fullName;
     private String enrollmentNumber;
     private String branch;

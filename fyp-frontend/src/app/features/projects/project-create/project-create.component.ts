@@ -154,6 +154,46 @@ export class ProjectCreateComponent implements OnInit {
 
         this.isSubmitting = true;
 
+        const title = this.basicInfoForm.value.title;
+        const abstract = this.basicInfoForm.value.abstract;
+
+        // 1. Check similarity before creation
+        this.projectService.checkSimilarity(title, abstract).subscribe({
+            next: (similarProjects) => {
+                if (similarProjects && similarProjects.length > 0) {
+                    // Check highest score
+                    const highestScore = similarProjects[0].similarityScore;
+                    
+                    if (highestScore >= 85) {
+                        this.snackBar.open(`A very similar project already exists (${highestScore}% match). Please make your project more unique.`, 'Close', { duration: 5000 });
+                        this.isSubmitting = false;
+                        return;
+                    }
+                    
+                    // Warning for 60-84%
+                    let msg = "We found similar existing projects:\n";
+                    similarProjects.slice(0, 3).forEach((p: any) => {
+                        msg += `- ${p.title} (${p.similarityScore}% match)\n`;
+                    });
+                    msg += "\nDo you still want to proceed with creating this project?";
+                    
+                    if (!confirm(msg)) {
+                        this.isSubmitting = false;
+                        return;
+                    }
+                }
+                
+                // 2. Proceed with creation
+                this.executeCreateProject();
+            },
+            error: () => {
+                // If similarity check fails, we still try to create (fallback)
+                this.executeCreateProject();
+            }
+        });
+    }
+
+    private executeCreateProject(): void {
         const projectData: CreateProjectRequest = {
             title: this.basicInfoForm.value.title,
             abstractText: this.basicInfoForm.value.abstract,

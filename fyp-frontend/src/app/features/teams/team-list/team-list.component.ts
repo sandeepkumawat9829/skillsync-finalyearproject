@@ -38,7 +38,14 @@ export class TeamListComponent implements OnInit {
         this.loading = true;
 
         // Check if we are viewing teams for a specific project
-        const projectIdParam = this.route.snapshot.parent?.paramMap.get('id');
+        // Traverse parent routes to find the project 'id' param
+        // (needed because lazy-loaded modules create intermediate route wrappers)
+        let currentRoute = this.route.snapshot;
+        let projectIdParam: string | null = null;
+        while (currentRoute.parent && !projectIdParam) {
+            currentRoute = currentRoute.parent;
+            projectIdParam = currentRoute.paramMap.get('id');
+        }
         this.projectId = projectIdParam ? +projectIdParam : null;
         this.isViewingProjectTeams = this.projectId !== null;
 

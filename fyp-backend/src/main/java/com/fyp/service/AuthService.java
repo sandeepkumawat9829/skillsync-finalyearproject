@@ -22,9 +22,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fyp.model.entity.PasswordResetToken;
+import com.fyp.repository.PasswordResetTokenRepository;
+
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -35,6 +39,7 @@ public class AuthService {
     private final StudentProfileRepository studentProfileRepository;
     private final MentorProfileRepository mentorProfileRepository;
     private final EmailVerificationTokenRepository verificationTokenRepository;
+    private final PasswordResetTokenRepository passwordResetTokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
     private final AuthenticationManager authenticationManager;
@@ -225,4 +230,84 @@ public class AuthService {
                 })
                 .orElse(null);
     }
+
+    // ==================== PASSWORD RESET/CHANGE METHODS ====================
+
+    @Transactional
+    public Map<String, Object> forgotPassword(String email) {
+        User user = userRepository.findByEmailIgnoreCase(email).orElse(null);
+
+        // Always return success message to prevent email enumeration
+        if (user == null || !Boolean.TRUE.equals(user.getEmailVerified())) {
+            return Map.of("message", "If an account with that email exists, a password reset link has been sent.");
+        }
+
+        // Delete any existing reset tokens for this user
+        passwordResetTokenRepository.deleteByUser(user);
+
+        // Generate a unique token
+        String token = UUID.randomUUID().toString();
+
+        PasswordResetToken resetToken = PasswordResetToken.builder()
+                .user(user)
+                .token(token)
+                .expiresAt(LocalDateTime.now().plusHours(1))
+                .used(false)
+                .build();
+        passwordResetTokenRepository.save(resetToken);
+
+        // Send reset email
+        emailService.sendPasswordResetEmail(user.getEmail(), token);
+        log.info("Password reset token generated for user: {}", email);
+
+        return Map.of("message", "If an account with that email exists, a password reset link has been sent.");
+    }
+
+    @Transactional
+    public Map<String, Object> resetPassword(String token, String newPassword) {
+        PasswordResetToken resetToken = passwordResetTokenRepository.findByTokenAndUsedFalse(token)
+                .orElseThrow(() -> new RuntimeException("Invalid or expired reset token"));
+
+        if (resetToken.isExpired()) {
+            throw new RuntimeException("Reset token has expired. Please request a new password reset.");
+        }
+
+        // Update password
+        User user = resetToken.getUser();
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+
+        // Mark token as used
+        resetToken.setUsed(true);
+        passwordResetTokenRepository.save(resetToken);
+
+        log.info("Password reset successful for user: {}", user.getEmail());
+
+        return Map.of("message", "Password has been reset successfully. You can now log in with your new password.");
+    }
+
+    @Transactional
+    public Map<String, Object> changePassword(Long userId, String currentPassword, String newPassword) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Verify current password
+        if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
+            throw new RuntimeException("Current password is incorrect");
+        }
+
+        // Prevent setting same password
+        if (passwordEncoder.matches(newPassword, user.getPassword())) {
+            throw new RuntimeException("New password must be different from current password");
+        }
+
+        // Update password
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+
+        log.info("Password changed successfully for user: {}", user.getEmail());
+
+        return Map.of("message", "Password changed successfully.");
+    }
 }
+

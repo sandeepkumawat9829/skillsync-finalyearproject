@@ -30,14 +30,15 @@ export interface CollegeBucket {
     description: string;
     department: string;
     technologies: string[];
-    difficulty: 'EASY' | 'MEDIUM' | 'HARD';
+    difficultyLevel: 'EASY' | 'MEDIUM' | 'HARD';
     maxTeams: number;
     allocatedTeams: number;
+    availableSlots: number;
     isAvailable: boolean;
-    postedBy: number;
+    postedById: number;
     postedByName: string;
-    postedAt: Date;
-    deadline: Date;
+    postedAt: string;
+    deadline: string;
 }
 
 export interface CreateBucketRequest {
@@ -45,7 +46,7 @@ export interface CreateBucketRequest {
     description: string;
     department: string;
     technologies: string[];
-    difficulty: 'EASY' | 'MEDIUM' | 'HARD';
+    difficultyLevel: 'EASY' | 'MEDIUM' | 'HARD';
     maxTeams: number;
-    deadline: Date;
+    deadline: string;
 }

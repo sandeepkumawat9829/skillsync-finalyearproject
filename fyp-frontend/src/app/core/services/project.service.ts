@@ -44,6 +44,11 @@ export class ProjectService {
         return this.http.put<Project>(`${this.apiUrl}/${id}`, request);
     }
 
+    // Check similarity
+    checkSimilarity(title: string, abstractText: string): Observable<any[]> {
+        return this.http.post<any[]>(`${this.apiUrl}/check-similarity`, { title, abstractText });
+    }
+
     // Delete project
     deleteProject(id: number): Observable<void> {
         return this.http.delete<void>(`${this.apiUrl}/${id}`);

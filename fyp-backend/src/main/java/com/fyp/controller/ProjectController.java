@@ -5,6 +5,7 @@ import com.fyp.model.dto.ProjectDTO;
 import com.fyp.model.entity.User;
 import com.fyp.repository.UserRepository;
 import com.fyp.service.ProjectService;
+import com.fyp.service.ProjectSimilarityService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -26,7 +27,17 @@ import java.util.List;
 public class ProjectController {
 
     private final ProjectService projectService;
+    private final ProjectSimilarityService projectSimilarityService;
     private final UserRepository userRepository;
+
+    @PostMapping("/check-similarity")
+    @Operation(summary = "Check project similarity", description = "Check if similar projects exist before creating")
+    public ResponseEntity<List<java.util.Map<String, Object>>> checkSimilarity(@RequestBody java.util.Map<String, String> request) {
+        String title = request.get("title");
+        String abstractText = request.get("abstractText");
+        List<java.util.Map<String, Object>> similarProjects = projectSimilarityService.checkDuplicateBeforeCreation(title, abstractText);
+        return ResponseEntity.ok(similarProjects);
+    }
 
     @PostMapping
     @Operation(summary = "Create a new project", description = "Create a new FYP project")

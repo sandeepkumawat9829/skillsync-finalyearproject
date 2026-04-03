@@ -4,6 +4,7 @@ import com.fyp.model.dto.MeetingDTO;
 import com.fyp.model.entity.*;
 import com.fyp.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +22,9 @@ public class MeetingService {
     private final NotificationService notificationService;
     private final EmailService emailService;
     private final StudentProfileRepository studentProfileRepository;
+
+    @Value("${app.frontend.url:http://localhost:4200}")
+    private String frontendUrl;
 
     @Transactional
     public MeetingDTO scheduleMeeting(MeetingDTO dto, Long schedulerId) {
@@ -62,7 +66,7 @@ public class MeetingService {
                     .orElse(member.getUser().getEmail());
             String dateStr = meeting.getScheduledAt() != null ? meeting.getScheduledAt().toLocalDate().toString() : "";
             String timeStr = meeting.getScheduledAt() != null ? meeting.getScheduledAt().toLocalTime().toString() : "";
-            String link = meeting.getMeetingLink() != null ? meeting.getMeetingLink() : "http://localhost:4200/student/meetings";
+            String link = meeting.getMeetingLink() != null ? meeting.getMeetingLink() : frontendUrl + "/student/meetings";
             emailService.sendMeetingScheduledEmail(
                     member.getUser().getEmail(),
                     memberName,
@@ -82,7 +86,7 @@ public class MeetingService {
                     
             String dateStr = meeting.getScheduledAt() != null ? meeting.getScheduledAt().toLocalDate().toString() : "";
             String timeStr = meeting.getScheduledAt() != null ? meeting.getScheduledAt().toLocalTime().toString() : "";
-            String link = meeting.getMeetingLink() != null ? meeting.getMeetingLink() : "http://localhost:4200/mentor/meetings";
+            String link = meeting.getMeetingLink() != null ? meeting.getMeetingLink() : frontendUrl + "/mentor/meetings";
             emailService.sendMeetingScheduledEmail(
                     mentor.getEmail(),
                     mentor.getEmail(),

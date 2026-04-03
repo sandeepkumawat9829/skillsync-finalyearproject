@@ -23,6 +23,7 @@ public class SkillService {
     private final MentorSpecializationRepository mentorSpecializationRepository;
     private final UserRepository userRepository;
     private final TeamRepository teamRepository;
+    private final StudentProfileRepository studentProfileRepository;
 
     // Skill CRUD
     public List<SkillDTO> getAllSkills() {
@@ -155,7 +156,9 @@ public class SkillService {
     }
 
     /**
-     * Get skill analytics for a team - used for radar chart visualization
+     * Get skill analytics for a team - used for radar chart visualization.
+     * Aggregates skills from both the student_skills table (with proficiency)
+     * and the student_profile_skills table (free-text skills from profile).
      */
     public SkillAnalyticsDTO getTeamSkillAnalytics(Long teamId) {
         Team team = teamRepository.findByIdWithDetails(teamId)
@@ -172,32 +175,73 @@ public class SkillService {
             });
         }
 
-        // Get all skills for these users
-        List<StudentSkill> allSkills = new ArrayList<>();
+        // Use a simple data structure to track skill entries per user
+        // Each entry: skillName, category, proficiency score
+        List<SkillEntry> allEntries = new ArrayList<>();
+
         for (Long userId : userIds) {
-            allSkills.addAll(studentSkillRepository.findByStudentId(userId));
+            // Track which skills we've already added for this user to avoid duplicates per-user
+            Set<String> addedSkillsForUser = new HashSet<>();
+
+            // 1. Include skills from StudentSkill table (these have explicit proficiency)
+            List<StudentSkill> studentSkills = studentSkillRepository.findByStudentId(userId);
+            for (StudentSkill ss : studentSkills) {
+                String skillName = ss.getSkill().getSkillName().toLowerCase();
+                if (addedSkillsForUser.add(skillName)) {
+                    String category = ss.getSkill().getCategory() != null
+                            ? ss.getSkill().getCategory().name() : "OTHER";
+                    allEntries.add(new SkillEntry(
+                            ss.getSkill().getSkillName(),
+                            category,
+                            proficiencyToScore(ss.getProficiencyLevel())));
+                }
+            }
+
+            // 2. Include skills from StudentProfile (free-text skill list)
+            StudentProfile profile = studentProfileRepository.findByUserId(userId).orElse(null);
+            if (profile != null && profile.getSkills() != null) {
+                for (String profileSkillName : profile.getSkills()) {
+                    if (profileSkillName == null || profileSkillName.trim().isEmpty()) continue;
+                    String normalizedName = profileSkillName.trim().toLowerCase();
+                    if (addedSkillsForUser.add(normalizedName)) {
+                        // Try to match against the skills catalog for category info
+                        Optional<Skill> skillOpt = skillRepository.findBySkillNameIgnoreCase(profileSkillName.trim());
+                        String category;
+                        String displayName;
+                        if (skillOpt.isPresent()) {
+                            category = skillOpt.get().getCategory() != null
+                                    ? skillOpt.get().getCategory().name() : "OTHER";
+                            displayName = skillOpt.get().getSkillName();
+                        } else {
+                            // Skill not in catalog - try to auto-categorize, default to OTHER
+                            category = guessCategoryForSkill(profileSkillName.trim());
+                            displayName = profileSkillName.trim();
+                        }
+                        // Assume INTERMEDIATE proficiency for profile-listed skills
+                        allEntries.add(new SkillEntry(displayName, category,
+                                proficiencyToScore(ProficiencyLevel.INTERMEDIATE)));
+                    }
+                }
+            }
         }
 
         // Calculate category scores (average proficiency per category)
         Map<String, List<Integer>> categoryProficiencies = new HashMap<>();
-        Map<String, List<SkillAnalyticsDTO.SkillBreakdown>> skillsByCategory = new HashMap<>();
 
         // Initialize all categories
         for (SkillCategory cat : SkillCategory.values()) {
             categoryProficiencies.put(cat.name(), new ArrayList<>());
         }
 
-        // Process each skill
+        // Process each skill entry
         Map<String, List<Integer>> skillProficiencies = new HashMap<>();
-        for (StudentSkill ss : allSkills) {
-            String category = ss.getSkill().getCategory() != null ? ss.getSkill().getCategory().name() : "OTHER";
-            int profScore = proficiencyToScore(ss.getProficiencyLevel());
+        Map<String, String> skillCategoryMap = new HashMap<>();
+        for (SkillEntry entry : allEntries) {
+            categoryProficiencies.computeIfAbsent(entry.category, k -> new ArrayList<>()).add(entry.profScore);
 
-            categoryProficiencies.get(category).add(profScore);
-
-            // Track individual skill proficiencies
-            String skillName = ss.getSkill().getSkillName();
-            skillProficiencies.computeIfAbsent(skillName, k -> new ArrayList<>()).add(profScore);
+            // Track individual skill proficiencies (normalize by display name)
+            skillProficiencies.computeIfAbsent(entry.skillName, k -> new ArrayList<>()).add(entry.profScore);
+            skillCategoryMap.putIfAbsent(entry.skillName, entry.category);
         }
 
         // Calculate average scores per category
@@ -214,13 +258,7 @@ public class SkillService {
             String skillName = entry.getKey();
             List<Integer> scores = entry.getValue();
             int avgProf = (int) scores.stream().mapToInt(Integer::intValue).average().orElse(0);
-
-            // Find category for this skill
-            String category = allSkills.stream()
-                    .filter(ss -> ss.getSkill().getSkillName().equals(skillName))
-                    .findFirst()
-                    .map(ss -> ss.getSkill().getCategory() != null ? ss.getSkill().getCategory().name() : "OTHER")
-                    .orElse("OTHER");
+            String category = skillCategoryMap.getOrDefault(skillName, "OTHER");
 
             skillBreakdown.add(SkillAnalyticsDTO.SkillBreakdown.builder()
                     .skillName(skillName)
@@ -259,6 +297,64 @@ public class SkillService {
                 .overallCoverage(overallCoverage)
                 .teamMemberCount(userIds.size())
                 .build();
+    }
+
+    /**
+     * Simple helper class to hold skill data during analytics aggregation.
+     */
+    private static class SkillEntry {
+        final String skillName;
+        final String category;
+        final int profScore;
+
+        SkillEntry(String skillName, String category, int profScore) {
+            this.skillName = skillName;
+            this.category = category;
+            this.profScore = profScore;
+        }
+    }
+
+    /**
+     * Attempts to guess the skill category based on common keyword patterns.
+     * Falls back to OTHER if no pattern matches.
+     */
+    private String guessCategoryForSkill(String skillName) {
+        String lower = skillName.toLowerCase();
+
+        // Frontend patterns
+        if (lower.matches(".*(react|angular|vue|svelte|html|css|sass|scss|tailwind|bootstrap|javascript|typescript|jquery|next\\.?js|nuxt|gatsby|webpack|vite|redux|frontend|front-end|ui|ux).*")) {
+            return "FRONTEND";
+        }
+        // Backend patterns
+        if (lower.matches(".*(java|spring|node|express|django|flask|fastapi|ruby|rails|php|laravel|\\.net|asp|golang|go|rust|backend|back-end|api|rest|graphql|microservice|servlet|hibernate|maven|gradle).*")) {
+            return "BACKEND";
+        }
+        // Database patterns
+        if (lower.matches(".*(sql|mysql|postgres|mongodb|redis|firebase|dynamodb|cassandra|oracle|database|db|nosql|elasticsearch|neo4j|sqlite|mariadb).*")) {
+            return "DATABASE";
+        }
+        // ML/AI patterns
+        if (lower.matches(".*(machine.?learning|deep.?learning|ai|artificial|tensorflow|pytorch|keras|nlp|computer.?vision|neural|data.?science|pandas|numpy|scikit|opencv|ml|llm|gpt|transformer|bert).*")) {
+            return "ML";
+        }
+        // Testing patterns
+        if (lower.matches(".*(test|jest|junit|selenium|cypress|mocha|pytest|tdd|bdd|qa|quality|automation|postman|cucumber|mockito|karma|jasmine).*")) {
+            return "TESTING";
+        }
+        // DevOps patterns
+        if (lower.matches(".*(docker|kubernetes|k8s|jenkins|ci.?cd|devops|terraform|ansible|linux|nginx|apache|git|github.?actions|gitlab|bitbucket|bash|shell|monitoring|prometheus|grafana).*")) {
+            return "DEVOPS";
+        }
+        // Mobile patterns
+        if (lower.matches(".*(android|ios|swift|kotlin|flutter|react.?native|mobile|xamarin|ionic|dart|objective.?c|swiftui|jetpack).*")) {
+            return "MOBILE";
+        }
+        // Cloud patterns
+        if (lower.matches(".*(aws|azure|gcp|google.?cloud|heroku|cloud|serverless|lambda|s3|ec2|vercel|netlify|digital.?ocean|cloudflare).*")) {
+            return "CLOUD";
+        }
+
+        return "OTHER";
     }
 
     private int proficiencyToScore(ProficiencyLevel level) {

@@ -1,0 +1,124 @@
+<div class="recommendations-container">
+  <!-- Header -->
+  <div class="page-header">
+    <button mat-icon-button (click)="goBack()" class="back-button">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <div class="header-info">
+      <h1>Recommended Members</h1>
+      <p *ngIf="team">For <strong>{{team.teamName}}</strong> &middot; {{team.currentMemberCount}}/{{team.maxMembers}} members</p>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div class="loading-state" *ngIf="loading">
+    <mat-spinner diameter="40"></mat-spinner>
+    <p>Analyzing student profiles...</p>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="!loading && recommendations.length === 0">
+    <mat-icon>person_search</mat-icon>
+    <h3>No available students found</h3>
+    <p>All students are currently assigned to teams. Try again later or invite members directly by email.</p>
+    <button mat-raised-button color="primary" (click)="goBack()">Back to Team</button>
+  </div>
+
+  <!-- Top Recommendations -->
+  <div *ngIf="!loading && topRecommendations.length > 0" class="section">
+    <div class="section-header">
+      <mat-icon>star</mat-icon>
+      <h2>Top Matches</h2>
+      <span class="section-badge">Best fit for your project</span>
+    </div>
+
+    <div class="top-cards">
+      <mat-card *ngFor="let rec of topRecommendations; let i = index" class="top-card" [class.gold]="i === 0" [class.silver]="i === 1" [class.bronze]="i === 2">
+        <div class="rank-badge">#{{i + 1}}</div>
+        <div class="top-card-header">
+          <div class="avatar-circle" [class]="getScoreClass(rec.matchScore)">
+            {{rec.fullName?.charAt(0)?.toUpperCase()}}
+          </div>
+          <div class="top-card-info">
+            <h3>{{rec.fullName}}</h3>
+            <span class="branch">{{rec.branch}}</span>
+            <span class="cgpa" *ngIf="rec.cgpa">CGPA: {{rec.cgpa}}</span>
+          </div>
+        </div>
+
+        <div class="score-bar">
+          <div class="score-fill" [style.width.%]="rec.matchScore" [class]="getScoreClass(rec.matchScore)"></div>
+          <span class="score-text" [class]="getScoreClass(rec.matchScore)">{{rec.matchScore | number:'1.1-1'}}% Match</span>
+        </div>
+
+        <div class="skills-section">
+          <mat-chip-set>
+            <mat-chip *ngFor="let skill of (rec.skills | slice:0:5)"
+              [highlighted]="rec.matchedSkills?.includes(skill)"
+              [class.matched-skill]="rec.matchedSkills?.includes(skill)">
+              {{skill}}
+            </mat-chip>
+            <mat-chip *ngIf="rec.skills?.length > 5" class="more-chip">
+              +{{rec.skills.length - 5}} more
+            </mat-chip>
+          </mat-chip-set>
+        </div>
+
+        <div class="card-actions">
+          <button mat-raised-button color="primary" (click)="inviteMember(rec)"
+            [disabled]="isInviting(rec.userId) || isInvited(rec.userId)" class="invite-btn">
+            <mat-icon>{{isInvited(rec.userId) ? 'check_circle' : 'person_add'}}</mat-icon>
+            {{isInvited(rec.userId) ? 'Invited' : isInviting(rec.userId) ? 'Sending...' : 'Invite'}}
+          </button>
+        </div>
+      </mat-card>
+    </div>
+  </div>
+
+  <!-- Other Recommendations -->
+  <div *ngIf="!loading && otherRecommendations.length > 0" class="section">
+    <div class="section-header">
+      <mat-icon>people</mat-icon>
+      <h2>Other Available Students</h2>
+      <span class="section-count">{{otherRecommendations.length}} students</span>
+    </div>
+
+    <div class="other-list">
+      <mat-card *ngFor="let rec of otherRecommendations" class="other-card">
+        <div class="other-card-content">
+          <div class="other-left">
+            <div class="avatar-small" [class]="getScoreClass(rec.matchScore)">
+              {{rec.fullName?.charAt(0)?.toUpperCase()}}
+            </div>
+            <div class="other-info">
+              <h4>{{rec.fullName}}</h4>
+              <span class="other-meta">{{rec.branch}} <span *ngIf="rec.cgpa">&middot; CGPA: {{rec.cgpa}}</span></span>
+              <div class="other-skills">
+                <mat-chip-set>
+                  <mat-chip *ngFor="let skill of (rec.skills | slice:0:4)"
+                    [class.matched-skill]="rec.matchedSkills?.includes(skill)"
+                    class="small-chip">
+                    {{skill}}
+                  </mat-chip>
+                  <mat-chip *ngIf="rec.skills?.length > 4" class="small-chip more-chip">
+                    +{{rec.skills.length - 4}}
+                  </mat-chip>
+                </mat-chip-set>
+              </div>
+            </div>
+          </div>
+          <div class="other-right">
+            <div class="score-badge" [class]="getScoreClass(rec.matchScore)">
+              {{rec.matchScore | number:'1.1-1'}}%
+            </div>
+            <button mat-stroked-button color="primary" (click)="inviteMember(rec)"
+              [disabled]="isInviting(rec.userId) || isInvited(rec.userId)" class="invite-btn-small">
+              <mat-icon>{{isInvited(rec.userId) ? 'check_circle' : 'person_add'}}</mat-icon>
+              {{isInvited(rec.userId) ? 'Invited' : 'Invite'}}
+            </button>
+          </div>
+        </div>
+      </mat-card>
+    </div>
+  </div>
+</div>

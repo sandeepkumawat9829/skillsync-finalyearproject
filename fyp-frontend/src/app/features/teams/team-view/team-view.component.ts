@@ -97,6 +97,31 @@ export class TeamViewComponent implements OnInit {
         });
     }
 
+    inviteRecommendedMember(rec: any): void {
+        if (!this.team) return;
+        const request = {
+            teamId: this.team.teamId,
+            email: rec.email,
+            message: 'You have been recommended to join our team based on your skill match!'
+        };
+        this.teamService.sendInvitation(this.team.teamId, request).subscribe({
+            next: () => {
+                this.snackBar.open(`Invitation sent to ${rec.fullName}!`, 'Close', { duration: 3000 });
+            },
+            error: (err: any) => {
+                const msg = err.error?.message || 'Error sending invitation';
+                this.snackBar.open(msg, 'Close', { duration: 3000 });
+            }
+        });
+    }
+
+    viewRecommendations(): void {
+        if (!this.team) return;
+        this.router.navigate([this.getTeamsRoute().replace(/\/teams$/, '/teams/recommendations')], {
+            queryParams: { teamId: this.team.teamId }
+        });
+    }
+
     acceptJoinRequest(request: JoinRequest): void {
         this.teamService.acceptJoinRequest(request.requestId).subscribe({
             next: () => {

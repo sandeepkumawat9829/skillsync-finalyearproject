@@ -1,23 +1,166 @@
 <div class="management-container">
+  <!-- Page Header -->
   <div class="page-header">
-    <h1><mat-icon>category</mat-icon> Bucket Management</h1>
+    <div class="header-left">
+      <h1><mat-icon>inventory_2</mat-icon> Project Bucket Management</h1>
+      <p class="subtitle">Manage project ideas and allocations for student teams</p>
+    </div>
     <div class="header-actions">
-      <!-- Future: Add new bucket button could go here -->
+      <button mat-raised-button color="primary" (click)="openAddForm()" class="add-btn">
+        <mat-icon>add</mat-icon>
+        Add New Project
+      </button>
     </div>
   </div>
 
-  <div *ngIf="loading" class="loading">
-    <mat-spinner></mat-spinner>
+  <!-- Stats Strip -->
+  <div class="stats-strip">
+    <div class="stat-card">
+      <mat-icon>folder_special</mat-icon>
+      <div class="stat-info">
+        <span class="stat-value">{{totalBuckets}}</span>
+        <span class="stat-label">Total Projects</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <mat-icon>check_circle</mat-icon>
+      <div class="stat-info">
+        <span class="stat-value">{{availableBuckets}}</span>
+        <span class="stat-label">Available</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <mat-icon>groups</mat-icon>
+      <div class="stat-info">
+        <span class="stat-value">{{allocatedSlots}}/{{totalSlots}}</span>
+        <span class="stat-label">Slots Allocated</span>
+      </div>
+    </div>
   </div>
 
+  <!-- Add/Edit Form Overlay -->
+  <div class="form-overlay" *ngIf="showForm" (click)="closeForm()">
+    <div class="form-panel" (click)="$event.stopPropagation()">
+      <div class="form-header">
+        <h2>
+          <mat-icon>{{editingBucket ? 'edit' : 'add_circle'}}</mat-icon>
+          {{editingBucket ? 'Edit Project Bucket' : 'Add New Project Bucket'}}
+        </h2>
+        <button mat-icon-button (click)="closeForm()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+
+      <div class="form-body">
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Project Title</mat-label>
+            <input matInput [(ngModel)]="formTitle" placeholder="e.g., Smart Campus Navigation System" required>
+            <mat-icon matPrefix>title</mat-icon>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Description</mat-label>
+            <textarea matInput [(ngModel)]="formDescription" rows="4"
+              placeholder="Describe the project scope, objectives, and expected deliverables..." required></textarea>
+            <mat-icon matPrefix>description</mat-icon>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row two-col">
+          <mat-form-field appearance="outline">
+            <mat-label>Department</mat-label>
+            <mat-select [(ngModel)]="formDepartment">
+              <mat-option value="Computer Science">Computer Science</mat-option>
+              <mat-option value="Information Technology">Information Technology</mat-option>
+              <mat-option value="Electronics">Electronics</mat-option>
+              <mat-option value="Mechanical">Mechanical</mat-option>
+              <mat-option value="Civil">Civil</mat-option>
+              <mat-option value="Electrical">Electrical</mat-option>
+              <mat-option value="Interdisciplinary">Interdisciplinary</mat-option>
+            </mat-select>
+            <mat-icon matPrefix>business</mat-icon>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Difficulty Level</mat-label>
+            <mat-select [(ngModel)]="formDifficulty">
+              <mat-option value="EASY">Easy</mat-option>
+              <mat-option value="MEDIUM">Medium</mat-option>
+              <mat-option value="HARD">Hard</mat-option>
+            </mat-select>
+            <mat-icon matPrefix>speed</mat-icon>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row two-col">
+          <mat-form-field appearance="outline">
+            <mat-label>Max Teams</mat-label>
+            <input matInput type="number" [(ngModel)]="formMaxTeams" min="1" max="20">
+            <mat-icon matPrefix>group_add</mat-icon>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Deadline</mat-label>
+            <input matInput type="date" [(ngModel)]="formDeadline">
+            <mat-icon matPrefix>event</mat-icon>
+          </mat-form-field>
+        </div>
+
+        <!-- Technologies Input -->
+        <div class="form-row">
+          <label class="tech-label">Technologies / Tech Stack</label>
+          <div class="tech-input-row">
+            <mat-form-field appearance="outline" class="tech-field">
+              <mat-label>Add Technology</mat-label>
+              <input matInput [(ngModel)]="formTechInput" (keydown)="addTechOnEnter($event)"
+                placeholder="Type and press Enter or comma">
+              <mat-icon matPrefix>code</mat-icon>
+            </mat-form-field>
+            <button mat-mini-fab color="primary" (click)="addTechnology()" class="tech-add-btn"
+              [disabled]="!formTechInput.trim()">
+              <mat-icon>add</mat-icon>
+            </button>
+          </div>
+          <div class="tech-chips" *ngIf="formTechnologies.length > 0">
+            <span class="tech-chip" *ngFor="let tech of formTechnologies; let i = index">
+              {{tech}}
+              <mat-icon class="remove-chip" (click)="removeTechnology(i)">cancel</mat-icon>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button mat-stroked-button (click)="closeForm()">Cancel</button>
+        <button mat-raised-button color="primary" (click)="submitForm()" [disabled]="submitting">
+          <mat-icon>{{editingBucket ? 'save' : 'add_circle'}}</mat-icon>
+          {{submitting ? 'Saving...' : (editingBucket ? 'Update Bucket' : 'Create Bucket')}}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading">
+    <mat-spinner></mat-spinner>
+    <p>Loading project buckets...</p>
+  </div>
+
+  <!-- Buckets Grid -->
   <div class="buckets-grid" *ngIf="!loading">
-    <mat-card *ngFor="let bucket of buckets" class="bucket-card">
+    <mat-card *ngFor="let bucket of buckets" class="bucket-card"
+      [class.unavailable]="!bucket.isAvailable">
+      <div class="card-accent" [class]="getDifficultyColor(bucket.difficultyLevel)"></div>
+
       <mat-card-header>
-        <div mat-card-avatar class="bucket-avatar" [class]="getDifficultyColor(bucket.difficulty)">
-          <mat-icon>folder_special</mat-icon>
+        <div mat-card-avatar class="bucket-avatar" [class]="getDifficultyColor(bucket.difficultyLevel)">
+          <mat-icon>{{getDifficultyIcon(bucket.difficultyLevel)}}</mat-icon>
         </div>
         <mat-card-title>{{bucket.title}}</mat-card-title>
-        <mat-card-subtitle>{{bucket.department}}</mat-card-subtitle>
+        <mat-card-subtitle>{{bucket.department || 'General'}}</mat-card-subtitle>
       </mat-card-header>
 
       <mat-card-content>
@@ -26,30 +169,40 @@
         <div class="bucket-meta">
           <div class="meta-item">
             <mat-icon>event</mat-icon>
-            <span>Deadline: {{bucket.deadline | date:'MMM dd, yyyy'}}</span>
+            <span>Deadline: {{bucket.deadline ? (bucket.deadline | date:'MMM dd, yyyy') : 'No deadline'}}</span>
           </div>
           <div class="meta-item">
             <mat-icon>group</mat-icon>
-            <span>{{bucket.allocatedTeams}}/{{bucket.maxTeams}} Teams</span>
+            <span>{{bucket.allocatedTeams || 0}}/{{bucket.maxTeams}} Teams Allocated</span>
+          </div>
+          <div class="meta-item" *ngIf="bucket.availableSlots !== undefined">
+            <mat-icon>event_available</mat-icon>
+            <span>{{bucket.availableSlots}} Slots Available</span>
           </div>
         </div>
 
-        <div class="technologies">
+        <div class="technologies" *ngIf="bucket.technologies && bucket.technologies.length > 0">
           <span *ngFor="let tech of bucket.technologies" class="tech-badge">{{tech}}</span>
         </div>
 
         <div class="bucket-status-strip">
-          <span class="difficulty-badge" [class]="getDifficultyColor(bucket.difficulty)">
-            {{bucket.difficulty}}
+          <span class="difficulty-badge" [class]="getDifficultyColor(bucket.difficultyLevel)">
+            <mat-icon class="badge-icon">{{getDifficultyIcon(bucket.difficultyLevel)}}</mat-icon>
+            {{bucket.difficultyLevel}}
           </span>
           <span class="status-badge" [class.active]="bucket.isAvailable" [class.inactive]="!bucket.isAvailable">
-            {{bucket.isAvailable ? 'Available' : 'Full / Unavailable'}}
+            {{bucket.isAvailable ? 'Available' : 'Unavailable'}}
           </span>
         </div>
       </mat-card-content>
 
       <mat-card-actions>
-        <button mat-stroked-button color="primary" (click)="toggleAvailability(bucket)">
+        <button mat-stroked-button color="primary" (click)="openEditForm(bucket)" matTooltip="Edit Bucket">
+          <mat-icon>edit</mat-icon>
+          Edit
+        </button>
+        <button mat-stroked-button [color]="bucket.isAvailable ? 'warn' : 'primary'"
+          (click)="toggleAvailability(bucket)">
           <mat-icon>{{bucket.isAvailable ? 'block' : 'check_circle'}}</mat-icon>
           {{bucket.isAvailable ? 'Mark Full' : 'Make Available'}}
         </button>
@@ -60,8 +213,13 @@
     </mat-card>
   </div>
 
+  <!-- Empty State -->
   <div *ngIf="!loading && buckets.length === 0" class="empty-state custom-empty">
     <mat-icon>folder_off</mat-icon>
-    <p>No project buckets found</p>
+    <h3>No Project Buckets Found</h3>
+    <p>Start adding project ideas for students to choose from.</p>
+    <button mat-raised-button color="primary" (click)="openAddForm()">
+      <mat-icon>add</mat-icon> Add First Project
+    </button>
   </div>
 </div>

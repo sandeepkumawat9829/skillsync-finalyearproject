@@ -2,6 +2,7 @@ package com.fyp.controller;
 
 import com.fyp.model.dto.TeamDTO;
 import com.fyp.model.dto.UserDTO;
+import com.fyp.model.dto.ProjectBucketDTO;
 import com.fyp.model.entity.MentorAssignment;
 import com.fyp.model.entity.Team;
 import com.fyp.model.entity.User;
@@ -11,6 +12,7 @@ import com.fyp.repository.TeamRepository;
 import com.fyp.repository.UserRepository;
 import com.fyp.service.MentorService;
 import com.fyp.service.ProjectService;
+import com.fyp.service.ProjectBucketService;
 import com.fyp.service.TeamService;
 import com.fyp.service.ReportExportService;
 import com.fyp.model.dto.ProjectDTO;
@@ -40,6 +42,7 @@ public class AdminController {
     private final TeamRepository teamRepository;
     private final MentorService mentorService;
     private final ProjectService projectService;
+    private final ProjectBucketService bucketService;
     private final TeamService teamService;
     private final ReportExportService reportExportService;
 
@@ -218,6 +221,45 @@ public class AdminController {
         return ResponseEntity.ok()
                 .header("Content-Disposition", "attachment; filename=\"teams_report.csv\"")
                 .body(csv);
+    }
+
+    // ==================== BUCKET MANAGEMENT ====================
+
+    @GetMapping("/buckets")
+    @Operation(summary = "Get all project buckets (admin)")
+    public ResponseEntity<List<ProjectBucketDTO>> getAllBuckets() {
+        return ResponseEntity.ok(bucketService.getAllBuckets());
+    }
+
+    @GetMapping("/buckets/{id}")
+    @Operation(summary = "Get a project bucket by ID")
+    public ResponseEntity<ProjectBucketDTO> getBucket(@PathVariable Long id) {
+        return ResponseEntity.ok(bucketService.getBucket(id));
+    }
+
+    @PostMapping("/buckets")
+    @Operation(summary = "Create a new project bucket (admin)")
+    public ResponseEntity<ProjectBucketDTO> createBucket(
+            @RequestBody ProjectBucketDTO dto,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        User admin = userRepository.findByEmail(userDetails.getUsername())
+                .orElseThrow(() -> new RuntimeException("Admin not found"));
+        return ResponseEntity.ok(bucketService.createBucket(dto, admin.getId()));
+    }
+
+    @PutMapping("/buckets/{id}")
+    @Operation(summary = "Update a project bucket (admin)")
+    public ResponseEntity<ProjectBucketDTO> updateBucket(
+            @PathVariable Long id,
+            @RequestBody ProjectBucketDTO dto) {
+        return ResponseEntity.ok(bucketService.updateBucket(id, dto));
+    }
+
+    @DeleteMapping("/buckets/{id}")
+    @Operation(summary = "Delete a project bucket (admin)")
+    public ResponseEntity<Void> deleteBucket(@PathVariable Long id) {
+        bucketService.deactivateBucket(id);
+        return ResponseEntity.noContent().build();
     }
 
     // ==================== HOD MENTOR FALLBACK ENDPOINTS ====================

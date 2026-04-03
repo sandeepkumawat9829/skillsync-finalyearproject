@@ -15,7 +15,7 @@ export class CreateSprintDialogComponent {
     startDate: Date | null = null;
     durationWeeks = 2;
 
-    minDate = new Date();
+    minDate = new Date(new Date().setHours(0, 0, 0, 0));
     durations = [
         { value: 1, label: '1 Week' },
         { value: 2, label: '2 Weeks' },
@@ -54,12 +54,19 @@ export class CreateSprintDialogComponent {
     createSprint(): void {
         if (!this.isValid || !this.startDate) return;
 
+        // Normalize dates to noon to prevent timezone serialization shifting the day
+        const normalizedStart = new Date(this.startDate);
+        normalizedStart.setHours(12, 0, 0, 0);
+
+        const normalizedEnd = new Date(this.endDate!);
+        normalizedEnd.setHours(12, 0, 0, 0);
+
         const request: CreateSprintRequest = {
             projectId: this.data.projectId,
             sprintName: this.sprintName.trim(),
             sprintGoal: this.sprintGoal.trim(),
-            startDate: this.startDate,
-            endDate: this.endDate!
+            startDate: normalizedStart,
+            endDate: normalizedEnd
         };
 
         this.saving = true;

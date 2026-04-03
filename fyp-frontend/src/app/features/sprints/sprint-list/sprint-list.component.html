@@ -8,7 +8,7 @@
       </h1>
       <p>Organize your work into time-boxed sprints</p>
     </div>
-    <button mat-fab color="primary" (click)="openCreateDialog()" class="fab-button">
+    <button *ngIf="canCreateSprint" mat-fab color="primary" (click)="openCreateDialog()" class="fab-button">
       <mat-icon>add</mat-icon>
     </button>
   </div>
@@ -39,8 +39,18 @@
     <p>Loading sprints...</p>
   </div>
 
+  <!-- No Project State -->
+  <div *ngIf="hasNoProject && !loading" class="empty-state">
+    <mat-icon>folder_off</mat-icon>
+    <h3>No Project Found</h3>
+    <p>You need to create or join a project to view and manage sprints.</p>
+    <button mat-raised-button color="primary" routerLink="/student/projects">
+      Go to Projects
+    </button>
+  </div>
+
   <!-- Sprint List -->
-  <div *ngIf="!loading" class="sprint-list">
+  <div *ngIf="!loading && !hasNoProject" class="sprint-list">
     <mat-card *ngFor="let sprint of filteredSprints" 
               class="sprint-card"
               [class]="getStatusClass(sprint.status)"
@@ -59,6 +69,8 @@
         <button *ngIf="sprint.status === SprintStatus.ACTIVE"
                 mat-raised-button 
                 color="accent"
+                [disabled]="sprint.taskCount === 0"
+                [matTooltip]="sprint.taskCount === 0 ? 'Add tasks to this sprint before completing it' : ''"
                 (click)="completeSprint(sprint, $event)">
           Complete Sprint
         </button>
@@ -115,7 +127,7 @@
       <mat-icon>track_changes</mat-icon>
       <h3>No sprints yet</h3>
       <p>Create your first sprint to start planning!</p>
-      <button mat-raised-button color="primary" (click)="openCreateDialog()">
+      <button *ngIf="canCreateSprint" mat-raised-button color="primary" (click)="openCreateDialog()">
         <mat-icon>add</mat-icon>
         Create Sprint
       </button>

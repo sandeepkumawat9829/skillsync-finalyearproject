@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { HttpClient } from '@angular/common/http';
 import { UserService } from '../../../core/services/user.service';
 import { StudentProfile } from '../../../core/models/user.model';
 
@@ -17,10 +18,20 @@ export class StudentProfileComponent implements OnInit {
 
     skillInput = '';
 
+    // Change Password
+    currentPassword = '';
+    newPassword = '';
+    confirmPassword = '';
+    changingPassword = false;
+    hideCurrentPw = true;
+    hideNewPw = true;
+    hideConfirmPw = true;
+
     constructor(
         private fb: FormBuilder,
         private userService: UserService,
-        private snackBar: MatSnackBar
+        private snackBar: MatSnackBar,
+        private http: HttpClient
     ) { }
 
     ngOnInit(): void {
@@ -115,4 +126,30 @@ export class StudentProfileComponent implements OnInit {
             });
         }
     }
+
+    onChangePassword(): void {
+        if (!this.currentPassword || !this.newPassword || this.newPassword !== this.confirmPassword) {
+            return;
+        }
+
+        this.changingPassword = true;
+        this.http.post<any>('/api/auth/change-password', {
+            currentPassword: this.currentPassword,
+            newPassword: this.newPassword
+        }).subscribe({
+            next: (res) => {
+                this.snackBar.open(res.message || 'Password changed successfully!', 'Close', { duration: 3000 });
+                this.currentPassword = '';
+                this.newPassword = '';
+                this.confirmPassword = '';
+                this.changingPassword = false;
+            },
+            error: (err) => {
+                const msg = err.error?.message || err.error?.error || 'Failed to change password';
+                this.snackBar.open(msg, 'Close', { duration: 5000 });
+                this.changingPassword = false;
+            }
+        });
+    }
 }
+

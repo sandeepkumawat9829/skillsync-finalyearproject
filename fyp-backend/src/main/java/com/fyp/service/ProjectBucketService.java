@@ -28,8 +28,12 @@ public class ProjectBucketService {
     }
 
     public List<ProjectBucketDTO> getAllBuckets() {
-        return bucketRepository.findByIsAvailableTrueOrderByPostedAtDesc()
-                .stream()
+        return bucketRepository.findAll().stream()
+                .sorted((a, b) -> {
+                    if (a.getPostedAt() == null) return 1;
+                    if (b.getPostedAt() == null) return -1;
+                    return b.getPostedAt().compareTo(a.getPostedAt());
+                })
                 .map(this::toDTO)
                 .collect(Collectors.toList());
     }

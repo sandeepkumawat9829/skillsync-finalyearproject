@@ -9,6 +9,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,8 +26,11 @@ public class SprintController {
 
     @PostMapping
     @Operation(summary = "Create a new sprint")
-    public ResponseEntity<SprintDTO> createSprint(@Valid @RequestBody SprintDTO sprint) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(sprintService.createSprint(sprint));
+    public ResponseEntity<SprintDTO> createSprint(
+            @Valid @RequestBody SprintDTO sprint,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(sprintService.createSprint(sprint, userDetails.getUsername()));
     }
 
     @GetMapping("/{id}")

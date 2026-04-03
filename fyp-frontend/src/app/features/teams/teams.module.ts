@@ -22,10 +22,12 @@ import { TeamListComponent } from './team-list/team-list.component';
 import { TeamCreateComponent } from './team-create/team-create.component';
 import { TeamViewComponent } from './team-view/team-view.component';
 import { SkillGraphComponent } from './skill-graph/skill-graph.component';
+import { TeamRecommendationsComponent } from './team-recommendations/team-recommendations.component';
 
 const routes: Routes = [
     { path: '', component: TeamListComponent },
     { path: 'create', component: TeamCreateComponent },
+    { path: 'recommendations', component: TeamRecommendationsComponent },
     { path: ':id', component: TeamViewComponent }
 ];
 
@@ -34,7 +36,8 @@ const routes: Routes = [
         TeamListComponent,
         TeamCreateComponent,
         TeamViewComponent,
-        SkillGraphComponent
+        SkillGraphComponent,
+        TeamRecommendationsComponent
     ],
     imports: [
         CommonModule,

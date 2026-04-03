@@ -89,11 +89,20 @@ export class TaskDialogComponent implements OnInit {
         }
 
         this.isSubmitting = true;
+        const formValue = { ...this.taskForm.value };
+
+        // Normalize dueDate to noon to prevent timezone serialization shifting the day
+        if (formValue.dueDate) {
+            const normalized = new Date(formValue.dueDate);
+            normalized.setHours(12, 0, 0, 0);
+            formValue.dueDate = normalized;
+        }
+
         const request: CreateTaskRequest = {
             projectId: this.data.projectId,
             sprintId: this.data.sprintId,
             teamId: this.data.teamId,
-            ...this.taskForm.value
+            ...formValue
         };
 
         this.taskService.createTask(request).subscribe({

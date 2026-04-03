@@ -134,4 +134,9 @@ export class TeamService {
     rejectJoinRequest(requestId: number): Observable<void> {
         return this.http.post<void>(`${this.apiUrl}/join-requests/${requestId}/reject`, {});
     }
+
+    // Get AI recommendations for team members
+    getRecommendations(teamId: number): Observable<any[]> {
+        return this.http.get<any[]>(`${this.apiUrl}/${teamId}/recommendations`);
+    }
 }

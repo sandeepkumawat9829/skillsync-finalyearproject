@@ -113,6 +113,55 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
 
+    @PostMapping("/forgot-password")
+    @Operation(summary = "Forgot password", description = "Send a password reset link to the user's email")
+    public ResponseEntity<Map<String, Object>> forgotPassword(@RequestBody Map<String, String> request) {
+        String email = request.get("email");
+        if (email == null || email.isBlank()) {
+            throw new RuntimeException("Email is required");
+        }
+        Map<String, Object> response = authService.forgotPassword(email);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/reset-password")
+    @Operation(summary = "Reset password", description = "Reset password using the token from the email link")
+    public ResponseEntity<Map<String, Object>> resetPassword(@RequestBody Map<String, String> request) {
+        String token = request.get("token");
+        String newPassword = request.get("newPassword");
+        if (token == null || newPassword == null || newPassword.length() < 6) {
+            throw new RuntimeException("Valid token and password (min 6 chars) are required");
+        }
+        Map<String, Object> response = authService.resetPassword(token, newPassword);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/change-password")
+    @Operation(summary = "Change password", description = "Change password for authenticated user (requires current password)")
+    public ResponseEntity<Map<String, Object>> changePassword(
+            @RequestBody Map<String, String> request,
+            org.springframework.security.core.Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        String email = authentication.getName();
+        LoginResponse userInfo = authService.getUserInfoByEmail(email);
+        if (userInfo == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        String currentPassword = request.get("currentPassword");
+        String newPassword = request.get("newPassword");
+
+        if (currentPassword == null || newPassword == null || newPassword.length() < 6) {
+            throw new RuntimeException("Current password and new password (min 6 chars) are required");
+        }
+
+        Map<String, Object> response = authService.changePassword(userInfo.getUserId(), currentPassword, newPassword);
+        return ResponseEntity.ok(response);
+    }
+
     /**
      * Sets the JWT as an HttpOnly, Secure, SameSite=Strict cookie.
      * This prevents XSS attacks from accessing the token through JavaScript.
@@ -128,3 +177,4 @@ public class AuthController {
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
     }
 }
+

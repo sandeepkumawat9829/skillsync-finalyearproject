@@ -12,6 +12,7 @@ export interface Sprint {
     velocity: number;
     createdAt: Date;
     completedAt?: Date;
+    taskCount: number;
 }
 
 export enum SprintStatus {

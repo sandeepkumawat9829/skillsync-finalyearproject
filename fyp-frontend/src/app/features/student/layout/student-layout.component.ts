@@ -42,11 +42,10 @@ export class StudentLayoutComponent implements OnInit {
     }
 
     loadNotificationCount(): void {
-        this.notificationService.getMyNotifications().pipe(
-            catchError(() => of([]))
-        ).subscribe(notifications => {
-            this.unreadCount = notifications.filter(n => !n.isRead).length;
+        this.notificationService.unreadCount$.subscribe(count => {
+            this.unreadCount = count;
         });
+        this.notificationService.refreshUnreadCount();
     }
 
     loadInviteCount(): void {

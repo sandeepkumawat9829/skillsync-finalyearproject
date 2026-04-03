@@ -177,6 +177,12 @@ public class TeamService {
 
         // Students can join multiple teams — no restriction here
 
+        // Check if invitee is already a member of this team
+        if (teamMemberRepository.existsByTeamIdAndUserId(teamId, inviteeUserId)) {
+            throw new BusinessRuleViolationException(
+                    "This user is already a member of your team", "ALREADY_MEMBER");
+        }
+
         // Check if invitation already exists
         List<TeamInvitation> existing = teamInvitationRepository.findByTeamId(teamId).stream()
                 .filter(inv -> inv.getToUser().getId().equals(inviteeUserId)
@@ -201,7 +207,7 @@ public class TeamService {
                 "TEAM_INVITATION",
                 "Team Invitation",
                 "You have been invited to join team: " + team.getTeamName(),
-                "/invitations");
+                "/student/invitations");
 
         String inviteeName = studentProfileRepository.findByUserId(inviteeUserId)
                 .map(StudentProfile::getFullName).orElse(invitee.getEmail());
@@ -399,6 +405,12 @@ public class TeamService {
         }
 
         // Students can join multiple teams — no restriction here
+
+        // Check if user is already a member of this team
+        if (teamMemberRepository.existsByTeamIdAndUserId(teamId, userId)) {
+            throw new BusinessRuleViolationException(
+                    "You are already a member of this team", "ALREADY_MEMBER");
+        }
 
         // Check if a request/invitation already exists
         List<TeamInvitation> existing = teamInvitationRepository.findByTeamId(teamId).stream()

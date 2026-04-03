@@ -65,6 +65,10 @@ public class TaskService {
 
         validateProjectAccess(project, creatorId);
 
+        if (dto.getDueDate() != null && dto.getDueDate().isBefore(LocalDateTime.now())) {
+            throw new RuntimeException("Task due date cannot be in the past");
+        }
+
         String status = normalizeColumnName(dto.getStatus());
         User assignedTo = dto.getAssignedTo() != null ? validateAndGetAssignee(project, dto.getAssignedTo()) : null;
         Sprint sprint = dto.getSprintId() != null ? validateAndGetSprint(project, dto.getSprintId()) : null;
@@ -205,6 +209,9 @@ public class TaskService {
             task.setPriority(dto.getPriority());
         }
         if (dto.getDueDate() != null) {
+            if (dto.getDueDate().isBefore(LocalDateTime.now())) {
+                throw new RuntimeException("Task due date cannot be in the past");
+            }
             task.setDueDate(dto.getDueDate());
         }
         if (dto.getEstimatedHours() != null) {

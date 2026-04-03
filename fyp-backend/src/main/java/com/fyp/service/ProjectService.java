@@ -32,6 +32,7 @@ public class ProjectService {
     private final MentorAssignmentRepository mentorAssignmentRepository;
     private final MentorProfileRepository mentorProfileRepository;
     private final ProjectBucketRepository projectBucketRepository;
+    private final ProjectSimilarityService projectSimilarityService;
 
     @Transactional
     public ProjectDTO createProject(CreateProjectRequest request, Long userId) {
@@ -58,6 +59,17 @@ public class ProjectService {
         String sanitizedMethodology = sanitizeInput(request.getMethodology());
         String sanitizedExpectedOutcome = sanitizeInput(request.getExpectedOutcome());
         ProjectBucket selectedBucket = null;
+
+        // Check for duplicates
+        List<java.util.Map<String, Object>> similarProjects = projectSimilarityService.checkDuplicateBeforeCreation(sanitizedTitle, sanitizedAbstract);
+        if (!similarProjects.isEmpty()) {
+            Long score = (Long) similarProjects.get(0).get("similarityScore");
+            if (score >= 85) {
+                throw new BusinessRuleViolationException(
+                        "A very similar project already exists (" + score + "% match). Please make your project more unique.",
+                        "PROJECT_DUPLICATE_FOUND");
+            }
+        }
 
         if (Boolean.TRUE.equals(request.getFromBucket()) || request.getBucketId() != null) {
             if (request.getBucketId() == null) {

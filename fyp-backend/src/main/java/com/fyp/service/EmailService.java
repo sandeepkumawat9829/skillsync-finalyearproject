@@ -25,6 +25,9 @@ public class EmailService {
     @Value("${app.name:SkillSync}")
     private String appName;
 
+    @Value("${app.frontend.url:http://localhost:4200}")
+    private String frontendUrl;
+
     @Async
     public void sendVerificationOTP(String toEmail, String otpCode) {
         String subject = "Verify your email for SkillSync";
@@ -133,7 +136,7 @@ public class EmailService {
                                             <table cellpadding="0" cellspacing="0" style="margin: 0 auto;">
                                                 <tr>
                                                     <td style="text-align: center;">
-                                                        <img src="http://localhost:4200/assets/images/skillsync-logo.svg" alt="SkillSync" style="height: 48px; display: block; margin: 0 auto; border: 0;" />
+                                                        <img src="%s/assets/images/skillsync-logo.svg" alt="SkillSync" style="height: 48px; display: block; margin: 0 auto; border: 0;" />
                                                     </td>
                                                 </tr>
                                             </table>
@@ -195,7 +198,7 @@ public class EmailService {
                 </body>
                 </html>
                 """
-                .formatted(actionDescription, otpCode, email);
+                .formatted(frontendUrl, actionDescription, otpCode, email);
     }
 
     private void sendSimpleEmail(String to, String subject, String text) {
@@ -247,7 +250,7 @@ public class EmailService {
                                             <table cellpadding="0" cellspacing="0" style="margin: 0 auto;">
                                                 <tr>
                                                     <td style="text-align: center;">
-                                                        <img src="http://localhost:4200/assets/images/skillsync-logo.svg" alt="SkillSync" style="height: 48px; display: block; margin: 0 auto; border: 0;" />
+                                                        <img src="%s/assets/images/skillsync-logo.svg" alt="SkillSync" style="height: 48px; display: block; margin: 0 auto; border: 0;" />
                                                     </td>
                                                 </tr>
                                             </table>
@@ -300,7 +303,7 @@ public class EmailService {
                 </body>
                 </html>
                 """
-                .formatted(otpCode, email);
+                .formatted(frontendUrl, otpCode, email);
     }
 
     private String buildPasswordResetTemplate(String resetToken, String email) {
@@ -323,7 +326,7 @@ public class EmailService {
                                             <table cellpadding="0" cellspacing="0" style="margin: 0 auto;">
                                                 <tr>
                                                     <td style="text-align: center;">
-                                                        <img src="http://localhost:4200/assets/images/skillsync-logo.svg" alt="SkillSync" style="height: 48px; display: block; margin: 0 auto; border: 0;" />
+                                                        <img src="%s/assets/images/skillsync-logo.svg" alt="SkillSync" style="height: 48px; display: block; margin: 0 auto; border: 0;" />
                                                     </td>
                                                 </tr>
                                             </table>
@@ -350,7 +353,7 @@ public class EmailService {
                                     <!-- Button -->
                                     <tr>
                                         <td style="padding: 0 40px 32px; text-align: center;">
-                                            <a href="http://localhost:4200/auth/reset-password?token=%s" style="display: inline-block; background: linear-gradient(135deg, #ff5754, #ff9a76); color: white; text-decoration: none; padding: 16px 40px; border-radius: 28px; font-weight: 700; font-size: 15px; box-shadow: 0 4px 16px rgba(255, 87, 84, 0.3);">Reset Password</a>
+                                            <a href="%s/auth/reset-password?token=%s" style="display: inline-block; background: linear-gradient(135deg, #ff5754, #ff9a76); color: white; text-decoration: none; padding: 16px 40px; border-radius: 28px; font-weight: 700; font-size: 15px; box-shadow: 0 4px 16px rgba(255, 87, 84, 0.3);">Reset Password</a>
                                         </td>
                                     </tr>
 
@@ -383,7 +386,7 @@ public class EmailService {
                 </body>
                 </html>
                 """
-                .formatted(resetToken, email);
+                .formatted(frontendUrl, frontendUrl, resetToken, email);
     }
 
     private String buildWelcomeTemplate(String userName) {
@@ -406,7 +409,7 @@ public class EmailService {
                                             <table cellpadding="0" cellspacing="0" style="margin: 0 auto 24px;">
                                                 <tr>
                                                     <td style="text-align: center;">
-                                                        <img src="http://localhost:4200/assets/images/skillsync-logo.svg" alt="SkillSync" style="height: 56px; display: block; margin: 0 auto; border: 0;" />
+                                                        <div style="font-family: 'Segoe UI', Arial, sans-serif; font-size: 32px; font-weight: 800; color: #ffffff; text-align: center; letter-spacing: -1px; margin: 0 auto;">SkillSync</div>
                                                     </td>
                                                 </tr>
                                             </table>
@@ -466,7 +469,7 @@ public class EmailService {
 
                                             <!-- Button -->
                                             <div style="text-align: center;">
-                                                <a href="http://localhost:4200/auth/login" style="display: inline-block; background: linear-gradient(135deg, #ff5754, #ff9a76); color: white; text-decoration: none; padding: 16px 40px; border-radius: 28px; font-weight: 700; font-size: 15px; box-shadow: 0 4px 16px rgba(255, 87, 84, 0.3);">Get Started</a>
+                                                <a href="%s/auth/login" style="display: inline-block; background: linear-gradient(135deg, #ff5754, #ff9a76); color: white; text-decoration: none; padding: 16px 40px; border-radius: 28px; font-weight: 700; font-size: 15px; box-shadow: 0 4px 16px rgba(255, 87, 84, 0.3);">Get Started</a>
                                             </div>
                                         </td>
                                     </tr>
@@ -485,7 +488,7 @@ public class EmailService {
                 </body>
                 </html>
                 """
-                .formatted(userName);
+                .formatted(frontendUrl, userName);
     }
 
     private String buildTeamInvitationTemplate(String inviteeName, String teamName, String inviterName,
@@ -508,7 +511,7 @@ public class EmailService {
                                             <table cellpadding="0" cellspacing="0" style="margin: 0 auto;">
                                                 <tr>
                                                     <td style="text-align: center;">
-                                                        <img src="http://localhost:4200/assets/images/skillsync-logo.svg" alt="SkillSync" style="height: 48px; display: block; margin: 0 auto; border: 0;" />
+                                                        <img src="%s/assets/images/skillsync-logo.svg" alt="SkillSync" style="height: 48px; display: block; margin: 0 auto; border: 0;" />
                                                     </td>
                                                 </tr>
                                             </table>
@@ -530,7 +533,7 @@ public class EmailService {
                                     </tr>
                                     <tr>
                                         <td style="padding: 0 40px 32px; text-align: center;">
-                                            <a href="http://localhost:4200/student/invitations?token=%s" style="display: inline-block; background: linear-gradient(135deg, #ff5754, #ff9a76); color: white; text-decoration: none; padding: 16px 40px; border-radius: 28px; font-weight: 700; font-size: 15px; box-shadow: 0 4px 16px rgba(255, 87, 84, 0.3);">View Invitation</a>
+                                            <a href="%s/student/invitations?token=%s" style="display: inline-block; background: linear-gradient(135deg, #ff5754, #ff9a76); color: white; text-decoration: none; padding: 16px 40px; border-radius: 28px; font-weight: 700; font-size: 15px; box-shadow: 0 4px 16px rgba(255, 87, 84, 0.3);">View Invitation</a>
                                         </td>
                                     </tr>
                                     <tr>
@@ -551,7 +554,7 @@ public class EmailService {
                 </body>
                 </html>
                 """
-                .formatted(inviteeName, inviterName, teamName, inviteToken, email);
+                .formatted(frontendUrl, inviteeName, inviterName, teamName, frontendUrl, inviteToken, email);
     }
 
     private String buildMentorRequestTemplate(String mentorName, String teamName, String projectTitle, String requestId,
@@ -574,7 +577,7 @@ public class EmailService {
                                             <table cellpadding="0" cellspacing="0" style="margin: 0 auto;">
                                                 <tr>
                                                     <td style="text-align: center;">
-                                                        <img src="http://localhost:4200/assets/images/skillsync-logo.svg" alt="SkillSync" style="height: 48px; display: block; margin: 0 auto; border: 0;" />
+                                                        <img src="%s/assets/images/skillsync-logo.svg" alt="SkillSync" style="height: 48px; display: block; margin: 0 auto; border: 0;" />
                                                     </td>
                                                 </tr>
                                             </table>
@@ -596,7 +599,7 @@ public class EmailService {
                                     </tr>
                                     <tr>
                                         <td style="padding: 0 40px 32px; text-align: center;">
-                                            <a href="http://localhost:4200/mentor/requests?id=%s" style="display: inline-block; background: linear-gradient(135deg, #ff5754, #ff9a76); color: white; text-decoration: none; padding: 16px 40px; border-radius: 28px; font-weight: 700; font-size: 15px; box-shadow: 0 4px 16px rgba(255, 87, 84, 0.3);">Review Request</a>
+                                            <a href="%s/mentor/requests?id=%s" style="display: inline-block; background: linear-gradient(135deg, #ff5754, #ff9a76); color: white; text-decoration: none; padding: 16px 40px; border-radius: 28px; font-weight: 700; font-size: 15px; box-shadow: 0 4px 16px rgba(255, 87, 84, 0.3);">Review Request</a>
                                         </td>
                                     </tr>
                                     <tr>
@@ -616,7 +619,7 @@ public class EmailService {
                 </body>
                 </html>
                 """
-                .formatted(mentorName, teamName, projectTitle, requestId, email);
+                .formatted(frontendUrl, mentorName, teamName, projectTitle, frontendUrl, requestId, email);
     }
 
     private String buildTaskAssignedTemplate(String assigneeName, String taskTitle, String projectName, String dueDate,
@@ -639,7 +642,7 @@ public class EmailService {
                                             <table cellpadding="0" cellspacing="0" style="margin: 0 auto;">
                                                 <tr>
                                                     <td style="text-align: center;">
-                                                        <img src="http://localhost:4200/assets/images/skillsync-logo.svg" alt="SkillSync" style="height: 48px; display: block; margin: 0 auto; border: 0;" />
+                                                        <img src="%s/assets/images/skillsync-logo.svg" alt="SkillSync" style="height: 48px; display: block; margin: 0 auto; border: 0;" />
                                                     </td>
                                                 </tr>
                                             </table>
@@ -662,7 +665,7 @@ public class EmailService {
                                     </tr>
                                     <tr>
                                         <td style="padding: 0 40px 32px; text-align: center;">
-                                            <a href="http://localhost:4200/student/tasks?taskId=%s" style="display: inline-block; background: linear-gradient(135deg, #ff5754, #ff9a76); color: white; text-decoration: none; padding: 16px 40px; border-radius: 28px; font-weight: 700; font-size: 15px;">View Task</a>
+                                            <a href="%s/student/tasks?taskId=%s" style="display: inline-block; background: linear-gradient(135deg, #ff5754, #ff9a76); color: white; text-decoration: none; padding: 16px 40px; border-radius: 28px; font-weight: 700; font-size: 15px;">View Task</a>
                                         </td>
                                     </tr>
                                     <tr>
@@ -682,7 +685,7 @@ public class EmailService {
                 </body>
                 </html>
                 """
-                .formatted(assigneeName, taskTitle, projectName, dueDate, taskId, email);
+                .formatted(frontendUrl, assigneeName, taskTitle, projectName, dueDate, frontendUrl, taskId, email);
     }
 
     private String buildDocumentGeneratedTemplate(String userName, String documentType, String projectTitle,
@@ -705,7 +708,7 @@ public class EmailService {
                                             <table cellpadding="0" cellspacing="0" style="margin: 0 auto;">
                                                 <tr>
                                                     <td style="text-align: center;">
-                                                        <img src="http://localhost:4200/assets/images/skillsync-logo.svg" alt="SkillSync" style="height: 48px; display: block; margin: 0 auto; border: 0;" />
+                                                        <img src="%s/assets/images/skillsync-logo.svg" alt="SkillSync" style="height: 48px; display: block; margin: 0 auto; border: 0;" />
                                                     </td>
                                                 </tr>
                                             </table>
@@ -727,7 +730,7 @@ public class EmailService {
                                     </tr>
                                     <tr>
                                         <td style="padding: 0 40px 32px; text-align: center;">
-                                            <a href="http://localhost:4200/student/projects" style="display: inline-block; background: linear-gradient(135deg, #ff5754, #ff9a76); color: white; text-decoration: none; padding: 16px 40px; border-radius: 28px; font-weight: 700; font-size: 15px;">View Documents</a>
+                                            <a href="%s/student/projects" style="display: inline-block; background: linear-gradient(135deg, #ff5754, #ff9a76); color: white; text-decoration: none; padding: 16px 40px; border-radius: 28px; font-weight: 700; font-size: 15px;">View Documents</a>
                                         </td>
                                     </tr>
                                     <tr>
@@ -747,7 +750,7 @@ public class EmailService {
                 </body>
                 </html>
                 """
-                .formatted(userName, documentType, projectTitle, email);
+                .formatted(frontendUrl, userName, documentType, projectTitle, frontendUrl, email);
     }
 
     private String buildMeetingScheduledTemplate(String userName, String meetingTitle, String dateStr, String timeStr,
@@ -770,7 +773,7 @@ public class EmailService {
                                             <table cellpadding="0" cellspacing="0" style="margin: 0 auto;">
                                                 <tr>
                                                     <td style="text-align: center;">
-                                                        <img src="http://localhost:4200/assets/images/skillsync-logo.svg" alt="SkillSync" style="height: 48px; display: block; margin: 0 auto; border: 0;" />
+                                                        <img src="%s/assets/images/skillsync-logo.svg" alt="SkillSync" style="height: 48px; display: block; margin: 0 auto; border: 0;" />
                                                     </td>
                                                 </tr>
                                             </table>
@@ -814,6 +817,6 @@ public class EmailService {
                 </body>
                 </html>
                 """
-                .formatted(userName, meetingTitle, dateStr, timeStr, meetingLink, email);
+                .formatted(frontendUrl, userName, meetingTitle, dateStr, timeStr, meetingLink, email);
     }
 }

@@ -18,10 +18,12 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 // Components
 import { SprintListComponent } from './sprint-list/sprint-list.component';
 import { CreateSprintDialogComponent } from './create-sprint-dialog/create-sprint-dialog.component';
+import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
 
 // Guards
 import { AuthGuard } from '../../core/guards/auth.guard';
@@ -37,7 +39,8 @@ const routes: Routes = [
 @NgModule({
     declarations: [
         SprintListComponent,
-        CreateSprintDialogComponent
+        CreateSprintDialogComponent,
+        ConfirmDialogComponent
     ],
     imports: [
         CommonModule,
@@ -57,7 +60,8 @@ const routes: Routes = [
         MatProgressSpinnerModule,
         MatChipsModule,
         MatTabsModule,
-        MatSnackBarModule
+        MatSnackBarModule,
+        MatTooltipModule
     ]
 })
 export class SprintsModule { }

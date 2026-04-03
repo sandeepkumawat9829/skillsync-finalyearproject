@@ -74,7 +74,7 @@ public class MentorService {
         }
 
         // Check if team is complete
-        if (team.getStatus() != TeamStatus.COMPLETE) {
+        if (team.getStatus() != TeamStatus.COMPLETE && team.getStatus() != TeamStatus.MENTOR_REQUESTED) {
             throw new RuntimeException("Team must be complete before requesting a mentor");
         }
 
@@ -86,12 +86,12 @@ public class MentorService {
             throw new RuntimeException("Mentor has reached maximum project capacity");
         }
 
-        // Check existing pending request
+        // Check existing pending request to THIS mentor specifically
         List<MentorRequest> existing = mentorRequestRepository.findByTeamId(teamId).stream()
-                .filter(r -> r.getStatus() == InvitationStatus.PENDING)
+                .filter(r -> r.getMentor().getId().equals(mentorUserId) && r.getStatus() == InvitationStatus.PENDING)
                 .toList();
         if (!existing.isEmpty()) {
-            throw new RuntimeException("You already have a pending mentor request");
+            throw new RuntimeException("You already have a pending mentor request to this mentor");
         }
 
         MentorRequest request = MentorRequest.builder()
@@ -146,6 +146,16 @@ public class MentorService {
         request.setStatus(InvitationStatus.ACCEPTED);
         request.setRespondedAt(LocalDateTime.now());
         mentorRequestRepository.save(request);
+
+        // Cancel all other pending requests for this team
+        List<MentorRequest> otherPending = mentorRequestRepository.findByTeamId(request.getTeam().getId()).stream()
+                .filter(r -> !r.getId().equals(requestId) && r.getStatus() == InvitationStatus.PENDING)
+                .toList();
+        for (MentorRequest other : otherPending) {
+            other.setStatus(InvitationStatus.CANCELLED);
+            other.setRespondedAt(LocalDateTime.now());
+            mentorRequestRepository.save(other);
+        }
 
         // Create mentor assignment
         MentorAssignment assignment = MentorAssignment.builder()

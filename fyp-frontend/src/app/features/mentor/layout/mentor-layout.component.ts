@@ -44,11 +44,10 @@ export class MentorLayoutComponent implements OnInit {
     }
 
     loadNotificationCount(): void {
-        this.notificationService.getMyNotifications().pipe(
-            catchError(() => of([]))
-        ).subscribe((notifications: any[]) => {
-            this.unreadCount = notifications.filter(n => !n.isRead).length;
+        this.notificationService.unreadCount$.subscribe(count => {
+            this.unreadCount = count;
         });
+        this.notificationService.refreshUnreadCount();
     }
 
     loadPendingRequests(): void {
