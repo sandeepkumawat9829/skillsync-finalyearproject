@@ -136,7 +136,7 @@ public class EmailService {
                                             <table cellpadding="0" cellspacing="0" style="margin: 0 auto;">
                                                 <tr>
                                                     <td style="text-align: center;">
-                                                        <img src="%s/assets/images/skillsync-logo.svg" alt="SkillSync" style="height: 48px; display: block; margin: 0 auto; border: 0;" />
+                                                        <a href="%s" style="text-decoration: none; display: block;"><h1 style="margin: 0; font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-size: 36px; font-weight: 900; color: #ff5754; text-align: center; letter-spacing: -1px;">SkillSync</h1></a>
                                                     </td>
                                                 </tr>
                                             </table>
@@ -250,7 +250,7 @@ public class EmailService {
                                             <table cellpadding="0" cellspacing="0" style="margin: 0 auto;">
                                                 <tr>
                                                     <td style="text-align: center;">
-                                                        <img src="%s/assets/images/skillsync-logo.svg" alt="SkillSync" style="height: 48px; display: block; margin: 0 auto; border: 0;" />
+                                                        <a href="%s" style="text-decoration: none; display: block;"><h1 style="margin: 0; font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-size: 36px; font-weight: 900; color: #ff5754; text-align: center; letter-spacing: -1px;">SkillSync</h1></a>
                                                     </td>
                                                 </tr>
                                             </table>
@@ -326,7 +326,7 @@ public class EmailService {
                                             <table cellpadding="0" cellspacing="0" style="margin: 0 auto;">
                                                 <tr>
                                                     <td style="text-align: center;">
-                                                        <img src="%s/assets/images/skillsync-logo.svg" alt="SkillSync" style="height: 48px; display: block; margin: 0 auto; border: 0;" />
+                                                        <a href="%s" style="text-decoration: none; display: block;"><h1 style="margin: 0; font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-size: 36px; font-weight: 900; color: #ff5754; text-align: center; letter-spacing: -1px;">SkillSync</h1></a>
                                                     </td>
                                                 </tr>
                                             </table>
@@ -511,7 +511,7 @@ public class EmailService {
                                             <table cellpadding="0" cellspacing="0" style="margin: 0 auto;">
                                                 <tr>
                                                     <td style="text-align: center;">
-                                                        <img src="%s/assets/images/skillsync-logo.svg" alt="SkillSync" style="height: 48px; display: block; margin: 0 auto; border: 0;" />
+                                                        <a href="%s" style="text-decoration: none; display: block;"><h1 style="margin: 0; font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-size: 36px; font-weight: 900; color: #ff5754; text-align: center; letter-spacing: -1px;">SkillSync</h1></a>
                                                     </td>
                                                 </tr>
                                             </table>
@@ -577,7 +577,7 @@ public class EmailService {
                                             <table cellpadding="0" cellspacing="0" style="margin: 0 auto;">
                                                 <tr>
                                                     <td style="text-align: center;">
-                                                        <img src="%s/assets/images/skillsync-logo.svg" alt="SkillSync" style="height: 48px; display: block; margin: 0 auto; border: 0;" />
+                                                        <a href="%s" style="text-decoration: none; display: block;"><h1 style="margin: 0; font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-size: 36px; font-weight: 900; color: #ff5754; text-align: center; letter-spacing: -1px;">SkillSync</h1></a>
                                                     </td>
                                                 </tr>
                                             </table>
@@ -642,7 +642,7 @@ public class EmailService {
                                             <table cellpadding="0" cellspacing="0" style="margin: 0 auto;">
                                                 <tr>
                                                     <td style="text-align: center;">
-                                                        <img src="%s/assets/images/skillsync-logo.svg" alt="SkillSync" style="height: 48px; display: block; margin: 0 auto; border: 0;" />
+                                                        <a href="%s" style="text-decoration: none; display: block;"><h1 style="margin: 0; font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-size: 36px; font-weight: 900; color: #ff5754; text-align: center; letter-spacing: -1px;">SkillSync</h1></a>
                                                     </td>
                                                 </tr>
                                             </table>
@@ -708,7 +708,7 @@ public class EmailService {
                                             <table cellpadding="0" cellspacing="0" style="margin: 0 auto;">
                                                 <tr>
                                                     <td style="text-align: center;">
-                                                        <img src="%s/assets/images/skillsync-logo.svg" alt="SkillSync" style="height: 48px; display: block; margin: 0 auto; border: 0;" />
+                                                        <a href="%s" style="text-decoration: none; display: block;"><h1 style="margin: 0; font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-size: 36px; font-weight: 900; color: #ff5754; text-align: center; letter-spacing: -1px;">SkillSync</h1></a>
                                                     </td>
                                                 </tr>
                                             </table>
@@ -773,7 +773,7 @@ public class EmailService {
                                             <table cellpadding="0" cellspacing="0" style="margin: 0 auto;">
                                                 <tr>
                                                     <td style="text-align: center;">
-                                                        <img src="%s/assets/images/skillsync-logo.svg" alt="SkillSync" style="height: 48px; display: block; margin: 0 auto; border: 0;" />
+                                                        <a href="%s" style="text-decoration: none; display: block;"><h1 style="margin: 0; font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-size: 36px; font-weight: 900; color: #ff5754; text-align: center; letter-spacing: -1px;">SkillSync</h1></a>
                                                     </td>
                                                 </tr>
                                             </table>
