@@ -26,6 +26,7 @@ public class ChatService {
     private final UserRepository userRepository;
     private final TeamRepository teamRepository;
     private final TeamMemberRepository teamMemberRepository;
+    private final MentorAssignmentRepository mentorAssignmentRepository;
 
     /**
      * Get all chat rooms for a user
@@ -44,15 +45,58 @@ public class ChatService {
      */
     @Transactional
     public List<ChatRoomDTO> initializeRoomsForUser(Long userId) {
-        // Find all teams the user belongs to
-        List<TeamMember> memberships = teamMemberRepository.findByUserId(userId);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
         List<ChatRoomDTO> result = new ArrayList<>();
+
+        // Students / team leaders — via team_member table
+        List<TeamMember> memberships = teamMemberRepository.findByUserId(userId);
         for (TeamMember membership : memberships) {
             Team team = membership.getTeam();
-            ChatRoomDTO room = getOrCreateTeamRoom(team.getId(), userId);
+            ChatRoomDTO room = getOrCreateTeamRoomAndEnsureParticipant(team.getId(), userId, user);
             result.add(room);
         }
+
+        // Mentors — via mentor_assignment table (mentors are NOT in team_member)
+        List<MentorAssignment> assignments = mentorAssignmentRepository.findByMentorId(userId);
+        for (MentorAssignment assignment : assignments) {
+            Team team = assignment.getTeam();
+            if (team == null) continue;
+            // Avoid duplicates (e.g. mentor who is also a member somehow)
+            final Long teamId = team.getId();
+            boolean alreadyAdded = result.stream().anyMatch(r -> teamId.equals(r.getTeamId()));
+            if (!alreadyAdded) {
+                ChatRoomDTO room = getOrCreateTeamRoomAndEnsureParticipant(teamId, userId, user);
+                result.add(room);
+            }
+        }
+
         return result;
+    }
+
+    /**
+     * Internal helper: get or create the TEAM chat room, and always ensure
+     * the given user is registered as a participant (idempotent).
+     */
+    private ChatRoomDTO getOrCreateTeamRoomAndEnsureParticipant(Long teamId, Long userId, User user) {
+        ChatRoom room = chatRoomRepository.findByRoomTypeAndTeamId(RoomType.TEAM, teamId)
+                .orElseGet(() -> {
+                    Team team = teamRepository.findById(teamId)
+                            .orElseThrow(() -> new ResourceNotFoundException("Team not found"));
+                    return createTeamRoomEntity(team);
+                });
+
+        // Ensure current user is a participant (handles late-joiners & mentors)
+        if (!chatParticipantRepository.existsByChatRoomIdAndUserId(room.getId(), userId)) {
+            ChatParticipant participant = ChatParticipant.builder()
+                    .chatRoom(room)
+                    .user(user)
+                    .build();
+            chatParticipantRepository.save(participant);
+        }
+
+        return toRoomDTO(room, userId);
     }
 
     /**
@@ -113,9 +157,19 @@ public class ChatService {
     }
 
     private ChatRoomDTO createTeamRoom(Long teamId, Long userId) {
-        Team team = teamRepository.findById(teamId)
-                .orElseThrow(() -> new ResourceNotFoundException("Team not found"));
+        ChatRoom savedRoom = createTeamRoomEntity(
+                teamRepository.findById(teamId)
+                        .orElseThrow(() -> new ResourceNotFoundException("Team not found")));
+        return toRoomDTO(savedRoom, userId);
+    }
 
+    /**
+     * Creates the ChatRoom entity + adds all current members as participants.
+     * Queries members fresh from the DB via teamMemberRepository to avoid
+     * the JPA first-level-cache stale-collection bug that occurs when
+     * createTeam() calls this right after saving the first TeamMember.
+     */
+    private ChatRoom createTeamRoomEntity(Team team) {
         ChatRoom room = ChatRoom.builder()
                 .team(team)
                 .roomType(RoomType.TEAM)
@@ -124,16 +178,17 @@ public class ChatService {
 
         ChatRoom savedRoom = chatRoomRepository.save(room);
 
-        // Add all team members as participants
-        team.getMembers().forEach(member -> {
+        // Query members directly from DB — avoids stale in-memory collection
+        List<TeamMember> members = teamMemberRepository.findByTeamId(team.getId());
+        for (TeamMember member : members) {
             ChatParticipant participant = ChatParticipant.builder()
                     .chatRoom(savedRoom)
                     .user(member.getUser())
                     .build();
             chatParticipantRepository.save(participant);
-        });
+        }
 
-        return toRoomDTO(savedRoom, userId);
+        return savedRoom;
     }
 
     /**
